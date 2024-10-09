@@ -1,1 +1,2 @@
-# DailyLog
+# DailyLog 
+university diploma project

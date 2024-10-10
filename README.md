@@ -10,4 +10,5 @@ university diploma project
   <img height="64" width="64" src="https://cdn.simpleicons.org/mysql/4479A1" alt="MySQL" />
   <img height="64" width="64" src="https://cdn.simpleicons.org/react/61DAFB" alt="React" />
   <img height="64" width="64" src="https://cdn.simpleicons.org/redux/764ABC" alt="Redux" />
+  <img height="64" width="64" src="https://cdn.simpleicons.org/amazonwebservices/232F3E" alt="Amazon Web Services" />
 </div>

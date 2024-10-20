@@ -1,24 +1,19 @@
-import {modeActions} from "./store/index";
-import {useSelector, useDispatch} from "react-redux";
+import {Layout} from "./Components/Layout";
+import {Route, Routes} from "react-router";
+import {MainScreen} from "./Pages/MainScreen";
+import {Inbox} from "./Pages/Inbox";
+import {Login} from "./Pages/Login";
 
 function App() {
-  const mode = useSelector(state => state.mode);
-  const dispatch = useDispatch();
-
-  const lightMode = () => {
-      dispatch(modeActions.lightMode())
-  }
-
-  const darkMode = () => {
-      dispatch(modeActions.darkMode())
-  }
 
   return (
-    <div className="App">
-        <h3>{mode}</h3>
-        <button onClick={lightMode}>Light</button>
-        <button onClick={darkMode}>Dark</button>
-    </div>
+    <Layout>
+        <Routes>
+            <Route path="/login" element={ <Login/> }/>
+            <Route exec path="/" element={<MainScreen />} />
+            <Route path="/inbox" element={ <Inbox/> }/>
+        </Routes>
+    </Layout>
   );
 }
 

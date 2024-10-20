@@ -1,0 +1,96 @@
+.main-block {
+    margin-top: 15vh;
+    display: flex;
+    justify-content: center;
+}
+
+.form-container {
+    width: 27vw;
+    aspect-ratio: 1.3 / 1;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    background: #f5f5f5;
+}
+
+.form-container.light {
+    background: white;
+}
+
+.form-container.dark {
+    background: #2c2c2c;
+}
+
+.log-in-text {
+    text-align: center;
+    padding: 0.7rem;
+    background: #617DA6;
+    border-radius: 10px 10px 0 0;
+    color: white;
+    margin-bottom: 1rem;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+}
+
+.center-block,
+.button-block {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.email-block ,
+.password-block ,
+.button-block button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 90%;
+    color: #696969;
+}
+.label {
+    margin-bottom: 5px;
+}
+
+.input {
+    border: 1px solid #d9d9d9;
+    padding: 0.7rem;
+    border-radius: 10px;
+    width: 85%;
+}
+
+.input.dark {
+    border: 1px solid #d9d9d9;
+    background: transparent;
+}
+
+.input::placeholder {
+    color: #d9d9d9;
+}
+
+
+.button-block button {
+    display: flex;
+    justify-content: center; /* Центрирование текста по горизонтали */
+    align-items: center; /* Центрирование текста по вертикали */
+    background: transparent;
+    border: 1px solid #617DA6;
+    color: #617DA6;
+    border-radius: 10px;
+    padding: 0.7rem;
+    width: 80%; /* Ширина кнопки */
+    cursor: pointer; /* Изменение курсора при наведении для улучшения UX */
+    transition: ease-in 0.2s;
+}
+
+.button-block button:hover {
+    transform: scale(1.1);
+}
+
+

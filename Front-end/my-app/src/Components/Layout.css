@@ -1,0 +1,36 @@
+.back {
+    height: 100vh;
+    width: 100%;
+}
+
+.back.light {
+    background-color: #d0d0d0;
+}
+
+.back.dark {
+    background-color: #1e1e1e;
+}
+
+.banner {
+    position: absolute;
+    width: 100%;
+    height: 20%;
+}
+
+.content {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+.content-center {
+    width: 80%;
+    height: 100%;
+}
+
+@media screen and (max-width: 1500px) {
+    .banner {
+        height: 17%;
+    }
+}

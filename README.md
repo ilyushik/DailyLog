@@ -1,4 +1,7 @@
 # DailyLog 
+
+<img src="https://github.com/ilyushik/DailyLog/blob/main/Documentation/logo_git.png"/>
+
 university diploma project
 
 DailyLog is an internal web application for companies that helps employees efficiently manage their daily work reports and notifications to their bosses.

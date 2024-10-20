@@ -1,0 +1,16 @@
+services:
+  # backend:
+  #   image: <kamaraliilya>/backend:latest
+  #   # build:
+  #   #   context: ./Spring
+  #   restart: always
+  #   ports:
+  #     - "8080:8080"
+
+  frontend:
+    image: kamaraliilya/frontend:latest
+    # build:
+    #   context: ./Front-end/my-app
+    restart: always
+    ports:
+      - "3000:3000"

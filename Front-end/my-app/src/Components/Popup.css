@@ -150,13 +150,14 @@ form {
     border: 1px solid #c7c7c7;
     border-radius: 10px;
     background-color: transparent;
+    color: #696969;
 }
 
-.date-input.light {
+.date-field.light {
     color: #1e1e1e;
 }
 
-.date-input.dark {
+.date-field.dark {
     color: #eeeeee;
 }
 
@@ -171,6 +172,7 @@ form {
 .comment-block label {
     font-size: 15px;
     margin-right: 65%;
+    color: dimgrey;
 }
 
 .comment-block textarea {
@@ -179,6 +181,15 @@ form {
     border-radius: 10px;
     border: 1px solid #c7c7c7;
     background: transparent;
+    padding: 5px;
+}
+
+.comment-area.light {
+    color: #1e1e1e;
+}
+
+.comment-area.dark {
+    color: #eeeeee;
 }
 
 .buttons-block {

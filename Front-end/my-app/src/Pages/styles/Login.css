@@ -1,5 +1,7 @@
 .main-block {
-    margin-top: 15vh;
+    height: 85%;
+    align-items: center;
+    /*margin-top: 15vh;*/
     display: flex;
     justify-content: center;
 }

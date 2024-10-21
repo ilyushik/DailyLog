@@ -1,9 +1,68 @@
-import {Fragment} from "react";
+import {Fragment, useState} from "react";
 import "./Popup.css"
 import {useSelector} from "react-redux";
 
 export function Popup(props) {
     const mode = useSelector(state => state.mode);
+    const [reason, setReason] = useState("Vacation");
+    const [startDate, setStartDate] = useState("");
+    const [endDate, setEndDate] = useState("");
+    const [comment, setComment] = useState("");
+
+    const reasonHandler = (e) => {
+        e.preventDefault();
+        setReason(e.target.value);
+    }
+
+    const startDateHandler = (e) => {
+        e.preventDefault();
+        setStartDate(e.target.value);
+    }
+
+    const endDateHandler = (e) => {
+        e.preventDefault();
+        setEndDate(e.target.value);
+    }
+
+    const commentHandler = (e) => {
+        e.preventDefault();
+        setComment(e.target.value);
+    }
+
+    const calculateDifference = (startDate, endDate) => {
+        const firstDate = new Date(startDate);
+        const secondDate = new Date(endDate);
+
+        const timeDifference = Math.abs(secondDate - firstDate);
+        const days = Math.ceil(timeDifference / (1000 * 60 * 60 * 24));
+        if (days === 0) {
+            return 1
+        }
+
+        if (days === 1) {
+            return 1
+        }
+
+        return days;
+    };
+
+    const submitHandler = (e) => {
+        e.preventDefault();
+
+        props.close()
+        props.openSuccess()
+
+        const request = {
+            reason: reason,
+            startDate: startDate,
+            endDate: endDate,
+            comment: comment,
+            countOfDays: calculateDifference(startDate, endDate),
+        }
+
+        console.log(request);
+    }
+
 
     return(
         <Fragment>
@@ -16,14 +75,14 @@ export function Popup(props) {
                     <div className={`modal-screen ${mode === "Dark" ? "dark" : "light"}`}>
                         <button className={`close-button ${mode === "Dark" ? "dark" : "light"}`} onClick={props.close}>&times;</button>
                         <p className="title">Create a request</p>
-                        <form>
+                        <form onSubmit={submitHandler}>
                             <div className="select-wrapper">
                                 <select className={`select ${mode === "Dark" ? "dark" : "light"}`} name="reasons"
-                                        id="reasons">
+                                        id="reasons" value={reason} onChange={reasonHandler}>
                                     <option value="vacation">Vacation</option>
-                                    <option value="sick_leave">Sick Leave</option>
-                                    <option value="time_off">Time off</option>
-                                    <option value="business_trip">Business trip</option>
+                                    <option value="Sick Leave">Sick Leave</option>
+                                    <option value="Time off">Time off</option>
+                                    <option value="Business trip">Business trip</option>
                                 </select>
                             </div>
 
@@ -31,7 +90,7 @@ export function Popup(props) {
                                 <div className="date-block">
                                     <div className={`date-input ${mode === "Dark" ? "dark" : "light"}`}>
                                         <label htmlFor="start">Start</label>
-                                        <input id="start" type={"date"} value=""/>
+                                        <input className={`date-field ${mode === "Dark" ? "dark" : "light"}`} id="start" type={"date"} value={startDate} onChange={startDateHandler}/>
                                     </div>
 
                                     <div className="line-block">
@@ -40,23 +99,23 @@ export function Popup(props) {
 
                                     <div className={`date-input ${mode === "Dark" ? "dark" : "light"}`}>
                                         <label htmlFor="end">End</label>
-                                        <input id="end" type={"date"} value=""/>
+                                        <input className={`date-field ${mode === "Dark" ? "dark" : "light"}`} id="end" type={"date"} value={endDate} onChange={endDateHandler}/>
                                     </div>
                                 </div>
                             </div>
 
                             <div className={`comment-block ${mode === "Dark" ? "dark" : "light"}`}>
                                 <label htmlFor="comment">Comment</label>
-                                <textarea id="comment" value="" placeholder={"Write something..."}/>
+                                <textarea className={`comment-area ${mode === "Dark" ? "dark" : "light"}`} id="comment" value={comment} placeholder={"Write something..."} onChange={commentHandler}/>
                             </div>
 
                             <div className="buttons-block">
                                 <div className="create-block">
-                                    <button className="create-button" onClick={props.close}>Create</button>
+                                    <button type={"submit"} className="create-button">Create</button>
                                 </div>
 
                                 <div className="cancel-block">
-                                    <button className="cancel-button" onClick={props.close}>Cancel</button>
+                                    <button type={"button"} className="cancel-button" onClick={props.close}>Cancel</button>
                                 </div>
                             </div>
                         </form>

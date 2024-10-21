@@ -83,7 +83,7 @@ export function MainScreen() {
                                     requests...</p>}
                             {active_requests.map((request) => (
 
-                                <div className={`request-block-justify`}>
+                                <div key={request.id} className={`request-block-justify`}>
                                     <div className={`request-block ${mode === "Light" ? "light" : "dark"}`}>
                                         <div className={`request-reason ${mode === "Light" ? "light" : "dark"}`}>
                                             {/*img*/}

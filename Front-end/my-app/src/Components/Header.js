@@ -10,6 +10,12 @@ import {Fragment, useState} from "react";
 import {Popup} from "./Popup";
 import {PopupSuccess} from "./PopupSuccess";
 
+const user = {
+    id: 1,
+    name: "Illia",
+    surname: "Kamarali"
+}
+
 export function Header() {
     const mode = useSelector(state => state.mode);
     const dispatch = useDispatch();
@@ -40,6 +46,9 @@ export function Header() {
 
     const closePopup = () => {
         setPopupIsOpen(false);
+    }
+
+    const openPopupSuccess = () => {
         setPopupSuccessIsOpen(true)
     }
 
@@ -49,7 +58,7 @@ export function Header() {
 
     return (
         <Fragment>
-            {popupIsOpen && <Popup close={closePopup}/>}
+            {popupIsOpen && <Popup openSuccess={openPopupSuccess} close={closePopup}/>}
             {popupSuccessIsOpen && <PopupSuccess close={closePopupSuccess}/>}
             <header className={`header ${mode === "Dark" ? "dark" : "light"}`}>
                 <button className="button-logo" onClick={() => {navigate("/", {replace: true})}}>
@@ -59,11 +68,13 @@ export function Header() {
                 <div className="nav">
                     {modeChanger()}
 
-                    <NavLink to="/inbox" className={`nav-inbox ${mode === "Light" ? "light" : "dark"}`}>
+                    {user.id && <NavLink to="/inbox" className={`nav-inbox ${mode === "Light" ? "light" : "dark"}`}>
                         <img className="button-inbox" src={inbox} alt="inbox"/>
-                    </NavLink>
+                    </NavLink>}
 
-                    <button className={`button-request ${mode === "Dark" ? "dark" : "light"}`} onClick={openPopup}>+ Add a request</button>
+                    {user.id &&
+                        <button className={`button-request ${mode === "Dark" ? "dark" : "light"}`} onClick={openPopup}>+
+                            Add a request</button>}
                 </div>
             </header>
         </Fragment>

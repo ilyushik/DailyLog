@@ -1,15 +1,16 @@
-import {Fragment} from "react";
+import {Fragment, useState, useEffect, useCallback} from "react";
 import {useSelector} from "react-redux";
 import "./styles/MainScreen.css"
 import positionIconLight from "../images/position-icon.svg"
 import positionIconDark from "../images/position-icon-dark.svg"
+import axios from "axios";
 
-const user = {
-    first_name : "Illia",
-    second_name: "Kamarali",
-    position: "Junior Java Developer",
-    image: "https://1drv.ms/i/c/2ed1fe62a05badfb/IQQKRCBNXdr0SqTtR3G9HzCjAXT_Je4e14BPo0fGAeVmFQ8?width=1024"
-}
+// const user = {
+//     first_name : "Illia",
+//     second_name: "Kamarali",
+//     position: "Junior Java Developer",
+//     image: "https://1drv.ms/i/c/2ed1fe62a05badfb/IQQKRCBNXdr0SqTtR3G9HzCjAXT_Je4e14BPo0fGAeVmFQ8?width=1024"
+// }
 
 const active_requests = [
     {
@@ -29,6 +30,27 @@ const active_requests = [
 
 export function MainScreen() {
     const mode = useSelector(state => state.mode);
+    const [user, setUser] = useState({});
+
+    const fetchUserHandler = useCallback(async () => {
+        try {
+            const response = await axios.get("http://localhost:8080/users/6");
+
+            if (response.status !== 200) {
+                throw new Error("Wrong");
+            }
+
+            const data = await response.data;
+            setUser(data);
+            console.log("user data", data);
+        } catch (error) {
+            console.log(error)
+        }
+    }, [])
+
+    useEffect(() => {
+        fetchUserHandler();
+    }, [fetchUserHandler]);
 
     const positionIcon = () => {
         if (mode === "dark") {
@@ -64,7 +86,7 @@ export function MainScreen() {
                         <div className="empty-div"></div>
                         <div className="right-image-info-block">
                             <div className="name-block">
-                                <p className={`name ${mode === "Light" ? "light" : "dark"}`}>{user.first_name} {user.second_name}</p>
+                                <p className={`name ${mode === "Light" ? "light" : "dark"}`}>{user.firstName} {user.secondName}</p>
                             </div>
                             <div className="position-icon-position-title-block">
                                 {positionIcon()}

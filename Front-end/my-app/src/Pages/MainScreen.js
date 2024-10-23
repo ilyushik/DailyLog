@@ -12,29 +12,31 @@ import axios from "axios";
 //     image: "https://1drv.ms/i/c/2ed1fe62a05badfb/IQQKRCBNXdr0SqTtR3G9HzCjAXT_Je4e14BPo0fGAeVmFQ8?width=1024"
 // }
 
-const active_requests = [
-    {
-        id: 1,
-        reason: "Vacation",
-        start_date: "2018-04-01",
-        end_date: "2018-04-08",
-    },
-    {
-        id: 2,
-        reason: "Sick Leave",
-        start_date: "2018-05-01",
-        end_date: "2018-05-01",
-    },
-]
+// const active_requests = [
+//     {
+//         id: 1,
+//         reason: "Vacation",
+//         start_date: "2018-04-01",
+//         end_date: "2018-04-08",
+//     },
+//     {
+//         id: 2,
+//         reason: "Sick Leave",
+//         start_date: "2018-05-01",
+//         end_date: "2018-05-01",
+//     },
+// ]
 
 
 export function MainScreen() {
     const mode = useSelector(state => state.mode);
     const [user, setUser] = useState({});
+    const [requests, setRequests] = useState([]);
+    const id = 5
 
     const fetchUserHandler = useCallback(async () => {
         try {
-            const response = await axios.get("http://localhost:8080/users/6");
+            const response = await axios.get(`http://localhost:8080/users/${id}`);
 
             if (response.status !== 200) {
                 throw new Error("Wrong");
@@ -51,6 +53,26 @@ export function MainScreen() {
     useEffect(() => {
         fetchUserHandler();
     }, [fetchUserHandler]);
+
+    const fetchRequestHandler = useCallback(async () => {
+        try {
+            const response = await axios.get(`http://localhost:8080/requests/${id}`);
+
+            if (response.status !== 200) {
+                throw new Error("Wrong");
+            }
+
+            const data = await response.data;
+            setRequests(data);
+            console.log("requests data", data);
+        } catch (error) {
+            console.error(error.data)
+        }
+    }, [])
+
+    useEffect(() => {
+        fetchRequestHandler();
+    }, [fetchRequestHandler]);
 
     const positionIcon = () => {
         if (mode === "dark") {
@@ -100,10 +122,10 @@ export function MainScreen() {
                     <div className={`active-requests ${mode === "Light" ? "light" : "dark"}`}>
                         <div className={`active-requests-title`}>Active requests</div>
                         <div className={`requests-block`}>
-                            {active_requests.length < 1 &&
+                            {requests.length < 1 &&
                                 <p className={`no-active-requests ${mode === "Light" ? "light" : "dark"}`}>No active
                                     requests...</p>}
-                            {active_requests.map((request) => (
+                            {requests.map((request) => (
 
                                 <div key={request.id} className={`request-block-justify`}>
                                     <div className={`request-block ${mode === "Light" ? "light" : "dark"}`}>
@@ -115,15 +137,15 @@ export function MainScreen() {
                                             className={`request-main-info-block ${mode === "Light" ? "light" : "dark"}`}>
                                             <div className={`start-date-request`}>
                                                 <p className={`detail-title ${mode === "Light" ? "light" : "dark"}`}>Start: </p>
-                                                <p className={`detail-info ${mode === "Light" ? "light" : "dark"}`}>{request.start_date}</p>
+                                                <p className={`detail-info ${mode === "Light" ? "light" : "dark"}`}>{request.startDate}</p>
                                             </div>
                                             <div className={`end-date-request`}>
                                                 <p className={`detail-title ${mode === "Light" ? "light" : "dark"}`}>End: </p>
-                                                <p className={`detail-info ${mode === "Light" ? "light" : "dark"}`}>{request.end_date}</p>
+                                                <p className={`detail-info ${mode === "Light" ? "light" : "dark"}`}>{request.finishDate}</p>
                                             </div>
                                             <div className={`duration-request`}>
                                                 <p className={`detail-title ${mode === "Light" ? "light" : "dark"}`}>Duration: </p>
-                                                {calculateDifference(request.start_date, request.end_date)}
+                                                {calculateDifference(request.startDate, request.finishDate)}
                                             </div>
                                         </div>
                                     </div>

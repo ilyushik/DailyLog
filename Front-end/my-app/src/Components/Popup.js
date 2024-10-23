@@ -1,13 +1,35 @@
-import {Fragment, useState} from "react";
+import {Fragment, useState, useEffect, useCallback} from "react";
 import "./Popup.css"
 import {useSelector} from "react-redux";
+import axios from "axios";
 
 export function Popup(props) {
     const mode = useSelector(state => state.mode);
-    const [reason, setReason] = useState("Vacation");
+    const [reason, setReason] = useState("");
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
     const [comment, setComment] = useState("");
+    const [reasons, setReasons] = useState([]);
+
+    const fetchReasonsHandler = useCallback(async () => {
+        try {
+            const response = await axios.get("http://localhost:8080/reasons");
+
+            if (response.status !== 200) {
+                throw new Error("Wrong");
+            }
+
+            const data = await response.data;
+            setReasons(data);
+            console.log(data);
+        } catch (error) {
+            console.log(error);
+        }
+    }, [])
+
+    useEffect(() => {
+        fetchReasonsHandler();
+    }, [fetchReasonsHandler])
 
     const reasonHandler = (e) => {
         e.preventDefault();
@@ -79,10 +101,13 @@ export function Popup(props) {
                             <div className="select-wrapper">
                                 <select className={`select ${mode === "Dark" ? "dark" : "light"}`} name="reasons"
                                         id="reasons" value={reason} onChange={reasonHandler}>
-                                    <option value="vacation">Vacation</option>
-                                    <option value="Sick Leave">Sick Leave</option>
-                                    <option value="Time off">Time off</option>
-                                    <option value="Business trip">Business trip</option>
+                                    {/*<option value="vacation">Vacation</option>*/}
+                                    {/*<option value="Sick Leave">Sick Leave</option>*/}
+                                    {/*<option value="Time off">Time off</option>*/}
+                                    {/*<option value="Business trip">Business trip</option>*/}
+                                    {reasons.map((reason) => (
+                                        <option key={reason.id} value={reason.reason}>{reason.reason}</option>
+                                    ))}
                                 </select>
                             </div>
 

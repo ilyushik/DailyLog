@@ -56,7 +56,7 @@ public class Request {
     private RequestReason reason;
 
     @ManyToOne
-    @JoinColumn(name = "action", referencedColumnName = "id")
+    @JoinColumn(name = "approver_action", referencedColumnName = "id")
     private ApproverAction action;
 
     @Override

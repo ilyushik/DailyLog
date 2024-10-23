@@ -101,25 +101,25 @@ INSERT INTO User (first_name, second_name, password, email, image, days_for_vac,
 
 -- Шаг 2: Добавление Team Lead и Tech Lead
 INSERT INTO User (first_name, second_name, password, email, image, days_for_vac, days_to_skip, role, job_position, team_lead, tech_lead, pm) VALUES
-                                                                                                                                                 ('Alice', 'Johnson', 'password001', 'alice.johnson@example.com', 'https://1drv.ms/i/c/2ed1fe62a05badfb/IQQ0XzqjmC_4T4n_dDftCiFqARZ_aqMeps4wauwGwvsTtuE?width=1024', 20, 2, 1, 'Team Lead', 1, NULL, 2), -- Тим Лид с ПМ
-                                                                                                                                                 ('Eve', 'Davis', 'password005', 'eve.davis@example.com', 'https://1drv.ms/i/c/2ed1fe62a05badfb/IQRjH5jzOLnQQrz9cUVBWDp3AbkBk9buLfl9zCWkyZ87fHY?width=1024', 20, 2, 1, 'Tech Lead', 1, NULL, 2); -- Тех Лид с ПМ
+     ('Alice', 'Johnson', 'password001', 'alice.johnson@example.com', 'https://1drv.ms/i/c/2ed1fe62a05badfb/IQQ0XzqjmC_4T4n_dDftCiFqARZ_aqMeps4wauwGwvsTtuE?width=1024', 20, 2, 1, 'Team Lead', 1, NULL, 2), -- Тим Лид с ПМ
+     ('Eve', 'Davis', 'password005', 'eve.davis@example.com', 'https://1drv.ms/i/c/2ed1fe62a05badfb/IQRjH5jzOLnQQrz9cUVBWDp3AbkBk9buLfl9zCWkyZ87fHY?width=1024', 20, 2, 1, 'Tech Lead', 1, NULL, 2); -- Тех Лид с ПМ
 
 -- Шаг 3: Вставка разработчиков
 INSERT INTO User (first_name, second_name, password, email, image, days_for_vac, days_to_skip, role, job_position, team_lead, tech_lead, pm) VALUES
-                                                                                                                                                 ('Bob', 'Smith', 'password002', 'bob.smith@example.com', 'https://1drv.ms/u/c/2ed1fe62a05badfb/IQSa2j9Y3iu4TL65jNOH8k_HAYbpbw3RHJYUYLq3xV1qwlI?width=1024', 20, 2, 2, 'Developer', 3, 4, 2), -- Разработчик с Тим Лидом (Alice)
-                                                                                                                                                 ('Charlie', 'Brown', 'password003', 'charlie.brown@example.com', 'https://1drv.ms/u/c/2ed1fe62a05badfb/IQQuUe4v5CwYR4h0LJ5XGZXeAdtvWtNCnEVZintNCDPaMLw?width=1024', 20, 2, 2, 'Developer', 3, 4, 2), -- Разработчик с Тим Лидом (Alice)
-                                                                                                                                                 ('David', 'Wilson', 'password004', 'david.wilson@example.com', 'https://1drv.ms/i/c/2ed1fe62a05badfb/IQR7Nbx3EN6_RqzLkGV_VKbaAaTRUM3ePfu7zTdG29lgES4?width=1024', 20, 2, 2, 'Developer', 3, 4, 2), -- Разработчик с Тим Лидом (Alice)
-                                                                                                                                                 ('Frank', 'Miller', 'password006', 'frank.miller@example.com', 'https://1drv.ms/i/c/2ed1fe62a05badfb/IQSxxNYdcNg7SZxQxulSaZvIASurfo8hGx75epvnebhG0dk?width=1024', 20, 2, 2, 'Developer', 3, 4, 2); -- Разработчик с Тех Лидом (Eve)
+     ('Bob', 'Smith', 'password002', 'bob.smith@example.com', 'https://1drv.ms/u/c/2ed1fe62a05badfb/IQSa2j9Y3iu4TL65jNOH8k_HAYbpbw3RHJYUYLq3xV1qwlI?width=1024', 20, 2, 2, 'Developer', 3, 4, 2), -- Разработчик с Тим Лидом (Alice)
+     ('Charlie', 'Brown', 'password003', 'charlie.brown@example.com', 'https://1drv.ms/u/c/2ed1fe62a05badfb/IQQuUe4v5CwYR4h0LJ5XGZXeAdtvWtNCnEVZintNCDPaMLw?width=1024', 20, 2, 2, 'Developer', 3, 4, 2), -- Разработчик с Тим Лидом (Alice)
+     ('David', 'Wilson', 'password004', 'david.wilson@example.com', 'https://1drv.ms/i/c/2ed1fe62a05badfb/IQR7Nbx3EN6_RqzLkGV_VKbaAaTRUM3ePfu7zTdG29lgES4?width=1024', 20, 2, 2, 'Developer', 3, 4, 2), -- Разработчик с Тим Лидом (Alice)
+     ('Frank', 'Miller', 'password006', 'frank.miller@example.com', 'https://1drv.ms/i/c/2ed1fe62a05badfb/IQSxxNYdcNg7SZxQxulSaZvIASurfo8hGx75epvnebhG0dk?width=1024', 20, 2, 2, 'Developer', 3, 4, 2); -- Разработчик с Тех Лидом (Eve)
 
 -- Вставка отчетов
 INSERT INTO Report (date, text, count_of_hours, user) VALUES
-                                                          ('2024-10-01', 'Completed module A', 8, 1),
-                                                          ('2024-10-02', 'Worked on bug fixing', 6, 2),
-                                                          ('2024-10-03', 'Developed new feature', 7, 3),
-                                                          ('2024-10-04', 'Project management tasks', 5, 4);
+    ('2024-10-01', 'Completed module A', 8, 1),
+    ('2024-10-02', 'Worked on bug fixing', 6, 2),
+    ('2024-10-03', 'Developed new feature', 7, 3),
+    ('2024-10-04', 'Project management tasks', 5, 4);
 
 -- Вставка запросов
 INSERT INTO Request (start_date, finish_date, created_at, unique_code, date_of_result, approver_id, status, reason, approver_action, user) VALUES
-                                                                                                                                         ('2024-11-01', '2024-11-10', '2024-10-10 08:00:00', 'REQ12345', '2024-10-11 12:00:00', 2, 2, 2, 1, 5),
-                                                                                                                                         ('2024-12-05', '2024-12-15', '2024-11-15 09:00:00', 'REQ67890', '2024-11-16 10:00:00', 3, 2, 2, 1, 5),
-                                                                                                                                         ('2024-10-20', '2024-10-22', '2024-10-15 14:00:00', 'REQ11111', '2024-10-17 16:00:00', 4, 2, 2, 1, 5);
+    ('2024-11-01', '2024-11-10', '2024-10-10 08:00:00', 'REQ12345', '2024-10-11 12:00:00', 2, 2, 2, 1, 5),
+    ('2024-11-01', '2024-11-10', '2024-10-10 08:00:00', 'REQ12345', '2024-10-16 10:00:00', 3, 2, 2, 1, 5),
+    ('2024-11-01', '22024-11-10', '2024-10-10 08:00:00', 'REQ12345', '2024-10-17 16:00:00', 4, 2, 2, 1, 5);

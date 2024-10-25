@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ApproverActionRepository extends JpaRepository<ApproverAction, Integer> {
+    public ApproverAction findApproverActionByAction(String actionName);
 }

@@ -53,7 +53,7 @@ CREATE TABLE Request (
                          finish_date DATE NOT NULL,
                          created_at TIMESTAMP NOT NULL,
                          unique_code VARCHAR(20) NOT NULL,
-                         date_of_result TIMESTAMP NOT NULL,
+                         date_of_result TIMESTAMP ,
                          user int,
                          approver_id INT,
                          status INT,
@@ -89,7 +89,8 @@ INSERT INTO Request_Reason (reason) VALUES
 -- Вставка действий утверждающего
 INSERT INTO Approver_Action (action) VALUES
                                          ('Approve'),
-                                         ('Decline');
+                                         ('Decline'),
+                                         ('Unchecked');
 
 -- Шаг 1: Создание CEO и Project Manager
 INSERT INTO User (first_name, second_name, password, email, image, days_for_vac, days_to_skip, role, job_position, team_lead, tech_lead, pm) VALUES
@@ -122,4 +123,4 @@ INSERT INTO Report (date, text, count_of_hours, user) VALUES
 INSERT INTO Request (start_date, finish_date, created_at, unique_code, date_of_result, approver_id, status, reason, approver_action, user) VALUES
     ('2024-11-01', '2024-11-10', '2024-10-10 08:00:00', 'REQ12345', '2024-10-11 12:00:00', 2, 2, 2, 1, 5),
     ('2024-11-01', '2024-11-10', '2024-10-10 08:00:00', 'REQ12345', '2024-10-16 10:00:00', 3, 2, 2, 1, 5),
-    ('2024-11-01', '22024-11-10', '2024-10-10 08:00:00', 'REQ12345', '2024-10-17 16:00:00', 4, 2, 2, 1, 5);
+    ('2024-11-01', '2024-11-10', '2024-10-10 08:00:00', 'REQ12345', '2024-10-17 16:00:00', 4, 2, 2, 1, 5);

@@ -1,9 +1,12 @@
 package org.example.springapp.Service;
 
 import org.example.springapp.DTO.RequestDTO;
+import org.example.springapp.Model.ApproverAction;
 import org.example.springapp.Model.Request;
-import org.example.springapp.Model.RequestReason;
+import org.example.springapp.Model.RequestStatus;
+import org.example.springapp.Repository.ApproverActionRepository;
 import org.example.springapp.Repository.RequestRepository;
+import org.example.springapp.Repository.RequestStatusRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,14 +21,45 @@ import java.util.stream.Collectors;
 public class RequestService {
     @Autowired
     private RequestRepository requestRepository;
+    @Autowired
+    private ApproverActionRepository approverActionRepository;
+    @Autowired
+    private RequestStatusRepository requestStatusRepository;
 
     public List<RequestDTO> findByUser(int id) {
-        return requestRepository.findAllByUserId(id).stream().map(s-> new RequestDTO(
-            s.getId(), s.getStartDate(), s.getFinishDate(), s.getCreatedAt(), s.getUniqueCode(),
-                s.getDateOfResult(), s.getApproverId().getId(), s.getUser().getId(), s.getStatus().getStatus(),
-                s.getReason().getReason(), s.getAction().getAction()
+        return requestRepository.findAllByUserId(id).stream().map(s -> new RequestDTO(
+                s.getId(),
+                s.getStartDate(),
+                s.getFinishDate(),
+                s.getCreatedAt(),
+                s.getUniqueCode(),
+                s.getDateOfResult() != null ? s.getDateOfResult() : null,
+                s.getApproverId().getId(),
+                s.getUser().getId(),
+                s.getUser().getFirstName() + " " + s.getUser().getSecondName(),
+                s.getStatus().getStatus(),
+                s.getReason().getReason(),
+                s.getAction().getAction()
         )).collect(Collectors.toList());
     }
+
+    public List<RequestDTO> findByApprover(int approverId) {
+        return requestRepository.findAll().stream().map(s -> new RequestDTO(
+                s.getId(),
+                s.getStartDate(),
+                s.getFinishDate(),
+                s.getCreatedAt(),
+                s.getUniqueCode(),
+                s.getDateOfResult() != null ? s.getDateOfResult() : null,
+                s.getApproverId().getId(),
+                s.getUser().getId(),
+                s.getUser().getFirstName() + " " + s.getUser().getSecondName(),
+                s.getStatus().getStatus(),
+                s.getReason().getReason(),
+                s.getAction().getAction()
+        )).filter(r->r.getApprover() == approverId && r.getAction().equals("Unchecked")).collect(Collectors.toList());
+    }
+
 
     public RequestDTO determineOverallStatus(String uniqueCode) {
         List<Request> requests = requestRepository.findAllByUniqueCode(uniqueCode);
@@ -38,6 +72,7 @@ public class RequestService {
         Timestamp createdAt = representativeRequest.getCreatedAt();
         String unique_Code = representativeRequest.getUniqueCode();
         int user = representativeRequest.getUser().getId();
+        String userFullName = representativeRequest.getUser().getFirstName() + " " + representativeRequest.getUser().getSecondName();
         String reason = representativeRequest.getReason().getReason();
         int approverId = representativeRequest.getApproverId().getId();
 
@@ -57,7 +92,7 @@ public class RequestService {
             overallStatus = "Pending";
         }
 
-        return new RequestDTO(id, startDate, finishDate, createdAt, unique_Code, null, approverId, user, overallStatus, reason, null);
+        return new RequestDTO(id, startDate, finishDate, createdAt, unique_Code, null, approverId, user, userFullName, overallStatus, reason, null);
     }
 
     public List<RequestDTO> combinedList(int userId) {
@@ -78,5 +113,65 @@ public class RequestService {
         return sortedList;
     }
 
+    public Request approveRequest(int id) {
+        Request request = requestRepository.findById(id).orElse(null);
+        String uniqueCode = request.getUniqueCode();
+        List<Request> sameRequests = new ArrayList<>();
+
+        ApproverAction action = approverActionRepository.findApproverActionByAction("Approve");
+        RequestStatus status = requestStatusRepository.findByStatus("Approved");
+
+        if (request == null) {
+            return null;
+        }
+
+
+        request.setAction(action);
+
+        for (Request r : requestRepository.findAll()) {
+            if (r.getUniqueCode().equals(uniqueCode)) {
+                sameRequests.add(r);
+            }
+        }
+
+        boolean allApproved = sameRequests.stream()
+                .allMatch(req -> req.getAction().equals(action));
+
+        if (sameRequests.size() == 1) {
+            request.setStatus(status);
+            request.setDateOfResult(new Timestamp(System.currentTimeMillis()));
+        }
+
+        if (sameRequests.size() == 3) {
+            if (allApproved) {
+                request.setStatus(status);
+                request.setDateOfResult(new Timestamp(System.currentTimeMillis()));
+            }
+        }
+
+
+        return requestRepository.save(request);
+    }
+
+    public Request declineRequest(int id) {
+        Request request = requestRepository.findById(id).orElse(null);
+        String uniqueCode = request.getUniqueCode();
+        ApproverAction action = approverActionRepository.findApproverActionByAction("Decline");
+        RequestStatus status = requestStatusRepository.findByStatus("Declined");
+        if (request == null) {
+            return null;
+        }
+
+        request.setAction(action);
+
+        for (Request r : requestRepository.findAll()) {
+            if (r.getUniqueCode().equals(uniqueCode)) {
+                request.setStatus(status);
+                request.setDateOfResult(new Timestamp(System.currentTimeMillis()));
+            }
+        }
+
+        return requestRepository.save(request);
+    }
 
 }

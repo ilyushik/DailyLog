@@ -22,16 +22,16 @@ public class Report {
     private int id;
 
     @Column(name = "date")
-    @NotEmpty(message = "Date should not be empty")
+//    @NotEmpty(message = "Date should not be empty")
     private LocalDate date;
 
     @Column(name = "text")
     @Size(min = 2, max = 1000, message = "Text should be between 2 and 1000")
-    @NotEmpty(message = "Text should not be empty")
+//    @NotEmpty(message = "Text should not be empty")
     private String text;
 
     @Column(name = "count_of_hours")
-    @NotEmpty(message = "Count of hours should not be empty")
+//    @NotEmpty(message = "Count of hours should not be empty")
     private int countOfHours;
 
     @ManyToOne

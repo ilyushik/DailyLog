@@ -19,6 +19,7 @@ public class RequestDTO {
     private Timestamp dateOfResult;
     private int approver;
     private int user;
+    private String fullUserName;
     private String status;
     private String reason;
     private String action;

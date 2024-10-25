@@ -23,11 +23,11 @@ public class Request {
     private int id;
 
     @Column(name = "start_date")
-    @NotEmpty(message = "Not empty...")
+//    @NotEmpty(message = "Not empty...")
     private LocalDate startDate;
 
     @Column(name = "finish_date")
-    @NotEmpty(message = "Not empty...")
+//    @NotEmpty(message = "Not empty...")
     private LocalDate finishDate;
 
     @Column(name = "created_at")

@@ -23,25 +23,25 @@ public class User {
 
     @Column(name = "first_name")
     @Size(min = 2, max = 50)
-    @NotEmpty(message = "First name should not be empty...")
+//    @NotEmpty(message = "First name should not be empty...")
     private String firstName;
 
     @Column(name = "second_name")
     @Size(min = 2, max = 50)
-    @NotEmpty(message = "Second name should not be empty...")
+//    @NotEmpty(message = "Second name should not be empty...")
     private String secondName;
 
     @Column(name = "password")
-    @NotEmpty(message = "Password should not be empty...")
+//    @NotEmpty(message = "Password should not be empty...")
     private String password;
 
     @Column(name = "email")
     @Email
-    @NotEmpty(message = "Email should not be empty...")
+//    @NotEmpty(message = "Email should not be empty...")
     private String email;
 
     @Column(name = "image")
-    @NotEmpty(message = "Image should not be empty...")
+//    @NotEmpty(message = "Image should not be empty...")
     private String image;
 
     @Column(name = "days_for_vac")

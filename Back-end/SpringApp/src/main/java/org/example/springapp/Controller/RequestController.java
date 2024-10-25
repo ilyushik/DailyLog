@@ -31,4 +31,28 @@ public class RequestController {
 
         return ResponseEntity.ok(requestService.combinedList(id));
     }
+
+    @GetMapping("/approver/{id}")
+    public ResponseEntity<?> requestsByApprover(@PathVariable int id) {
+        User user = userRepository.findById(id).orElse(null);
+        if (user == null) {
+            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "User not found"));
+        }
+
+        if (requestService.findByApprover(id).isEmpty()) {
+            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "No request found"));
+        }
+
+        return ResponseEntity.ok(requestService.findByApprover(id));
+    }
+
+    @PostMapping("/approve/{id}")
+    public ResponseEntity<?> approveRequest(@PathVariable int id) {
+        return ResponseEntity.ok(requestService.approveRequest(id));
+    }
+
+    @PostMapping("/decline/{id}")
+    public ResponseEntity<?> declineRequest(@PathVariable int id) {
+        return ResponseEntity.ok(requestService.declineRequest(id));
+    }
 }

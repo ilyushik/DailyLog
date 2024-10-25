@@ -32,7 +32,8 @@ export function MainScreen() {
     const mode = useSelector(state => state.mode);
     const [user, setUser] = useState({});
     const [requests, setRequests] = useState([]);
-    const id = 5
+    const id = 1
+    const [error, setError] = useState({});
 
     const fetchUserHandler = useCallback(async () => {
         try {
@@ -58,15 +59,18 @@ export function MainScreen() {
         try {
             const response = await axios.get(`http://localhost:8080/requests/${id}`);
 
-            if (response.status !== 200) {
+            if (response.status === 400) {
                 throw new Error("Wrong");
             }
 
             const data = await response.data;
+            setError({});
             setRequests(data);
             console.log("requests data", data);
         } catch (error) {
-            console.error(error.data)
+            console.error(error.response.data)
+            setError(error.response.data)
+            setRequests([])
         }
     }, [])
 
@@ -122,9 +126,8 @@ export function MainScreen() {
                     <div className={`active-requests ${mode === "Light" ? "light" : "dark"}`}>
                         <div className={`active-requests-title`}>Active requests</div>
                         <div className={`requests-block`}>
-                            {requests.length < 1 &&
-                                <p className={`no-active-requests ${mode === "Light" ? "light" : "dark"}`}>No active
-                                    requests...</p>}
+                            {error.message &&
+                                <p className={`no-active-requests ${mode === "Light" ? "light" : "dark"}`}>{error.message}</p>}
                             {requests.map((request) => (
 
                                 <div key={request.id} className={`request-block-justify`}>

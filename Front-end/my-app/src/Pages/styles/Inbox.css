@@ -91,3 +91,50 @@
 .email-from {
     color: #617DA6;
 }
+
+.action_buttons {
+    display: flex;
+    justify-content: space-between;
+    /*width: 15vw;*/
+    width: 250px;
+}
+
+.approve-button, .decline-button {
+    background: transparent;
+    width: 90px;
+    aspect-ratio: 3/1;
+    font-family: "Poppins", sans-serif;
+    border-radius: 10px;
+    transition: ease-in 0.2s;
+}
+
+.approve-button {
+    border: 1.5px solid #00cb00;
+    color: #00cb00;
+    box-shadow: 0px 0px 3px rgb(33, 232, 0);
+}
+
+.decline-button {
+    border: 1.5px solid #cb0000;
+    color: #cb0000;
+    box-shadow: 0px 0px 3px rgb(192, 0, 0);
+}
+
+.approve-button:hover, .decline-button:hover {
+    transform: scale(1.15);
+}
+
+.approve-button:hover {
+    box-shadow: 0px 0px 10px rgb(33, 232, 0);
+
+}
+
+.decline-button:hover {
+    box-shadow: 0px 0px 10px rgb(192, 0, 0);
+}
+
+@media screen and (min-width: 1500px) {
+    .inbox {
+        margin-top: 15vh;
+    }
+}

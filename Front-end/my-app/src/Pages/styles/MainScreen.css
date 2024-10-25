@@ -33,6 +33,7 @@
     position: relative;
     border-radius: 50%;
     height: 15vh;
+    aspect-ratio: 1 / 1;
 }
 
 .image-logo.light {

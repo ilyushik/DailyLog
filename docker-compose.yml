@@ -1,11 +1,37 @@
 services:
-  # backend:
-  #   image: <kamaraliilya>/backend:latest
-  #   # build:
-  #   #   context: ./Spring
-  #   restart: always
-  #   ports:
-  #     - "8080:8080"
+  
+  mysql:
+    image: mysql:8.0
+    restart: always 
+    container_name: mysql_container
+    environment:
+      MYSQL_ROOT_PASSWORD: 30042005
+      MYSQL_DATABASE: DailyLogDB
+    volumes:
+      - ./mysql:/var/lib/mysql
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    ports:
+      - "3307:3306"
+    networks:
+      - app_network
+
+  backend:
+    # build:
+    #   context: .
+    #   dockerfile: Dockerfile
+    # container_name: spring_backend
+    image: kamaraliilya/backend:latest
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/DailyLogDB
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: 30042005
+    depends_on:
+      - mysql
+    ports:
+      - "8080:8080"
+    networks:
+      - app_network
 
   frontend:
     image: kamaraliilya/frontend:latest
@@ -14,3 +40,9 @@ services:
     restart: always
     ports:
       - "3000:3000"
+    depends_on:
+      - backend
+
+networks:
+  app_network:
+    driver: bridge

@@ -57,7 +57,7 @@ public class RequestService {
                 s.getStatus().getStatus(),
                 s.getReason().getReason(),
                 s.getAction().getAction()
-        )).filter(r->r.getApprover() == approverId && r.getAction().equals("Unchecked")).collect(Collectors.toList());
+        )).filter(r->r.getApprover() == approverId && r.getStatus().equals("Pending") && r.getAction().equals("Unchecked")).collect(Collectors.toList());
     }
 
 
@@ -144,8 +144,10 @@ public class RequestService {
 
         if (sameRequests.size() == 3) {
             if (allApproved) {
-                request.setStatus(status);
-                request.setDateOfResult(new Timestamp(System.currentTimeMillis()));
+                for(Request r : sameRequests) {
+                    r.setStatus(status);
+                    r.setDateOfResult(new Timestamp(System.currentTimeMillis()));
+                }
             }
         }
 
@@ -166,8 +168,8 @@ public class RequestService {
 
         for (Request r : requestRepository.findAll()) {
             if (r.getUniqueCode().equals(uniqueCode)) {
-                request.setStatus(status);
-                request.setDateOfResult(new Timestamp(System.currentTimeMillis()));
+                r.setStatus(status);
+                r.setDateOfResult(new Timestamp(System.currentTimeMillis()));
             }
         }
 

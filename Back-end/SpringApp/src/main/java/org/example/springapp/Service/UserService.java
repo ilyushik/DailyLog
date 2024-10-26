@@ -14,6 +14,7 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+
     public List<UserDTO> users() {
         return userRepository.findAll().stream().map(s -> new UserDTO(
                 s.getId(), s.getFirstName(), s.getSecondName(), s.getEmail(), s.getPassword(),

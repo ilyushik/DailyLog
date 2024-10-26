@@ -95,4 +95,10 @@ form {
     transform: scale(1.1);
 }
 
+.error-message {
+    font-size: 15px;
+    color: #cb0000;
+    height: 10px;
+}
+
 

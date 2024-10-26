@@ -1,81 +1,8 @@
 import {Fragment, useState, useCallback, useEffect} from "react";
 import { useSelector } from "react-redux";
 import "./styles/Inbox.css"
-import approveImage from "../images/approved_message.svg"
-import axios from "axios";
+import {request} from "../axios_helper"
 
-const messages = [
-    {
-        id: 1,
-        message: "You have received leave approval from the",
-        from: "teamlead@gmail.com",
-        status: "approved",
-        date: "october 16"
-    },
-    {
-        id: 2,
-        message: "You have received leave approval from the",
-        from: "techlead@gmail.com",
-        status: "declined",
-        date: "october 14"
-    },
-    {
-        id: 3,
-        message: "You have received leave approval from the",
-        from: "pm@gmail.com",
-        status: "declined",
-        date: "october 10"
-    },
-    {
-        id: 4,
-        message: "You have received leave approval from the",
-        from: "ceo@gmail.com",
-        status: "approved",
-        date: "october 5"
-    },
-    {
-        id: 5,
-        message: "You have received leave approval from the",
-        from: "pm@gmail.com",
-        status: "declined",
-        date: "october 10"
-    },
-    {
-        id: 6,
-        message: "You have received leave approval from the",
-        from: "pm@gmail.com",
-        status: "declined",
-        date: "october 10"
-    },
-    {
-        id: 7,
-        message: "You have received leave approval from the",
-        from: "pm@gmail.com",
-        status: "declined",
-        date: "october 10"
-    },
-    {
-        id: 9,
-        message: "You have received leave approval from the",
-        from: "pm@gmail.com",
-        status: "declined",
-        date: "october 10"
-    },
-    {
-        id: 10,
-        message: "You have received leave approval from the",
-        from: "pm@gmail.com",
-        status: "declined",
-        date: "october 10"
-    },
-    {
-        id: 11,
-        message: "You have received leave approval from the",
-        from: "pm@gmail.com",
-        status: "declined",
-        date: "october 10"
-    },
-]
 
 export function Inbox() {
     const mode = useSelector((state) => state.mode);
@@ -84,20 +11,30 @@ export function Inbox() {
     const id = 2
 
     const fetchRequestsHandler = useCallback(async () => {
-        try {
-            const response = await axios.get(`http://localhost:8080/requests/approver/${id}`)
+        // try {
+        //     const response = await axios.get(`http://localhost:8080/requests/approver/${id}`)
+        //
+        //     if (response.status !== 200) {
+        //         throw new Error("Parasha...");
+        //     }
+        //
+        //     const data = await response.data;
+        //     setRequests(data)
+        //     console.log(data)
+        // } catch (error) {
+        //     console.error(error)
+        //     setErrors(error.response.data)
+        // }
 
-            if (response.status !== 200) {
-                throw new Error("Parasha...");
-            }
-
-            const data = await response.data;
-            setRequests(data)
-            console.log(data)
-        } catch (error) {
-            console.error(error)
-            setErrors(error.response.data)
-        }
+        request("GET", `requests/approver/${id}`, {})
+            .then((res) => {
+                setRequests(res.data)
+                console.log(res.data)
+            })
+            .catch((err) => {
+                console.log(err.response.data);
+                setErrors(err.response.data)
+            })
     }, [])
 
 
@@ -105,40 +42,61 @@ export function Inbox() {
         fetchRequestsHandler()
     }, [fetchRequestsHandler])
 
-    const approveRequest = async (event, requestId) => {
+    const approveRequest = (event, requestId) => {
         event.preventDefault();
         console.log(`Approve request: ${requestId}`)
 
-        try {
-            const response = await axios.post(`http://localhost:8080/requests/approve/${requestId}`, requestId)
-            if (response.status !== 200) {
-                throw new Error("Parasha...");
-            }
-            const data = await response.data;
-            console.log(data)
+        // try {
+        //     const response = await axios.post(`http://localhost:8080/requests/approve/${requestId}`, requestId)
+        //     if (response.status !== 200) {
+        //         throw new Error("Parasha...");
+        //     }
+        //     const data = await response.data;
+        //     console.log(data)
+        //
+        //     setRequests([])
+        //     await fetchRequestsHandler()
+        // } catch (error) {
+        //     console.error(error.response.data)
+        // }
 
-            setRequests([])
-            await fetchRequestsHandler()
-        } catch (error) {
-            console.error(error.response.data)
-        }
+        request("POST", `requests/approve/${requestId}`, {requestId})
+            .then((res) => {
+                setRequests([])
+                console.log(res.data)
+                fetchRequestsHandler()
+            })
+            .catch((err) => {
+                console.log(err.response.data);
+
+            })
     }
 
     const declineRequest = async (event, requestId) => {
         console.log(`Decline request: ${requestId}`)
-        try {
-            const response = await axios.post(`http://localhost:8080/requests/decline/${requestId}`, requestId)
-            if (response.status !== 200) {
-                throw new Error("Parasha...");
-            }
-            const data = await response.data;
-            console.log(data)
+        // try {
+        //     const response = await axios.post(`http://localhost:8080/requests/decline/${requestId}`, requestId)
+        //     if (response.status !== 200) {
+        //         throw new Error("Parasha...");
+        //     }
+        //     const data = await response.data;
+        //     console.log(data)
+        //
+        //     setRequests([])
+        //     await fetchRequestsHandler()
+        // } catch (error) {
+        //     console.error(error.response.data)
+        // }
 
-            setRequests([])
-            await fetchRequestsHandler()
-        } catch (error) {
-            console.error(error.response.data)
-        }
+        request("POST", `requests/decline/${requestId}`, {requestId})
+            .then((res) => {
+                setRequests([])
+                console.log(res.data)
+                fetchRequestsHandler()
+            })
+            .catch((err) => {
+                console.log(err.response.data);
+            })
     }
 
     return (

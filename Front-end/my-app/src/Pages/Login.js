@@ -1,10 +1,13 @@
 import {useState} from "react";
 import "./styles/Login.css"
 import {useSelector} from "react-redux";
+import {request} from "../axios_helper";
 
 export function Login() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [errors, setErrors] = useState({});
+    const [formIsValid, setFormIsValid] = useState(true);
     const mode = useSelector(state => state.mode)
 
     const emailHandler = (event) => {
@@ -17,16 +20,45 @@ export function Login() {
         setPassword(event.target.value)
     }
 
+    const loginHandler = (event) => {
+        event.preventDefault()
+
+        if (email.trim().length === 0) {
+            setErrors({email: "Email is empty"})
+            setFormIsValid(false)
+            return
+        }
+        if (password.trim().length === 0) {
+            setErrors({password: "Email is empty"})
+            setFormIsValid(false)
+            return
+        }
+
+        setErrors({})
+        setFormIsValid(true)
+
+        // request("POST", `/login`, {email: email, password: password})
+        //     .then((res) => {
+        //         console.log(res.data)
+        //     })
+        //     .catch((err) => {
+        //         console.log(err.response.data)
+        //         setErrors(err.response.data)
+        //     })
+
+    }
+
     return (
         <div className="main-block">
             <div className={`form-container ${mode === "Light" ? "light" : "dark"}`}>
                 <div className="log-in-text">Log In</div>
-                <form>
+                <form onSubmit={loginHandler}>
                     <div className="center-block">
                         <div className="email-block">
                             <label className="label" htmlFor="email">Email</label>
                             <input className={`input ${mode === "Light" ? "light" : "dark"}`} id="email" type="email" placeholder="name@example.com"
                                    onChange={emailHandler} value={email}/>
+                            {errors.email && (<h3 className={`error-message`}>Error email</h3>)}
                         </div>
                     </div>
 
@@ -35,6 +67,7 @@ export function Login() {
                             <label className="label" htmlFor="password">Password</label>
                             <input className={`input ${mode === "Light" ? "light" : "dark"}`} id="password" type="password" placeholder="********"
                                    onChange={passwordHandler} value={password}/>
+                            {errors.password && (<h3 className={`error-message`}>Error password</h3>)}
                         </div>
                     </div>
 

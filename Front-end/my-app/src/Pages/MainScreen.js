@@ -3,52 +3,38 @@ import {useSelector} from "react-redux";
 import "./styles/MainScreen.css"
 import positionIconLight from "../images/position-icon.svg"
 import positionIconDark from "../images/position-icon-dark.svg"
-import axios from "axios";
-
-// const user = {
-//     first_name : "Illia",
-//     second_name: "Kamarali",
-//     position: "Junior Java Developer",
-//     image: "https://1drv.ms/i/c/2ed1fe62a05badfb/IQQKRCBNXdr0SqTtR3G9HzCjAXT_Je4e14BPo0fGAeVmFQ8?width=1024"
-// }
-
-// const active_requests = [
-//     {
-//         id: 1,
-//         reason: "Vacation",
-//         start_date: "2018-04-01",
-//         end_date: "2018-04-08",
-//     },
-//     {
-//         id: 2,
-//         reason: "Sick Leave",
-//         start_date: "2018-05-01",
-//         end_date: "2018-05-01",
-//     },
-// ]
-
+import {request} from "../axios_helper"
 
 export function MainScreen() {
     const mode = useSelector(state => state.mode);
     const [user, setUser] = useState({});
     const [requests, setRequests] = useState([]);
-    const id = 1
+    const id = 5
     const [error, setError] = useState({});
 
     const fetchUserHandler = useCallback(async () => {
-        try {
-            const response = await axios.get(`http://localhost:8080/users/${id}`);
+        // try {
+        //     const response = await axios.get(`http://localhost:8080/users/${id}`);
+        //
+        //     if (response.status !== 200) {
+        //         throw new Error("Wrong");
+        //     }
+        //
+        //     const data = await response.data;
+        //     setUser(data);
+        //     console.log("user data", data);
+        // } catch (error) {
+        //     console.log(error)
+        // }
 
-            if (response.status !== 200) {
-                throw new Error("Wrong");
-            }
-
-            const data = await response.data;
-            setUser(data);
-            console.log("user data", data);
-        } catch (error) {
-            console.log(error)
-        }
+        request("GET", `users/${id}`, {})
+            .then((res) => {
+                console.log("user data", res.data);
+                setUser(res.data);
+            })
+            .catch((err) => {
+                console.log(err.response.data);
+            })
     }, [])
 
     useEffect(() => {
@@ -56,22 +42,34 @@ export function MainScreen() {
     }, [fetchUserHandler]);
 
     const fetchRequestHandler = useCallback(async () => {
-        try {
-            const response = await axios.get(`http://localhost:8080/requests/${id}`);
+        // try {
+        //     const response = await axios.get(`http://localhost:8080/requests/${id}`);
+        //
+        //     if (response.status === 400) {
+        //         throw new Error("Wrong");
+        //     }
+        //
+        //     const data = await response.data;
+        //     setError({});
+        //     setRequests(data);
+        //     console.log("requests data", data);
+        // } catch (error) {
+        //     console.error(error.response.data)
+        //     setError(error.response.data)
+        //     setRequests([])
+        // }
 
-            if (response.status === 400) {
-                throw new Error("Wrong");
-            }
-
-            const data = await response.data;
-            setError({});
-            setRequests(data);
-            console.log("requests data", data);
-        } catch (error) {
-            console.error(error.response.data)
-            setError(error.response.data)
-            setRequests([])
-        }
+        request("GET", `requests/${id}`, {})
+            .then((res) => {
+                setError({})
+                setRequests(res.data);
+                console.log("requests data", res.data);
+            })
+            .catch((err) => {
+                console.log(err)
+                setError(err.response.data);
+                setRequests([])
+            })
     }, [])
 
     useEffect(() => {
@@ -93,15 +91,27 @@ export function MainScreen() {
         const timeDifference = Math.abs(secondDate - firstDate);
         const days = Math.ceil(timeDifference / (1000 * 60 * 60 * 24));
         if (days === 0) {
-            return (<p className={`detail-info ${mode === "Light" ? "light" : "dark"}`}> 1 days</p>);
+            return (<p className={`detail-info ${mode === "Light" ? "light" : "dark"}`}> 1 day</p>);
         }
 
         if (days === 1) {
-            return (<p className={`detail-info ${mode === "Light" ? "light" : "dark"}`}> 1 days</p>);
+            return (<p className={`detail-info ${mode === "Light" ? "light" : "dark"}`}> 1 day</p>);
         }
 
         return (<p className={`detail-info ${mode === "Light" ? "light" : "dark"}`}> {days} days</p>);
     };
+
+    const requestStatusCircle = (status) => {
+        if (status === "Pending") {
+            return (<div className={`status-pending`}></div>)
+        }
+        if (status === "Approved") {
+            return (<div className={`status-approve`}></div>)
+        }
+        if (status === "Declined") {
+            return (<div className={`status-decline`}></div>)
+        }
+    }
 
     return (
         <Fragment>
@@ -133,7 +143,7 @@ export function MainScreen() {
                                 <div key={request.id} className={`request-block-justify`}>
                                     <div className={`request-block ${mode === "Light" ? "light" : "dark"}`}>
                                         <div className={`request-reason ${mode === "Light" ? "light" : "dark"}`}>
-                                            {/*img*/}
+                                            {requestStatusCircle(request.status)}
                                             <p className={`request-reason-text ${mode === "Light" ? "light" : "dark"}`}>{request.reason}</p>
                                         </div>
                                         <div

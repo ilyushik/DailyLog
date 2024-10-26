@@ -4,24 +4,37 @@ import logo from "../images/logo.png";
 import {NavLink, useNavigate} from "react-router-dom"
 import "./Header.css"
 import dark_theme from "../images/night_theme.svg"
-import inbox from "../images/inbox.svg"
+import inbox_icon from "../images/inbox.svg"
 import light_theme from "../images/light.svg"
-import {Fragment, useState} from "react";
+import {Fragment, useCallback, useEffect, useState} from "react";
 import {Popup} from "./Popup";
 import {PopupSuccess} from "./PopupSuccess";
+import {request} from "../axios_helper";
 
-const user = {
-    id: 1,
-    name: "Illia",
-    surname: "Kamarali"
-}
 
 export function Header() {
     const mode = useSelector(state => state.mode);
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const[popupIsOpen, setPopupIsOpen] = useState(false);
-    const[popupSuccessIsOpen, setPopupSuccessIsOpen] = useState(false);
+    const [popupIsOpen, setPopupIsOpen] = useState(false);
+    const [popupSuccessIsOpen, setPopupSuccessIsOpen] = useState(false);
+    const id = 1
+    const [user, setUser] = useState({});
+
+    const fetchUserHandler = useCallback(async () => {
+        request("GET", `users/${id}`, {})
+            .then((res) => {
+                console.log("user data", res.data);
+                setUser(res.data);
+            })
+            .catch((err) => {
+                console.log(err.response.data);
+            })
+    }, [])
+
+    useEffect(() => {
+        fetchUserHandler();
+    }, [fetchUserHandler]);
 
     const lightMode = () => {
         dispatch(modeActions.lightMode())
@@ -37,6 +50,14 @@ export function Header() {
         } else {
             return (
                 <button className="button-theme" onClick={lightMode}><img src={light_theme} alt={light_theme}/></button>)
+        }
+    }
+
+    const inbox = () => {
+        if (user.role === "ROLE_LEAD" || user.role === "ROLE_CEO") {
+            return(<NavLink to="/inbox" className={`nav-inbox ${mode === "Light" ? "light" : "dark"}`}>
+                <img className="button-inbox" src={inbox_icon} alt={""}/>
+            </NavLink>)
         }
     }
 
@@ -68,11 +89,9 @@ export function Header() {
                 <div className="nav">
                     {modeChanger()}
 
-                    {user.id && <NavLink to="/inbox" className={`nav-inbox ${mode === "Light" ? "light" : "dark"}`}>
-                        <img className="button-inbox" src={inbox} alt="inbox"/>
-                    </NavLink>}
+                    {inbox()}
 
-                    {user.id &&
+                    {user &&
                         <button className={`button-request ${mode === "Dark" ? "dark" : "light"}`} onClick={openPopup}>+
                             Add a request</button>}
                 </div>

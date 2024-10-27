@@ -4,6 +4,7 @@ import "./styles/MainScreen.css"
 import positionIconLight from "../images/position-icon.svg"
 import positionIconDark from "../images/position-icon-dark.svg"
 import {request} from "../axios_helper"
+import {RequestComponent} from "./mainScreenComponents/RequestComponent";
 
 export function MainScreen() {
     const mode = useSelector(state => state.mode);
@@ -84,35 +85,6 @@ export function MainScreen() {
         }
     }
 
-    const calculateDifference = (startDate, endDate) => {
-        const firstDate = new Date(startDate);
-        const secondDate = new Date(endDate);
-
-        const timeDifference = Math.abs(secondDate - firstDate);
-        const days = Math.ceil(timeDifference / (1000 * 60 * 60 * 24));
-        if (days === 0) {
-            return (<p className={`detail-info ${mode === "Light" ? "light" : "dark"}`}> 1 day</p>);
-        }
-
-        if (days === 1) {
-            return (<p className={`detail-info ${mode === "Light" ? "light" : "dark"}`}> 1 day</p>);
-        }
-
-        return (<p className={`detail-info ${mode === "Light" ? "light" : "dark"}`}> {days} days</p>);
-    };
-
-    const requestStatusCircle = (status) => {
-        if (status === "Pending") {
-            return (<div className={`status-pending`}></div>)
-        }
-        if (status === "Approved") {
-            return (<div className={`status-approve`}></div>)
-        }
-        if (status === "Declined") {
-            return (<div className={`status-decline`}></div>)
-        }
-    }
-
     return (
         <Fragment>
             <div className={`mainScreen-main-block ${mode === "Light" ? "light" : "dark"}`}>
@@ -139,30 +111,7 @@ export function MainScreen() {
                             {error.message &&
                                 <p className={`no-active-requests ${mode === "Light" ? "light" : "dark"}`}>{error.message}</p>}
                             {requests.map((request) => (
-
-                                <div key={request.id} className={`request-block-justify`}>
-                                    <div className={`request-block ${mode === "Light" ? "light" : "dark"}`}>
-                                        <div className={`request-reason ${mode === "Light" ? "light" : "dark"}`}>
-                                            {requestStatusCircle(request.status)}
-                                            <p className={`request-reason-text ${mode === "Light" ? "light" : "dark"}`}>{request.reason}</p>
-                                        </div>
-                                        <div
-                                            className={`request-main-info-block ${mode === "Light" ? "light" : "dark"}`}>
-                                            <div className={`start-date-request`}>
-                                                <p className={`detail-title ${mode === "Light" ? "light" : "dark"}`}>Start: </p>
-                                                <p className={`detail-info ${mode === "Light" ? "light" : "dark"}`}>{request.startDate}</p>
-                                            </div>
-                                            <div className={`end-date-request`}>
-                                                <p className={`detail-title ${mode === "Light" ? "light" : "dark"}`}>End: </p>
-                                                <p className={`detail-info ${mode === "Light" ? "light" : "dark"}`}>{request.finishDate}</p>
-                                            </div>
-                                            <div className={`duration-request`}>
-                                                <p className={`detail-title ${mode === "Light" ? "light" : "dark"}`}>Duration: </p>
-                                                {calculateDifference(request.startDate, request.finishDate)}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                <RequestComponent key={request.id} request={request}/>
                             ))}
                         </div>
                     </div>

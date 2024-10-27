@@ -1,0 +1,100 @@
+.request-block {
+    display: block;
+    align-items: center;
+    width: 100%;
+    height: 100px;
+}
+
+.request-block.light {
+    background: #ffffff;
+}
+
+.request-block.dark {
+    background: #2c2c2c;
+}
+
+.request-reason-block {
+    height: 5px;
+}
+
+.request-reason-value-block.light {
+    color: #1e1e1e;
+    padding: 0 10px;
+}
+
+.request-reason-value-block.dark {
+    color: #bebebe;
+    padding: 0 10px;
+}
+
+.request-start-end-duration-block {
+    display: flex;
+    justify-content: space-between;
+}
+
+.inner-request-start-text-block.light,
+.inner-request-end-text-block.light,
+.inner-request-status-text-block.light{
+    color: dimgrey;
+}
+
+.inner-request-start-text-block.dark,
+.inner-request-end-text-block.dark,
+.inner-request-duration-text-block.dark,
+.inner-request-status-text-block.dark {
+    color: #8d8d8d;
+}
+
+.inner-request-duration-block .inner-request-duration-text-block.light {
+    color: dimgrey;
+}
+
+.request-status-block .inner-request-status-text-block.light {
+    color: dimgrey;
+}
+
+.inner-request-start-value-block.light,
+.inner-request-end-value-block.light,
+.inner-request-duration-text-block.light,
+.inner-request-status-text-block.light{
+    color: #1e1e1e;
+}
+
+.inner-request-start-value-block.dark,
+.inner-request-end-value-block.dark,
+.inner-request-duration-value-block.dark {
+    color: #bebebe;
+}
+
+.inner-request-start-block, .inner-request-end-block, .inner-request-duration-block {
+    display: flex;
+    padding: 10px;
+    height: 10px;
+}
+
+.request-status-block {
+    display: flex;
+    padding: 10px;
+}
+
+.inner-request-start-value-block,
+.inner-request-end-value-block,
+.inner-request-duration-value-block,
+.inner-request-status-pending-block ,
+.inner-request-status-approved-block,
+.inner-request-status-declined-block {
+    margin-left: 5px;
+}
+
+.inner-request-status-pending-block {
+    color: #ff9100;
+}
+
+.inner-request-status-approved-block {
+    color: #00cb00;
+}
+
+.inner-request-status-declined-block {
+    color: #cb0000;
+}
+

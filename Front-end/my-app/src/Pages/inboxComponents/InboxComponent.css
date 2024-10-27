@@ -1,0 +1,102 @@
+.inbox-request-block {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.inbox-request-block.light {
+    background: #ffffff;
+}
+
+.inbox-request-block.dark {
+    background: #2c2c2c;
+}
+
+.inbox-request-time-block,
+.inbox-request-buttons-block {
+    padding: 15px;
+}
+
+.inbox-request-time-block {
+    width: 150%;
+}
+
+.inbox-request-time-block,
+.inbox-request-startdate-block,
+.inbox-request-enddate-block,
+.inbox-request-duration-block{
+    display: flex;
+    justify-content: space-between;
+}
+
+.inbox-request-startdate-block,
+.inbox-request-enddate-block,
+.inbox-request-duration-block{
+    height: 45px;
+}
+
+.username {
+    color: #617DA6;
+    font-weight: 500;
+}
+
+.message {
+    height: 1px;
+}
+
+.message.light {
+    color: #1e1e1e;
+}
+
+.message.dark {
+    color: #bebebe;
+}
+
+.inbox-request-startdate-text-block.light,
+.inbox-request-enddate-text-block.light,
+.inbox-request-duration-text-block.light{
+    color: dimgrey;
+}
+
+.inbox-request-startdate-text-block.dark,
+.inbox-request-enddate-text-block.dark,
+.inbox-request-duration-text-block.dark{
+    color: #8d8d8d;
+}
+
+.inbox-request-startdate-value-block.light,
+.inbox-request-enddate-value-block.light,
+.inbox-request-duration-value-block.light {
+    color: #1e1e1e;
+    margin-left: 5px;
+}
+
+.inbox-request-startdate-value-block.dark,
+.inbox-request-enddate-value-block.dark,
+.inbox-request-duration-value-block.dark{
+    color: #bebebe;
+    margin-left: 5px;
+}
+
+.inbox-request-buttons-block {
+    display: flex;
+    align-items: center;
+}
+
+.inbox-request-buttons-block button {
+    border: none;
+    background: transparent;
+    width: 60px;
+    transition: ease-in 0.2s;
+}
+
+.inbox-request-buttons-block button:hover {
+    transform: scale(1.2);
+}
+
+.button-img {
+    width: 40px;
+}
+
+
+

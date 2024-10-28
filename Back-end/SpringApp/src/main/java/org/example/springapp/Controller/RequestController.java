@@ -5,6 +5,8 @@ import org.example.springapp.Repository.UserRepository;
 import org.example.springapp.Service.RequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
@@ -18,32 +20,36 @@ public class RequestController {
     @Autowired
     private UserRepository userRepository;
 
-    @GetMapping("/{id}")
-    public ResponseEntity<?> requestByUserId(@PathVariable int id) {
-        User user = userRepository.findById(id).orElse(null);
+    @GetMapping("")
+    public ResponseEntity<?> requestByUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        User user = userRepository.findByEmail(email).orElse(null);
         if (user == null) {
             return ResponseEntity.badRequest().body(Collections.singletonMap("message", "User not found"));
         }
 
-        if (requestService.combinedList(id).isEmpty()) {
+        if (requestService.combinedList(user.getId()).isEmpty()) {
             return ResponseEntity.badRequest().body(Collections.singletonMap("message", "No request found"));
         }
 
-        return ResponseEntity.ok(requestService.combinedList(id));
+        return ResponseEntity.ok(requestService.combinedList(user.getId()));
     }
 
-    @GetMapping("/approver/{id}")
-    public ResponseEntity<?> requestsByApprover(@PathVariable int id) {
-        User user = userRepository.findById(id).orElse(null);
+    @GetMapping("/approver")
+    public ResponseEntity<?> requestsByApprover() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        User user = userRepository.findByEmail(email).orElse(null);
         if (user == null) {
             return ResponseEntity.badRequest().body(Collections.singletonMap("message", "User not found"));
         }
 
-        if (requestService.findByApprover(id).isEmpty()) {
+        if (requestService.findByApprover(user.getId()).isEmpty()) {
             return ResponseEntity.badRequest().body(Collections.singletonMap("message", "No request found"));
         }
 
-        return ResponseEntity.ok(requestService.findByApprover(id));
+        return ResponseEntity.ok(requestService.findByApprover(user.getId()));
     }
 
     @PostMapping("/approve/{id}")

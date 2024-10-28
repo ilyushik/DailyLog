@@ -14,6 +14,25 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+    public UserDTO userByEmail(String email) {
+        User user = userRepository.findByEmail(email).orElse(null);
+        UserDTO userDTO = new UserDTO();
+        if (user == null) {
+            return null;
+        }
+
+        userDTO.setId(user.getId());
+        userDTO.setFirstName(user.getFirstName());
+        userDTO.setSecondName(user.getSecondName());
+        userDTO.setEmail(user.getEmail());
+        userDTO.setPassword(user.getPassword());
+        userDTO.setImage(user.getImage());
+        userDTO.setRole(user.getRole().getRole());
+        userDTO.setPosition(user.getJobPosition());
+
+        return userDTO;
+
+    }
 
     public List<UserDTO> users() {
         return userRepository.findAll().stream().map(s -> new UserDTO(

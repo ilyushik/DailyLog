@@ -10,6 +10,7 @@ import {Fragment, useCallback, useEffect, useState} from "react";
 import {Popup} from "./Popup";
 import {PopupSuccess} from "./PopupSuccess";
 import {request} from "../axios_helper";
+import axios from "axios";
 
 
 export function Header() {
@@ -18,22 +19,32 @@ export function Header() {
     const navigate = useNavigate();
     const [popupIsOpen, setPopupIsOpen] = useState(false);
     const [popupSuccessIsOpen, setPopupSuccessIsOpen] = useState(false);
-    const id = 1
     const [user, setUser] = useState({});
 
+    const isAuthenticated = () => {
+        const token = localStorage.getItem("token");
+        return !!token;
+    }
+
     const fetchUserHandler = useCallback(async () => {
-        request("GET", `users/${id}`, {})
-            .then((res) => {
-                console.log("user data", res.data);
-                setUser(res.data);
-            })
-            .catch((err) => {
-                console.log(err.response.data);
-            })
+        try {
+            const token = localStorage.getItem("token");
+            const response = await axios.get("http://localhost:8080/getMyInfo",
+                {headers: { Authorization: `Bearer ${token}` }});
+            if (response.status !== 200) {
+                throw new Error("Fail...");
+            }
+
+            console.log(response.data);
+            setUser(response.data);
+        } catch (error) {
+        }
     }, [])
 
     useEffect(() => {
-        fetchUserHandler();
+        if (isAuthenticated()) {
+            fetchUserHandler();
+        }
     }, [fetchUserHandler]);
 
     const lightMode = () => {
@@ -54,10 +65,12 @@ export function Header() {
     }
 
     const inbox = () => {
-        if (user.role === "ROLE_LEAD" || user.role === "ROLE_CEO") {
-            return(<NavLink to="/inbox" className={`nav-inbox ${mode === "Light" ? "light" : "dark"}`}>
-                <img className="button-inbox" src={inbox_icon} alt={""}/>
-            </NavLink>)
+        if (isAuthenticated()) {
+            if (user.role === "ROLE_LEAD" || user.role === "ROLE_CEO") {
+                return(<NavLink to="/inbox" className={`nav-inbox ${mode === "Light" ? "light" : "dark"}`}>
+                    <img className="button-inbox" src={inbox_icon} alt={""}/>
+                </NavLink>)
+            }
         }
     }
 
@@ -91,7 +104,7 @@ export function Header() {
 
                     {inbox()}
 
-                    {user &&
+                    {isAuthenticated() &&
                         <button className={`button-request ${mode === "Dark" ? "dark" : "light"}`} onClick={openPopup}>+
                             Add a request</button>}
                 </div>

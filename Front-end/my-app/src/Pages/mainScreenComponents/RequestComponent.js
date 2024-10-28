@@ -44,12 +44,12 @@ export function RequestComponent(props) {
             <div className={`request-start-end-duration-block ${mode === "Light" ? "light" : "dark"}`}>
                 <div className={`inner-request-start-block ${mode === "Light" ? "light" : "dark"}`}>
                     <p className={`inner-request-start-text-block ${mode === "Light" ? "light" : "dark"}`}>Start:</p>
-                    <p className={`inner-request-start-value-block ${mode === "Light" ? "light" : "dark"}`}>{request.startDate}</p>
+                    <p className={`inner-request-start-value-block ${mode === "Light" ? "light" : "dark"}`}>{request.startDate[0]}-{request.startDate[1]}-{request.startDate[2]}</p>
                 </div>
 
                 <div className={`inner-request-end-block ${mode === "Light" ? "light" : "dark"}`}>
                     <p className={`inner-request-end-text-block ${mode === "Light" ? "light" : "dark"}`}>End:</p>
-                    <p className={`inner-request-end-value-block ${mode === "Light" ? "light" : "dark"}`}>{request.finishDate}</p>
+                    <p className={`inner-request-end-value-block ${mode === "Light" ? "light" : "dark"}`}>{request.finishDate[0]}-{request.finishDate[1]}-{request.finishDate[2]}</p>
                 </div>
 
                 <div className={`inner-request-duration-block ${mode === "Light" ? "light" : "dark"}`}>

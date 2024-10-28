@@ -3,39 +3,32 @@ import {useSelector} from "react-redux";
 import "./styles/MainScreen.css"
 import positionIconLight from "../images/position-icon.svg"
 import positionIconDark from "../images/position-icon-dark.svg"
-import {request} from "../axios_helper"
 import {RequestComponent} from "./mainScreenComponents/RequestComponent";
+import axios from "axios";
 
 export function MainScreen() {
     const mode = useSelector(state => state.mode);
     const [user, setUser] = useState({});
     const [requests, setRequests] = useState([]);
-    const id = 5
     const [error, setError] = useState({});
+    const token = localStorage.getItem("token");
 
     const fetchUserHandler = useCallback(async () => {
-        // try {
-        //     const response = await axios.get(`http://localhost:8080/users/${id}`);
-        //
-        //     if (response.status !== 200) {
-        //         throw new Error("Wrong");
-        //     }
-        //
-        //     const data = await response.data;
-        //     setUser(data);
-        //     console.log("user data", data);
-        // } catch (error) {
-        //     console.log(error)
-        // }
+        try {
+            console.log(token);
+            const response = await axios.get("http://localhost:8080/getMyInfo",
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
+                });
 
-        request("GET", `users/${id}`, {})
-            .then((res) => {
-                console.log("user data", res.data);
-                setUser(res.data);
-            })
-            .catch((err) => {
-                console.log(err.response.data);
-            })
+            console.log(response.data);
+            setUser(response.data);
+        } catch (error) {
+            setError(error.response.data);
+        }
     }, [])
 
     useEffect(() => {
@@ -43,34 +36,21 @@ export function MainScreen() {
     }, [fetchUserHandler]);
 
     const fetchRequestHandler = useCallback(async () => {
-        // try {
-        //     const response = await axios.get(`http://localhost:8080/requests/${id}`);
-        //
-        //     if (response.status === 400) {
-        //         throw new Error("Wrong");
-        //     }
-        //
-        //     const data = await response.data;
-        //     setError({});
-        //     setRequests(data);
-        //     console.log("requests data", data);
-        // } catch (error) {
-        //     console.error(error.response.data)
-        //     setError(error.response.data)
-        //     setRequests([])
-        // }
-
-        request("GET", `requests/${id}`, {})
-            .then((res) => {
-                setError({})
-                setRequests(res.data);
-                console.log("requests data", res.data);
-            })
-            .catch((err) => {
-                console.log(err)
-                setError(err.response.data);
-                setRequests([])
-            })
+        try {
+            const response = await axios.get("http://localhost:8080/requests",
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
+                })
+            setError({})
+            console.log(response.data);
+            setRequests(response.data);
+        } catch (error) {
+            setError(error.response.data);
+            setRequests([])
+        }
     }, [])
 
     useEffect(() => {

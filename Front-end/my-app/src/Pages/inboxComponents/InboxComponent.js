@@ -26,18 +26,18 @@ export function InboxComponent(props) {
 
 
     return (
-        <div className={`inbox-request-block ${mode === "Light" ? "light" : "dark"}`} key={props.key}>
+        <div className={`inbox-request-block ${mode === "Light" ? "light" : "dark"}`} key={props.request.id}>
             <div className={`inbox-request-maininfo-block ${mode === "Light" ? "light" : "dark"}`}>
                 <p className={`message ${mode === "Light" ? "light" : "dark"}`}>You have received a request for {request.reason} from <span className={`username`}>{request.fullUserName}</span></p>
                 <div className={`inbox-request-time-block`}>
                     <div className={`inbox-request-startdate-block ${mode === "Light" ? "light" : "dark"}`}>
                         <p className={`inbox-request-startdate-text-block ${mode === "Light" ? "light" : "dark"}`}>Start: </p>
-                        <p className={`inbox-request-startdate-value-block ${mode === "Light" ? "light" : "dark"}`}>{request.startDate}</p>
+                        <p className={`inbox-request-startdate-value-block ${mode === "Light" ? "light" : "dark"}`}>{request.startDate[0]}-{request.startDate[1]}-{request.startDate[2]}</p>
                     </div>
 
                     <div className={`inbox-request-enddate-block ${mode === "Light" ? "light" : "dark"}`}>
                         <p className={`inbox-request-enddate-text-block ${mode === "Light" ? "light" : "dark"}`}>End: </p>
-                        <p className={`inbox-request-enddate-value-block ${mode === "Light" ? "light" : "dark"}`}>{request.finishDate}</p>
+                        <p className={`inbox-request-enddate-value-block ${mode === "Light" ? "light" : "dark"}`}>{request.finishDate[0]}-{request.finishDate[1]}-{request.finishDate[2]}</p>
                     </div>
 
                     <div className={`inbox-request-duration-block ${mode === "Light" ? "light" : "dark"}`}>

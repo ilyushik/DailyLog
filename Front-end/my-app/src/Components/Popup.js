@@ -12,20 +12,6 @@ export function Popup(props) {
     const [reasons, setReasons] = useState([]);
 
     const fetchReasonsHandler = useCallback(async () => {
-        // try {
-        //     const response = await axios.get("http://localhost:8080/reasons");
-        //
-        //     if (response.status !== 200) {
-        //         throw new Error("Wrong");
-        //     }
-        //
-        //     const data = await response.data;
-        //     setReasons(data);
-        //     console.log(data);
-        // } catch (error) {
-        //     console.log(error);
-        // }
-
         request("GET", `reasons`, {})
             .then((res) => {
                 console.log("user data", res.data);

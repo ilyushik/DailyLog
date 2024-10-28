@@ -2,6 +2,7 @@ import {useState} from "react";
 import "./styles/Login.css"
 import {useSelector} from "react-redux";
 import {request} from "../axios_helper";
+import {useNavigate} from "react-router-dom";
 
 export function Login() {
     const [email, setEmail] = useState('')
@@ -9,6 +10,7 @@ export function Login() {
     const [errors, setErrors] = useState({});
     const [formIsValid, setFormIsValid] = useState(true);
     const mode = useSelector(state => state.mode)
+    const navigate = useNavigate();
 
     const emailHandler = (event) => {
         event.preventDefault()
@@ -29,7 +31,7 @@ export function Login() {
             return
         }
         if (password.trim().length === 0) {
-            setErrors({password: "Email is empty"})
+            setErrors({password: "Password is empty"})
             setFormIsValid(false)
             return
         }
@@ -37,14 +39,16 @@ export function Login() {
         setErrors({})
         setFormIsValid(true)
 
-        // request("POST", `/login`, {email: email, password: password})
-        //     .then((res) => {
-        //         console.log(res.data)
-        //     })
-        //     .catch((err) => {
-        //         console.log(err.response.data)
-        //         setErrors(err.response.data)
-        //     })
+        request("POST", `/login`, {email: email, password: password})
+            .then((res) => {
+                localStorage.setItem('token', res.data.token)
+                console.log(res.data)
+                navigate('/my-info')
+                window.location.reload()
+            })
+            .catch((err) => {
+                setErrors(err.response.data)
+            })
 
     }
 
@@ -58,7 +62,7 @@ export function Login() {
                             <label className="label" htmlFor="email">Email</label>
                             <input className={`input ${mode === "Light" ? "light" : "dark"}`} id="email" type="email" placeholder="name@example.com"
                                    onChange={emailHandler} value={email}/>
-                            {errors.email && (<h3 className={`error-message`}>Error email</h3>)}
+                            {errors.email && (<h3 className={`error-message`}>{errors.email}</h3>)}
                         </div>
                     </div>
 
@@ -67,7 +71,7 @@ export function Login() {
                             <label className="label" htmlFor="password">Password</label>
                             <input className={`input ${mode === "Light" ? "light" : "dark"}`} id="password" type="password" placeholder="********"
                                    onChange={passwordHandler} value={password}/>
-                            {errors.password && (<h3 className={`error-message`}>Error password</h3>)}
+                            {errors.password && (<h3 className={`error-message`}>{errors.password}</h3>)}
                         </div>
                     </div>
 

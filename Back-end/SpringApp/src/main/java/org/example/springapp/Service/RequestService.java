@@ -1,6 +1,8 @@
 package org.example.springapp.Service;
 
 import org.example.springapp.DTO.RequestDTO;
+import org.example.springapp.Mail.MailService;
+import org.example.springapp.Mail.MailStructure;
 import org.example.springapp.Model.ApproverAction;
 import org.example.springapp.Model.Request;
 import org.example.springapp.Model.RequestStatus;
@@ -25,6 +27,8 @@ public class RequestService {
     private ApproverActionRepository approverActionRepository;
     @Autowired
     private RequestStatusRepository requestStatusRepository;
+    @Autowired
+    private MailService mailService;
 
     public List<RequestDTO> findByUser(int id) {
         return requestRepository.findAllByUserId(id).stream().map(s -> new RequestDTO(
@@ -140,6 +144,9 @@ public class RequestService {
         if (sameRequests.size() == 1) {
             request.setStatus(status);
             request.setDateOfResult(new Timestamp(System.currentTimeMillis()));
+
+            MailStructure mailStructure = new MailStructure("Info about your request", "Your request was approved");
+            mailService.sendMail(request.getUser().getEmail(), mailStructure);
         }
 
         if (sameRequests.size() == 3) {
@@ -148,6 +155,9 @@ public class RequestService {
                     r.setStatus(status);
                     r.setDateOfResult(new Timestamp(System.currentTimeMillis()));
                 }
+
+                MailStructure mailStructure = new MailStructure("Info about your request", "Your request was approved");
+                mailService.sendMail(request.getUser().getEmail(), mailStructure);
             }
         }
 
@@ -172,6 +182,9 @@ public class RequestService {
                 r.setDateOfResult(new Timestamp(System.currentTimeMillis()));
             }
         }
+
+        MailStructure mailStructure = new MailStructure("Info about your request", "Your request was declined");
+        mailService.sendMail(request.getUser().getEmail(), mailStructure);
 
         return requestRepository.save(request);
     }

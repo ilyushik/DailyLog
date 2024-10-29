@@ -1,7 +1,7 @@
 import {Fragment, useState, useEffect, useCallback} from "react";
 import "./Popup.css"
 import {useSelector} from "react-redux";
-import {request} from "../axios_helper"
+import axios from "axios";
 
 export function Popup(props) {
     const mode = useSelector(state => state.mode);
@@ -12,14 +12,19 @@ export function Popup(props) {
     const [reasons, setReasons] = useState([]);
 
     const fetchReasonsHandler = useCallback(async () => {
-        request("GET", `reasons`, {})
-            .then((res) => {
-                console.log("user data", res.data);
-                setReasons(res.data);
+        try {
+            const response = await axios.get("http://localhost:8080/reasons",{
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                },
             })
-            .catch((err) => {
-                console.log(err.response.data);
-            })
+
+            console.log(response.data)
+            setReasons(response.data)
+        } catch (error) {
+            console.log(error.response.data)
+        }
     }, [])
 
     useEffect(() => {

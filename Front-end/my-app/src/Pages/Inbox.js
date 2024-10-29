@@ -1,7 +1,6 @@
 import {Fragment, useState, useCallback, useEffect} from "react";
 import { useSelector } from "react-redux";
 import "./styles/Inbox.css"
-import {request} from "../axios_helper"
 import {InboxComponent} from "./inboxComponents/InboxComponent";
 import axios from "axios";
 
@@ -26,16 +25,6 @@ export function Inbox() {
             console.log(error.response.data);
             setErrors(error.response.data);
         }
-
-        // request("GET", `requests/approver`, {})
-        //     .then((res) => {
-        //         setRequests(res.data)
-        //         console.log(res.data)
-        //     })
-        //     .catch((err) => {
-        //         console.log(err.response.data);
-        //         setErrors(err.response.data)
-        //     })
     }, [])
 
 

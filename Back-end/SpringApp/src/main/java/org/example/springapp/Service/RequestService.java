@@ -3,17 +3,15 @@ package org.example.springapp.Service;
 import org.example.springapp.DTO.RequestDTO;
 import org.example.springapp.Mail.MailService;
 import org.example.springapp.Mail.MailStructure;
-import org.example.springapp.Model.ApproverAction;
-import org.example.springapp.Model.Request;
-import org.example.springapp.Model.RequestStatus;
-import org.example.springapp.Repository.ApproverActionRepository;
-import org.example.springapp.Repository.RequestRepository;
-import org.example.springapp.Repository.RequestStatusRepository;
+import org.example.springapp.Model.*;
+import org.example.springapp.Repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.security.SecureRandom;
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -29,6 +27,14 @@ public class RequestService {
     private RequestStatusRepository requestStatusRepository;
     @Autowired
     private MailService mailService;
+
+    private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    private static final int LENGTH = 8;
+    private static final SecureRandom RANDOM = new SecureRandom();
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private RequestReasonRepository requestReasonRepository;
 
     public List<RequestDTO> findByUser(int id) {
         return requestRepository.findAllByUserId(id).stream().map(s -> new RequestDTO(
@@ -121,6 +127,7 @@ public class RequestService {
         Request request = requestRepository.findById(id).orElse(null);
         String uniqueCode = request.getUniqueCode();
         List<Request> sameRequests = new ArrayList<>();
+        User user = request.getUser();
 
         ApproverAction action = approverActionRepository.findApproverActionByAction("Approve");
         RequestStatus status = requestStatusRepository.findByStatus("Approved");
@@ -128,7 +135,6 @@ public class RequestService {
         if (request == null) {
             return null;
         }
-
 
         request.setAction(action);
 
@@ -149,7 +155,7 @@ public class RequestService {
             mailService.sendMail(request.getUser().getEmail(), mailStructure);
         }
 
-        if (sameRequests.size() == 3) {
+        if (sameRequests.size() > 1) {
             if (allApproved) {
                 for(Request r : sameRequests) {
                     r.setStatus(status);
@@ -158,6 +164,15 @@ public class RequestService {
 
                 MailStructure mailStructure = new MailStructure("Info about your request", "Your request was approved");
                 mailService.sendMail(request.getUser().getEmail(), mailStructure);
+            }
+        }
+
+        if (request.getStatus().getStatus().equals("Approved")) {
+            if (request.getReason().getReason().equals("Annual Leave")) {
+                user.setDaysForVacation(user.getDaysForVacation() - (int)ChronoUnit.DAYS.between(request.getStartDate(), request.getFinishDate()));
+            }
+            if (request.getReason().getReason().equals("Personal Leave")) {
+                user.setDaysToSkip(user.getDaysToSkip() - (int)ChronoUnit.DAYS.between(request.getStartDate(), request.getFinishDate()));
             }
         }
 
@@ -187,6 +202,68 @@ public class RequestService {
         mailService.sendMail(request.getUser().getEmail(), mailStructure);
 
         return requestRepository.save(request);
+    }
+
+    public String generateRandomString() {
+        StringBuilder sb = new StringBuilder(LENGTH);
+
+        for (int i = 0; i < LENGTH; i++) {
+            int index = RANDOM.nextInt(CHARACTERS.length());
+            sb.append(CHARACTERS.charAt(index));
+        }
+
+        return sb.toString();
+    }
+
+    public String addRequest(int userId, RequestDTO requesT) {
+        String uniqueCode = generateRandomString();
+        User user = userRepository.findById(userId).orElse(null);
+        RequestStatus status = requestStatusRepository.findByStatus("Pending");
+        RequestReason reason = requestReasonRepository.findByReason(requesT.getReason());
+        ApproverAction action = approverActionRepository.findApproverActionByAction("Unchecked");
+
+        assert user != null;
+        if (user.getTeamLead() != null) {
+            Request request = new Request();
+            request.setStartDate(requesT.getStartDate());
+            request.setFinishDate(requesT.getFinishDate());
+            request.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+            request.setUniqueCode(uniqueCode);
+            request.setUser(user);
+            request.setStatus(status);
+            request.setReason(reason);
+            request.setAction(action);
+            request.setApproverId(user.getTeamLead());
+            requestRepository.save(request);
+        }
+        if (user.getTechLead() != null) {
+            Request request1 = new Request();
+            request1.setStartDate(requesT.getStartDate());
+            request1.setFinishDate(requesT.getFinishDate());
+            request1.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+            request1.setUniqueCode(uniqueCode);
+            request1.setUser(user);
+            request1.setStatus(status);
+            request1.setReason(reason);
+            request1.setAction(action);
+            request1.setApproverId(user.getTechLead());
+            requestRepository.save(request1);
+        }
+        if (user.getPm() != null) {
+            Request request2 = new Request();
+            request2.setStartDate(requesT.getStartDate());
+            request2.setFinishDate(requesT.getFinishDate());
+            request2.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+            request2.setUniqueCode(uniqueCode);
+            request2.setUser(user);
+            request2.setStatus(status);
+            request2.setReason(reason);
+            request2.setAction(action);
+            request2.setApproverId(user.getPm());
+            requestRepository.save(request2);
+        }
+
+        return "Request created";
     }
 
 }

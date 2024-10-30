@@ -88,6 +88,7 @@ export function Header() {
 
     const closePopupSuccess = () => {
         setPopupSuccessIsOpen(false);
+        window.location.reload()
     }
 
     return (

@@ -5,11 +5,13 @@ import axios from "axios";
 
 export function Popup(props) {
     const mode = useSelector(state => state.mode);
-    const [reason, setReason] = useState("");
+    const [reason, setReason] = useState("Annual Leave");
     const [startDate, setStartDate] = useState("");
-    const [endDate, setEndDate] = useState("");
+    const [finishDate, setFinishDate] = useState("");
     const [comment, setComment] = useState("");
     const [reasons, setReasons] = useState([]);
+    const [errors, setErrors] = useState({});
+    const [isFormValid, setIsFormValid] = useState(true);
 
     const fetchReasonsHandler = useCallback(async () => {
         try {
@@ -43,7 +45,7 @@ export function Popup(props) {
 
     const endDateHandler = (e) => {
         e.preventDefault();
-        setEndDate(e.target.value);
+        setFinishDate(e.target.value);
     }
 
     const commentHandler = (e) => {
@@ -51,38 +53,33 @@ export function Popup(props) {
         setComment(e.target.value);
     }
 
-    const calculateDifference = (startDate, endDate) => {
-        const firstDate = new Date(startDate);
-        const secondDate = new Date(endDate);
-
-        const timeDifference = Math.abs(secondDate - firstDate);
-        const days = Math.ceil(timeDifference / (1000 * 60 * 60 * 24));
-        if (days === 0) {
-            return 1
-        }
-
-        if (days === 1) {
-            return 1
-        }
-
-        return days;
-    };
-
-    const submitHandler = (e) => {
+    const submitHandler = async (e) => {
         e.preventDefault();
 
-        props.close()
-        props.openSuccess()
-
-        const request = {
-            reason: reason,
-            startDate: startDate,
-            endDate: endDate,
-            comment: comment,
-            countOfDays: calculateDifference(startDate, endDate),
+        if (startDate.trim().length === 0 || finishDate.trim().length === 0) {
+            setIsFormValid(false);
+            setErrors({errorDate: "Date should not be empty"})
+            return;
         }
 
-        console.log(request);
+        const request = {reason: reason, startDate: startDate, finishDate: finishDate}
+        console.log(request)
+
+        try {
+            const response = await axios.post("http://localhost:8080/addRequest", {reason: reason, startDate: startDate, finishDate: finishDate},{
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                },
+            })
+
+            console.log(response.data)
+            props.close()
+            props.openSuccess()
+        } catch (error) {
+            console.log(error.response.data)
+            setErrors(error.response.data)
+        }
     }
 
 
@@ -101,10 +98,6 @@ export function Popup(props) {
                             <div className="select-wrapper">
                                 <select className={`select ${mode === "Dark" ? "dark" : "light"}`} name="reasons"
                                         id="reasons" value={reason} onChange={reasonHandler}>
-                                    {/*<option value="vacation">Vacation</option>*/}
-                                    {/*<option value="Sick Leave">Sick Leave</option>*/}
-                                    {/*<option value="Time off">Time off</option>*/}
-                                    {/*<option value="Business trip">Business trip</option>*/}
                                     {reasons.map((reason) => (
                                         <option key={reason.id} value={reason.reason}>{reason.reason}</option>
                                     ))}
@@ -124,10 +117,11 @@ export function Popup(props) {
 
                                     <div className={`date-input ${mode === "Dark" ? "dark" : "light"}`}>
                                         <label htmlFor="end">End</label>
-                                        <input className={`date-field ${mode === "Dark" ? "dark" : "light"}`} id="end" type={"date"} value={endDate} onChange={endDateHandler}/>
+                                        <input className={`date-field ${mode === "Dark" ? "dark" : "light"}`} id="end" type={"date"} value={finishDate} onChange={endDateHandler}/>
                                     </div>
                                 </div>
                             </div>
+                            {errors.errorDate && <p className={`errorDate-message`}>{errors.errorDate}</p>}
 
                             <div className={`comment-block ${mode === "Dark" ? "dark" : "light"}`}>
                                 <label htmlFor="comment">Comment</label>

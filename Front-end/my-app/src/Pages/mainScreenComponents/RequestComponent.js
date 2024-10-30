@@ -36,7 +36,7 @@ export function RequestComponent(props) {
 
 
     return (
-        <div className={`request-block ${mode === "Light" ? "light" : "dark"}`} key={props.key}>
+        <div className={`request-block ${mode === "Light" ? "light" : "dark"}`} key={request.id}>
             <div className={`request-reason-block ${mode === "Light" ? "light" : "dark"}`}>
                 <p className={`request-reason-value-block ${mode === "Light" ? "light" : "dark"}`}>{request.reason}</p>
             </div>

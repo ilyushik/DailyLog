@@ -82,6 +82,10 @@ public class UserController {
             return ResponseEntity.badRequest().body(Collections.singletonMap("errorDate", "Date before current"));
         }
 
+        if (requestDTO.getFinishDate().isBefore(requestDTO.getStartDate())) {
+            return ResponseEntity.badRequest().body(Collections.singletonMap("errorDate", "Finish date before start date"));
+        }
+
         return ResponseEntity.ok(requestService.addRequest(user.getId(), requestDTO));
     }
 }

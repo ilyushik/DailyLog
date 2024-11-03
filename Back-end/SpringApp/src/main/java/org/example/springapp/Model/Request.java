@@ -7,6 +7,7 @@ import lombok.*;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -58,6 +59,24 @@ public class Request {
     @ManyToOne
     @JoinColumn(name = "approver_action", referencedColumnName = "id")
     private ApproverAction action;
+
+    @OneToMany(mappedBy = "request")
+    private List<Report> report;
+
+    public Request(LocalDate startDate, LocalDate finishDate, Timestamp createdAt, String uniqueCode,
+                   Timestamp dateOfResult, User approverId, User user, RequestStatus status,
+                   RequestReason reason, ApproverAction action) {
+        this.startDate = startDate;
+        this.finishDate = finishDate;
+        this.createdAt = createdAt;
+        this.uniqueCode = uniqueCode;
+        this.dateOfResult = dateOfResult;
+        this.approverId = approverId;
+        this.user = user;
+        this.status = status;
+        this.reason = reason;
+        this.action = action;
+    }
 
     @Override
     public String toString() {

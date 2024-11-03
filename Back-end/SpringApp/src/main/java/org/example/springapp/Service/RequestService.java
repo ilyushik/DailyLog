@@ -13,6 +13,7 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,14 +28,16 @@ public class RequestService {
     private RequestStatusRepository requestStatusRepository;
     @Autowired
     private MailService mailService;
-
-    private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    private static final int LENGTH = 8;
-    private static final SecureRandom RANDOM = new SecureRandom();
     @Autowired
     private UserRepository userRepository;
     @Autowired
     private RequestReasonRepository requestReasonRepository;
+    @Autowired
+    private ReportRepository reportRepository;
+
+    private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    private static final int LENGTH = 8;
+    private static final SecureRandom RANDOM = new SecureRandom();
 
     public List<RequestDTO> findByUser(int id) {
         return requestRepository.findAllByUserId(id).stream().map(s -> new RequestDTO(
@@ -120,6 +123,8 @@ public class RequestService {
             }
         }
 
+        Collections.reverse(sortedList);
+
         return sortedList;
     }
 
@@ -128,6 +133,10 @@ public class RequestService {
         String uniqueCode = request.getUniqueCode();
         List<Request> sameRequests = new ArrayList<>();
         User user = request.getUser();
+        List<LocalDate> dates = new ArrayList<>();
+        LocalDate startDate = request.getStartDate();
+        LocalDate finishDate = request.getFinishDate();
+        LocalDate currentDate = startDate;
 
         ApproverAction action = approverActionRepository.findApproverActionByAction("Approve");
         RequestStatus status = requestStatusRepository.findByStatus("Approved");
@@ -174,8 +183,28 @@ public class RequestService {
             if (request.getReason().getReason().equals("Personal Leave")) {
                 user.setDaysToSkip(user.getDaysToSkip() - (int)ChronoUnit.DAYS.between(request.getStartDate(), request.getFinishDate()));
             }
-        }
 
+            while (!currentDate.isAfter(finishDate)) {
+                dates.add(currentDate);
+                currentDate = currentDate.plusDays(1);
+            }
+
+            for (LocalDate l : dates) {
+                Report report = new Report(l, request.getReason().getReason(), user, request);
+                if (request.getReason().getReason().equals("Annual Leave")) {
+                    report.setStatus("vacation");
+                } else if (request.getReason().getReason().equals("Personal Leave")) {
+                    report.setStatus("leave");
+                } else if (request.getReason().getReason().equals("Sick Leave")) {
+                    report.setStatus("leave");
+                } else if (request.getReason().getReason().equals("Work from home")) {
+                    report.setStatus("work");
+                } else {
+                    report.setStatus("work");
+                }
+                reportRepository.save(report);
+            }
+        }
 
         return requestRepository.save(request);
     }
@@ -221,6 +250,48 @@ public class RequestService {
         RequestStatus status = requestStatusRepository.findByStatus("Pending");
         RequestReason reason = requestReasonRepository.findByReason(requesT.getReason());
         ApproverAction action = approverActionRepository.findApproverActionByAction("Unchecked");
+        RequestStatus statusCEO = requestStatusRepository.findByStatus("Approved");
+        ApproverAction actionCEO = approverActionRepository.findApproverActionByAction("Approve");
+
+        List<LocalDate> dates = new ArrayList<>();
+        LocalDate startDate = requesT.getStartDate();
+        LocalDate finishDate = requesT.getFinishDate();
+        LocalDate currentDate = startDate;
+
+        if (user.getRole().getRole().equals("ROLE_CEO")) {
+            Request request = new Request(requesT.getStartDate(), requesT.getFinishDate(),
+                    new Timestamp(System.currentTimeMillis()), uniqueCode, new Timestamp(System.currentTimeMillis()),
+                    user, user, statusCEO, reason, actionCEO);
+            if (request.getReason().getReason().equals("Annual Leave")) {
+                user.setDaysForVacation(user.getDaysForVacation() - (int)ChronoUnit.DAYS.between(request.getStartDate(), request.getFinishDate()));
+            } else {
+                user.setDaysToSkip(user.getDaysToSkip() - (int)ChronoUnit.DAYS.between(request.getStartDate(), request.getFinishDate()));
+            }
+            requestRepository.save(request);
+
+            while (!currentDate.isAfter(finishDate)) {
+                dates.add(currentDate);
+                currentDate = currentDate.plusDays(1);
+            }
+
+            for (LocalDate l : dates) {
+                Report report = new Report(l, request.getReason().getReason(), user, request);
+                if (request.getReason().getReason().equals("Annual Leave")) {
+                    report.setStatus("vacation");
+                } else if (request.getReason().getReason().equals("Personal Leave")) {
+                    report.setStatus("leave");
+                } else if (request.getReason().getReason().equals("Sick Leave")) {
+                    report.setStatus("leave");
+                } else if (request.getReason().getReason().equals("Work from home")) {
+                    report.setStatus("work");
+                } else {
+                    report.setStatus("work");
+                }
+                reportRepository.save(report);
+            }
+
+            return "Request of CEO saved";
+        }
 
         assert user != null;
         if (user.getTeamLead() != null) {
@@ -235,6 +306,9 @@ public class RequestService {
             request.setAction(action);
             request.setApproverId(user.getTeamLead());
             requestRepository.save(request);
+
+            MailStructure mailStructure = new MailStructure("Info about request", "Your have new request");
+            mailService.sendMail(user.getTeamLead().getEmail(), mailStructure);
         }
         if (user.getTechLead() != null) {
             Request request1 = new Request();
@@ -248,6 +322,9 @@ public class RequestService {
             request1.setAction(action);
             request1.setApproverId(user.getTechLead());
             requestRepository.save(request1);
+
+            MailStructure mailStructure = new MailStructure("Info about request", "Your have new request");
+            mailService.sendMail(user.getTechLead().getEmail(), mailStructure);
         }
         if (user.getPm() != null) {
             Request request2 = new Request();
@@ -261,9 +338,12 @@ public class RequestService {
             request2.setAction(action);
             request2.setApproverId(user.getPm());
             requestRepository.save(request2);
+
+            MailStructure mailStructure = new MailStructure("Info about request", "Your have new request");
+            mailService.sendMail(user.getPm().getEmail(), mailStructure);
         }
 
-        return "Request created";
+        return "Request of employee created";
     }
 
 }

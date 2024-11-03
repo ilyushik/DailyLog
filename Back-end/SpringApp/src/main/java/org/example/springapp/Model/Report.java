@@ -38,10 +38,28 @@ public class Report {
     @JoinColumn(name = "user", referencedColumnName = "id")
     private User user;
 
-    public Report(LocalDate date, String text, int countOfHours) {
+    @ManyToOne
+    @JoinColumn(name = "request", referencedColumnName = "id")
+    private Request request;
+
+    @Column(name = "status")
+    private String status;
+
+    // constructor for request
+    public Report(LocalDate date, String text, User user, Request request) {
+        this.date = date;
+        this.text = text;
+        this.user = user;
+        this.request = request;
+    }
+
+    // constructor for report
+    public Report(LocalDate date, String text, int countOfHours, User user, String status) {
         this.date = date;
         this.text = text;
         this.countOfHours = countOfHours;
+        this.user = user;
+        this.status = status;
     }
 
     @Override

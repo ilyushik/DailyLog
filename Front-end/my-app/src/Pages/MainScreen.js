@@ -5,6 +5,7 @@ import positionIconLight from "../images/position-icon.svg"
 import positionIconDark from "../images/position-icon-dark.svg"
 import {RequestComponent} from "./mainScreenComponents/RequestComponent";
 import axios from "axios";
+import {CalendarComponent} from "./mainScreenComponents/CalendarComponent";
 
 export function MainScreen() {
     const mode = useSelector(state => state.mode);
@@ -97,7 +98,7 @@ export function MainScreen() {
                     </div>
 
                     <div className={`calendar-block`}>
-
+                        <CalendarComponent/>
                     </div>
                 </div>
             </div>

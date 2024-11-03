@@ -70,7 +70,16 @@
     color: #bebebe;
 }
 
+.requests-calendar-block {
+    display: flex;
+    justify-content: space-between;
+}
 
+.calendar-block {
+    display: block;
+    height: 100px;
+    margin-top: 4vh
+}
 
 .active-requests {
     border-radius: 10px;
@@ -118,5 +127,12 @@
 
     .position-icon-position-title-container {
         grid-template-rows: 45% 40%;
+    }
+
+}
+
+@media screen and (max-width: 1500px) {
+    .active-requests {
+        width: 45vw;
     }
 }

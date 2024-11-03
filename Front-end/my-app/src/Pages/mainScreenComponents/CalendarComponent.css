@@ -1,0 +1,105 @@
+.react-calendar .has-report {
+    width: 20px;
+    height: 45px;
+    color: white;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: auto;
+    box-sizing: border-box;
+}
+
+.dark-theme {
+    background-color: #2c2c2c;
+    color: white;
+}
+
+.light-theme {
+    background-color: white;
+    color: black;
+}
+
+.dark-theme .react-calendar {
+    background: #2c2c2c;
+    border-radius: 10px;
+}
+
+.dark-theme .react-calendar__tile {
+    background: #2c2c2c;
+    color: white;
+}
+
+.dark-theme .has-report.leave {
+    background: #ff5554;
+}
+
+.dark-theme .has-report.report {
+    background: #01a3d9;
+}
+
+.dark-theme .has-report.vacation {
+    background: #00bb00;
+}
+
+.light-theme .react-calendar {
+    background: white;
+}
+
+.light-theme .react-calendar__tile {
+    background: white;
+    color: black;
+}
+
+.light-theme .has-report.leave {
+    background: #ff5554;
+}
+
+.light-theme .has-report.report {
+    background: #01a3d9;
+}
+
+.light-theme .has-report.vacation {
+    background: #00bb00;
+}
+
+.react-calendar {
+    /*border-radius: 10px;*/
+}
+
+/* Стили для верхней панели календаря */
+.react-calendar__navigation {
+    background-color: #444; /* Цвет фона панели */
+    color: white; /* Цвет текста на панели */
+    padding: 10px;
+    /*border-radius: 10px 10px 0 0;*/
+}
+
+.react-calendar__navigation__label {
+    font-weight: bold; /* Жирный текст для отображения месяца и года */
+}
+
+.react-calendar__navigation__arrow {
+    color: white; /* Цвет стрелок навигации */
+}
+
+/* Темный режим */
+.dark-theme .react-calendar__navigation {
+    background-color: #617DA6;
+    color: white;
+}
+
+.dark-theme .react-calendar__navigation__arrow {
+    color: white;
+}
+
+/* Светлый режим */
+.light-theme .react-calendar__navigation {
+    background-color: #617DA6;
+    color: black;
+}
+
+.light-theme .react-calendar__navigation__arrow {
+    color: black;
+}
+

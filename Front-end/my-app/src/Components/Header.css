@@ -64,3 +64,19 @@ header {
 .button-theme:hover, .button-inbox:hover {
     transform: scale(1.15);
 }
+
+.button-inbox-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.notification-dot {
+    position: absolute;
+    top: 2px; /* Регулируйте позицию */
+    right: -1px; /* Регулируйте позицию */
+    width: 6px; /* Размер точки */
+    height: 6px; /* Размер точки */
+    background-color: red; /* Цвет точки */
+    border-radius: 50%; /* Закругление для круга */
+}
+

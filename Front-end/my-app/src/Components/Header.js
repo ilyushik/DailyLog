@@ -9,7 +9,6 @@ import light_theme from "../images/light.svg"
 import {Fragment, useCallback, useEffect, useState} from "react";
 import {Popup} from "./Popup";
 import {PopupSuccess} from "./PopupSuccess";
-import {request} from "../axios_helper";
 import axios from "axios";
 
 
@@ -20,6 +19,28 @@ export function Header() {
     const [popupIsOpen, setPopupIsOpen] = useState(false);
     const [popupSuccessIsOpen, setPopupSuccessIsOpen] = useState(false);
     const [user, setUser] = useState({});
+    const [requests, setRequests] = useState([]);
+
+    const fetchRequestsHandler = useCallback(async () => {
+        try {
+            const response = await axios.get("http://localhost:8080/requests/approver",{
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                },
+            });
+
+            console.log(response.data);
+            setRequests(response.data);
+        } catch(error) {
+            console.log(error.response.data);
+        }
+    }, [])
+
+
+    useEffect(() => {
+        fetchRequestsHandler()
+    }, [fetchRequestsHandler])
 
     const isAuthenticated = () => {
         const token = localStorage.getItem("token");
@@ -68,7 +89,11 @@ export function Header() {
         if (isAuthenticated()) {
             if (user.role === "ROLE_LEAD" || user.role === "ROLE_CEO") {
                 return(<NavLink to="/inbox" className={`nav-inbox ${mode === "Light" ? "light" : "dark"}`}>
-                    <img className="button-inbox" src={inbox_icon} alt={""}/>
+                    <div className="button-inbox-wrapper">
+                        <img className="button-inbox" src={inbox_icon} alt=""/>
+                        {requests.length !== 0 && <div className="notification-dot"></div>}
+                    </div>
+
                 </NavLink>)
             }
         }
@@ -96,7 +121,7 @@ export function Header() {
             {popupIsOpen && <Popup openSuccess={openPopupSuccess} close={closePopup}/>}
             {popupSuccessIsOpen && <PopupSuccess close={closePopupSuccess}/>}
             <header className={`header ${mode === "Dark" ? "dark" : "light"}`}>
-                <button className="button-logo" onClick={() => {navigate("/", {replace: true})}}>
+                <button className="button-logo" onClick={() => {navigate("/")}}>
                     <img className="logo" src={logo} alt="logo"/>
                 </button>
 

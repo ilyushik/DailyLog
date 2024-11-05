@@ -3,6 +3,7 @@ import {Navigate, Route, Routes} from "react-router";
 import {MainScreen} from "./Pages/MainScreen";
 import {Inbox} from "./Pages/Inbox";
 import {Login} from "./Pages/Login";
+import {PeopleList} from "./Pages/PeopleList";
 
 const isAuthenticated = () => {
     const token = localStorage.getItem("token");
@@ -22,6 +23,7 @@ function App() {
             <Route path="/login" element={ <Login/> }/>
             <Route exec path="/my-info" element={<PrivateRoute><MainScreen /></PrivateRoute>} />
             <Route path="/inbox" element={ <PrivateRoute><Inbox/></PrivateRoute> } />
+            <Route path="/people" element={<PrivateRoute><PeopleList/></PrivateRoute>}/>
         </Routes>
     </Layout>
   );

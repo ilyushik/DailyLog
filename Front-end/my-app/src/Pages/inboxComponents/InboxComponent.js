@@ -18,10 +18,10 @@ export function InboxComponent(props) {
         }
 
         if (days === 1) {
-            return "1 day";
+            return "2 days";
         }
 
-        return `${days} days`;
+        return `${days + 1} days`;
     };
 
 

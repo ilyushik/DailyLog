@@ -31,16 +31,13 @@
 }
 
 .dark-theme .has-report.leave {
-    background: #ff5554;
+    background: #d56464;
 }
 
-.dark-theme .has-report.report {
-    background: #01a3d9;
+.dark-theme .has-report.work {
+    background: #617DA6;
 }
 
-.dark-theme .has-report.vacation {
-    background: #00bb00;
-}
 
 .light-theme .react-calendar {
     background: white;
@@ -52,16 +49,13 @@
 }
 
 .light-theme .has-report.leave {
-    background: #ff5554;
+    background: #d56464;
 }
 
-.light-theme .has-report.report {
-    background: #01a3d9;
+.light-theme .has-report.work {
+    background: #617DA6;
 }
 
-.light-theme .has-report.vacation {
-    background: #00bb00;
-}
 
 .react-calendar {
     /*border-radius: 10px;*/

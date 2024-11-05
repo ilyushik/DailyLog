@@ -5,6 +5,7 @@ import "./CalendarComponent.css";
 import {useSelector} from "react-redux";
 import {PopupReport} from "../../Components/PopupReport";
 import axios from "axios";
+import {PopupSuccess} from "../../Components/PopupSuccess";
 
 export function CalendarComponent() {
     const [value, onChange] = useState(new Date());
@@ -12,6 +13,7 @@ export function CalendarComponent() {
     const [selectedDate, setSelectedDate] = useState(null);
     const mode = useSelector(state => state.mode);
     const [reports, setReports] = useState([]);
+    const [popupSuccessIsOpen, setPopupSuccessIsOpen] = useState(false);
 
     const fetchUsersReports = useCallback(async () => {
         try {
@@ -24,7 +26,7 @@ export function CalendarComponent() {
             console.log(response.data);
             setReports(response.data);
         } catch (error) {
-            console.log(error.response?.data);
+            console.log(error.response.data);
         }
     }, []);
 
@@ -54,12 +56,23 @@ export function CalendarComponent() {
         setSelectedDate(null);
     };
 
+    const openPopupSuccess = () => {
+        setPopupSuccessIsOpen(true)
+    }
+
+    const closePopupSuccess = () => {
+        setPopupSuccessIsOpen(false);
+        window.location.reload()
+    }
+
     const report = selectedDate
         ? reports.find(report => formatDate(parseReportDate(report.date)) === formatDate(selectedDate))
         : null;
 
     return (
         <div className={mode === "Dark" ? 'dark-theme' : 'light-theme'}>
+            {popupSuccessIsOpen && <PopupSuccess close={closePopupSuccess} title="The report was
+                                    successfully sent!" message="Thanks for your activity"/>}
             <Calendar
                 onChange={onChange}
                 value={value}
@@ -70,7 +83,7 @@ export function CalendarComponent() {
                 }}
                 onClickDay={openModal}
             />
-            {modalIsOpen && <PopupReport closeModal={closeModal} report={report} />}
+            {modalIsOpen && <PopupReport closeModal={closeModal} report={report} openSuccess={openPopupSuccess}/>}
         </div>
     );
 }

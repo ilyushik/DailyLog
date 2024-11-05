@@ -15,9 +15,10 @@
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 1001;
-    width: 30%;
-    aspect-ratio: 1.26/1;
-    max-width: 400px;
+    width: 500px;
+    height: 500px;
+    height: auto; /* Делаем высоту автоматической */
+    max-height: 90vh; /* Чтобы не выходить за экран */
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     padding: 20px;
@@ -25,6 +26,13 @@
     flex-direction: column;
     align-items: center;
 }
+
+.error-message {
+    color: red;
+    font-size: 14px;
+    margin: 10px /* Убираем лишние отступы для компактности */
+}
+
 
 .modal-justify.light {
     background: white;
@@ -68,5 +76,93 @@
 }
 
 .report-block {
+    display: block;
+    justify-content: center;
+}
 
+
+.title-report-block {
+    font-weight: 500;
+}
+
+.title-report-block.light {
+    color: #1e1e1e;
+}
+
+.title-report-block.dark {
+    color: #eeeeee;
+}
+
+.report-date-block,
+.report-hours-block,
+.report-text-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.report-date-block label,
+.report-hours-block label,
+.report-text-block label {
+    font-size: 15px;
+    color: #8d8d8d;
+}
+
+.report-date-block input,
+.report-hours-block input{
+    width: 300px;
+    height: 40px;
+    border-radius: 10px;
+    border: 1px solid #c7c7c7;
+    color: #2c2c2c;
+}
+
+.report-date-block.dark input,
+.report-hours-block.dark input,
+.report-text-block.dark textarea {
+    background: transparent;
+    color: #eeeeee;
+}
+
+.report-text-block textarea {
+    width: 280px;
+    height: 100px;
+    border-radius: 10px;
+    border: 1px solid #c7c7c7;
+    color: #2c2c2c;
+    padding: 10px;
+}
+
+.report-buttons-block {
+    display: flex;
+    width: 300px;
+    justify-content: space-between;
+    margin-top: 30px;
+}
+
+.report-buttons-block button {
+    width: 130px;
+    height: 40px;
+    border-radius: 10px;
+    font-family: "Poppins", sans-serif;
+    font-weight: 500;
+    transition: ease-in 0.2s;
+}
+
+.report-button-create {
+    border: none;
+    color: #eeeeee;
+    background: #617DA6;
+}
+
+.report-button-cancel {
+    border: 2px solid #617DA6;
+    background: transparent;
+    color: #617DA6;
+}
+
+.report-button-create:hover,
+.report-button-cancel:hover {
+    transform: scale(1.15);
 }

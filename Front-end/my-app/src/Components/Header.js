@@ -10,6 +10,9 @@ import {Fragment, useCallback, useEffect, useState} from "react";
 import {Popup} from "./Popup";
 import {PopupSuccess} from "./PopupSuccess";
 import axios from "axios";
+import logout_img from "../images/logout.svg"
+import peopleList from "../images/peopleList.svg"
+import {PopupLogout} from "./PopupLogout";
 
 
 export function Header() {
@@ -20,6 +23,7 @@ export function Header() {
     const [popupSuccessIsOpen, setPopupSuccessIsOpen] = useState(false);
     const [user, setUser] = useState({});
     const [requests, setRequests] = useState([]);
+    const [logoutPopupIsOpen, setLogoutPopupIsOpen] = useState(false);
 
     const fetchRequestsHandler = useCallback(async () => {
         try {
@@ -99,6 +103,18 @@ export function Header() {
         }
     }
 
+    const peopleIcon = () => {
+        if (isAuthenticated()) {
+            if ((user.role === "ROLE_LEAD" && user.position !== "Project Manager")  || user.role === "ROLE_CEO") {
+                return (<NavLink to="/people" className={`nav-inbox ${mode === "Light" ? "light" : "dark"}`}>
+                    <div className="button-people-wrapper">
+                        <img className="button-people" src={peopleList} alt=""/>
+                    </div>
+                </NavLink>)
+            }
+        }
+    }
+
     const openPopup = () => {
         setPopupIsOpen(true);
     }
@@ -116,10 +132,21 @@ export function Header() {
         window.location.reload()
     }
 
+    const openLogoutPopup = () => {
+        setLogoutPopupIsOpen(true);
+    }
+
+    const closeLogoutPopup = () => {
+        setLogoutPopupIsOpen(false);
+    }
+
     return (
         <Fragment>
+            {logoutPopupIsOpen && <PopupLogout close={closeLogoutPopup}/>}
             {popupIsOpen && <Popup openSuccess={openPopupSuccess} close={closePopup}/>}
-            {popupSuccessIsOpen && <PopupSuccess close={closePopupSuccess}/>}
+            {popupSuccessIsOpen && <PopupSuccess close={closePopupSuccess} title="The request was
+                                    successfully sent!" message="Wait for a message
+                                    confirming your request"/>}
             <header className={`header ${mode === "Dark" ? "dark" : "light"}`}>
                 <button className="button-logo" onClick={() => {navigate("/")}}>
                     <img className="logo" src={logo} alt="logo"/>
@@ -129,6 +156,11 @@ export function Header() {
                     {modeChanger()}
 
                     {inbox()}
+
+                    {peopleIcon()}
+
+                    {isAuthenticated() &&
+                    <button onClick={openLogoutPopup} className={`logout_button`}><img src={logout_img} alt=""/></button>}
 
                     {isAuthenticated() &&
                         <button className={`button-request ${mode === "Dark" ? "dark" : "light"}`} onClick={openPopup}>+

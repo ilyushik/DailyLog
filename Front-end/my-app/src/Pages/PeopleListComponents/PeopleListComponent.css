@@ -1,0 +1,83 @@
+.person-block {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.person-block {
+    border-top: 1px solid #8d8d8d;
+    margin-bottom: -8px;
+}
+
+.person-info-block {
+    display: flex;
+    padding: 10px 15px;
+}
+
+.person-img {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+}
+
+.person-info {
+    display: block;
+    margin-left: 10px;
+    align-items: center;
+}
+
+.person-data {
+    display: flex;
+    height: 30px;
+    margin-top: -5px;
+}
+
+.person-data p {
+    height: 1px;
+}
+
+.person-data.light p {
+    color: #2c2c2c;
+}
+
+.person-data.dark p {
+    color: #eeeeee;
+}
+
+.person-surname {
+    margin-left: 5px;
+}
+
+.person-job {
+    display: flex;
+}
+
+.person-position {
+    margin-left: 5px;
+}
+
+.person-position.light {
+    color: #444444;
+}
+
+.person-position.dark {
+    color: #bebebe;
+}
+
+.link-info-block {
+    display: flex;
+    align-items: center;
+    margin-right: 15px;
+}
+
+.link-info-block a {
+    color: #617DA6;
+    text-decoration: none;
+    transition: ease-in 0.2s;
+}
+
+.link-info-block a:hover {
+    text-decoration-line: underline;
+}
+
+

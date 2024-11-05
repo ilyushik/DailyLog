@@ -55,13 +55,13 @@ header {
     transform: scale(1.1);
 }
 
-.button-theme, .button-inbox {
+.button-theme, .button-inbox, .logout_button, .button-people {
     border: none;
     background: transparent;
     transition: ease-in 0.2s;
 }
 
-.button-theme:hover, .button-inbox:hover {
+.button-theme:hover, .button-inbox:hover, .logout_button:hover, .button-people:hover {
     transform: scale(1.15);
 }
 

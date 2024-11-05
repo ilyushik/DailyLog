@@ -43,6 +43,7 @@ CREATE TABLE Report (
                         date DATE NOT NULL,
                         text TEXT NOT NULL,
                         count_of_hours INT NOT NULL,
+                        status varchar(50),
                         user INT,
                         FOREIGN KEY (user) REFERENCES User(id)
 );
@@ -65,6 +66,8 @@ CREATE TABLE Request (
                          FOREIGN KEY (approver_action) REFERENCES Approver_Action(id),
                          FOREIGN KEY (user) REFERENCES User(id)
 );
+
+ALTER TABLE Report ADD COLUMN request int references Request(id);
 
 -- Вставка ролей пользователей
 INSERT INTO User_Role (role) VALUES
@@ -102,29 +105,29 @@ INSERT INTO User (first_name, second_name, password, email, image, days_for_vac,
 
 -- Шаг 2: Добавление Team Lead и Tech Lead
 INSERT INTO User (first_name, second_name, password, email, image, days_for_vac, days_to_skip, role, job_position, team_lead, tech_lead, pm) VALUES
-     ('Alice', 'Johnson', 'password001', 'alice.johnson@example.com', 'https://firebasestorage.googleapis.com/v0/b/dailylog-44de4.appspot.com/o/face3.png?alt=media&token=68f1684a-d5cd-4698-9b86-fffbd734ea77', 20, 2, 1, 'Team Lead', 1, NULL, 2), -- Тим Лид с ПМ
-     ('Eve', 'Davis', 'password005', 'eve.davis@example.com', 'https://firebasestorage.googleapis.com/v0/b/dailylog-44de4.appspot.com/o/face4.png?alt=media&token=b7fe6dde-d9ae-49ba-8fb5-d5fa0aeade12', 20, 2, 1, 'Tech Lead', 1, NULL, 2); -- Тех Лид с ПМ
+                                                                                                                                                 ('Alice', 'Johnson', 'password001', 'alice.johnson@example.com', 'https://firebasestorage.googleapis.com/v0/b/dailylog-44de4.appspot.com/o/face3.png?alt=media&token=68f1684a-d5cd-4698-9b86-fffbd734ea77', 20, 2, 1, 'Team Lead', 1, NULL, 2), -- Тим Лид с ПМ
+                                                                                                                                                 ('Eve', 'Davis', 'password005', 'eve.davis@example.com', 'https://firebasestorage.googleapis.com/v0/b/dailylog-44de4.appspot.com/o/face4.png?alt=media&token=b7fe6dde-d9ae-49ba-8fb5-d5fa0aeade12', 20, 2, 1, 'Tech Lead', 1, NULL, 2); -- Тех Лид с ПМ
 
 -- Шаг 3: Вставка разработчиков
 INSERT INTO User (first_name, second_name, password, email, image, days_for_vac, days_to_skip, role, job_position, team_lead, tech_lead, pm) VALUES
-     ('Bob', 'Smith', 'password002', 'bob.smith@example.com', 'https://firebasestorage.googleapis.com/v0/b/dailylog-44de4.appspot.com/o/face5.png?alt=media&token=1491c5c7-7391-4a6b-9071-b95a883e7207', 20, 2, 2, 'Developer', 3, 4, 2), -- Разработчик с Тим Лидом (Alice)
-     ('Charlie', 'Brown', 'password003', 'charlie.brown@example.com', 'https://firebasestorage.googleapis.com/v0/b/dailylog-44de4.appspot.com/o/face6.png?alt=media&token=5de9c272-3373-4fe4-acee-fd6c57e336cc', 20, 2, 2, 'Developer', 3, 4, 2), -- Разработчик с Тим Лидом (Alice)
-     ('David', 'Wilson', 'password004', 'david.wilson@example.com', 'https://firebasestorage.googleapis.com/v0/b/dailylog-44de4.appspot.com/o/face7.png?alt=media&token=2ef56ec2-d4dc-4dbe-8614-aaadb1da3c70', 20, 2, 2, 'Developer', 3, 4, 2), -- Разработчик с Тим Лидом (Alice)
-     ('Frank', 'Miller', 'password006', 'frank.miller@example.com', 'https://firebasestorage.googleapis.com/v0/b/dailylog-44de4.appspot.com/o/face8.png?alt=media&token=518caa3b-a792-44ce-aa91-38a853895cbf', 20, 2, 2, 'Developer', 3, 4, 2); -- Разработчик с Тех Лидом (Eve)
+                                                                                                                                                 ('Bob', 'Smith', 'password002', 'bob.smith@example.com', 'https://firebasestorage.googleapis.com/v0/b/dailylog-44de4.appspot.com/o/face5.png?alt=media&token=1491c5c7-7391-4a6b-9071-b95a883e7207', 20, 2, 2, 'Developer', 3, 4, 2), -- Разработчик с Тим Лидом (Alice)
+                                                                                                                                                 ('Illia', 'Kamarali', 'password003', 'kamaraliilya@gmail.com', 'https://firebasestorage.googleapis.com/v0/b/dailylog-44de4.appspot.com/o/face6.png?alt=media&token=5de9c272-3373-4fe4-acee-fd6c57e336cc', 20, 2, 2, 'Java Developer', 3, 4, 2), -- Разработчик с Тим Лидом (Alice)
+                                                                                                                                                 ('Bohdan', 'Khokhlov', 'password004', 'hohlovb123@gmail.com', 'https://firebasestorage.googleapis.com/v0/b/dailylog-44de4.appspot.com/o/face7.png?alt=media&token=2ef56ec2-d4dc-4dbe-8614-aaadb1da3c70', 20, 2, 2, 'Data Analyst', 3, 4, 2), -- Разработчик с Тим Лидом (Alice)
+                                                                                                                                                 ('Frank', 'Miller', 'password006', 'frank.miller@example.com', 'https://firebasestorage.googleapis.com/v0/b/dailylog-44de4.appspot.com/o/face8.png?alt=media&token=518caa3b-a792-44ce-aa91-38a853895cbf', 20, 2, 2, 'Developer', 3, 4, 2); -- Разработчик с Тех Лидом (Eve)
 
 -- Вставка отчетов
-INSERT INTO Report (date, text, count_of_hours, user) VALUES
-    ('2024-10-01', 'Completed module A', 8, 1),
-    ('2024-10-02', 'Worked on bug fixing', 6, 2),
-    ('2024-10-03', 'Developed new feature', 7, 3),
-    ('2024-10-04', 'Project management tasks', 5, 4);
+# INSERT INTO Report (date, text, count_of_hours, user) VALUES
+#     ('2024-10-01', 'Completed module A', 8, 1),
+#     ('2024-10-02', 'Worked on bug fixing', 6, 2),
+#     ('2024-10-03', 'Developed new feature', 7, 3),
+#     ('2024-10-04', 'Project management tasks', 5, 4);
 
 -- Вставка запросов
-INSERT INTO Request (start_date, finish_date, created_at, unique_code, date_of_result, approver_id, status, reason, approver_action, user) VALUES
+# INSERT INTO Request (start_date, finish_date, created_at, unique_code, date_of_result, approver_id, status, reason, approver_action, user) VALUES
 #     ('2024-11-01', '2024-11-10', '2024-10-10 08:00:00', 'REQ12345', '2024-10-11 12:00:00', 2, 2, 2, 1, 5),
 #     ('2024-11-01', '2024-11-10', '2024-10-10 08:00:00', 'REQ12345', '2024-10-16 10:00:00', 3, 2, 2, 1, 5),
 #     ('2024-11-01', '2024-11-10', '2024-10-10 08:00:00', 'REQ12345', '2024-10-17 16:00:00', 4, 2, 2, 1, 5),
-    ('2024-10-24', '2024-10-25', '2024-10-24 21:13:43', 'REQ12346', null, 2, 1, 1, 3, 6),
-    ('2024-10-24', '2024-10-25', '2024-10-24 21:13:43', 'REQ12346', null, 3, 1, 1, 3, 6),
-    ('2024-10-24', '2024-10-25', '2024-10-24 21:13:43', 'REQ12346', null, 4, 1, 1, 3, 6);
+#     ('2024-10-24', '2024-10-25', '2024-10-24 21:13:43', 'REQ12346', null, 2, 1, 1, 3, 6),
+#     ('2024-10-24', '2024-10-25', '2024-10-24 21:13:43', 'REQ12346', null, 3, 1, 1, 3, 6),
+#     ('2024-10-24', '2024-10-25', '2024-10-24 21:13:43', 'REQ12346', null, 4, 1, 1, 3, 6);
 

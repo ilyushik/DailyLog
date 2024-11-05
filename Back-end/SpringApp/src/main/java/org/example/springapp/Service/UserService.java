@@ -6,6 +6,8 @@ import org.example.springapp.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -52,6 +54,42 @@ public class UserService {
 
         return userDto;
     }
+
+    public List<UserDTO> usersByLead(int id) {
+        User lead = userRepository.findById(id).orElse(null);
+        List<User> usersByL = new ArrayList<>();
+
+        if (lead.getRole().getRole().equals("ROLE_CEO")) {
+            for (User u : userRepository.findAll()) {
+                if (u.getRole().getRole().equals("ROLE_CEO")) {
+                    continue;
+                }
+                usersByL.add(u);
+            }
+        } else {
+            for (User u : userRepository.findAll()) {
+                if (u.getId() == id || u.getRole().getRole().equals("ROLE_CEO")) {
+                    continue;
+                }
+                else {
+                    if (u.getTeamLead() != null && u.getTeamLead().getId() == lead.getId()) {
+                        usersByL.add(u);
+                    } else if (u.getTechLead() != null && u.getTechLead().getId() == lead.getId()) {
+                        usersByL.add(u);
+                    } else {
+                        continue;
+                    }
+                }
+            }
+        }
+
+        // Convert the list of Users to UserDTOs and return
+        return usersByL.stream().map(u -> new UserDTO(
+                u.getId(), u.getFirstName(), u.getSecondName(), u.getEmail(), u.getPassword(), u.getImage(),
+                u.getJobPosition(), u.getRole().getRole()
+        )).collect(Collectors.toList());
+    }
+
 
 
 }

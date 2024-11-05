@@ -26,4 +26,15 @@ public class RequestDTO {
     private String status;
     private String reason;
     private String action;
+
+    public RequestDTO(int id, LocalDate startDate, LocalDate finishDate, Timestamp createdAt, String uniqueCode, Timestamp dateOfResult, String status, String reason) {
+        this.id = id;
+        this.startDate = startDate;
+        this.finishDate = finishDate;
+        this.createdAt = createdAt;
+        this.uniqueCode = uniqueCode;
+        this.dateOfResult = dateOfResult;
+        this.status = status;
+        this.reason = reason;
+    }
 }

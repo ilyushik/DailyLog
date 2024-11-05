@@ -180,8 +180,14 @@ public class RequestService {
             if (request.getReason().getReason().equals("Annual Leave")) {
                 user.setDaysForVacation(user.getDaysForVacation() - (int)ChronoUnit.DAYS.between(request.getStartDate(), request.getFinishDate()));
             }
-            if (request.getReason().getReason().equals("Personal Leave")) {
+            if (request.getReason().getReason().equals("Personal Leave") || request.getReason().getReason().equals("Sick Leave")) {
                 user.setDaysToSkip(user.getDaysToSkip() - (int)ChronoUnit.DAYS.between(request.getStartDate(), request.getFinishDate()));
+            }
+
+
+            // maybe remove work from home
+            if (request.getReason().getReason().equals("Work from Home")) {
+                return requestRepository.save(request);
             }
 
             while (!currentDate.isAfter(finishDate)) {
@@ -191,17 +197,7 @@ public class RequestService {
 
             for (LocalDate l : dates) {
                 Report report = new Report(l, request.getReason().getReason(), user, request);
-                if (request.getReason().getReason().equals("Annual Leave")) {
-                    report.setStatus("vacation");
-                } else if (request.getReason().getReason().equals("Personal Leave")) {
-                    report.setStatus("leave");
-                } else if (request.getReason().getReason().equals("Sick Leave")) {
-                    report.setStatus("leave");
-                } else if (request.getReason().getReason().equals("Work from home")) {
-                    report.setStatus("work");
-                } else {
-                    report.setStatus("work");
-                }
+                report.setStatus("leave");
                 reportRepository.save(report);
             }
         }
@@ -276,16 +272,12 @@ public class RequestService {
 
             for (LocalDate l : dates) {
                 Report report = new Report(l, request.getReason().getReason(), user, request);
-                if (request.getReason().getReason().equals("Annual Leave")) {
-                    report.setStatus("vacation");
-                } else if (request.getReason().getReason().equals("Personal Leave")) {
-                    report.setStatus("leave");
-                } else if (request.getReason().getReason().equals("Sick Leave")) {
-                    report.setStatus("leave");
-                } else if (request.getReason().getReason().equals("Work from home")) {
-                    report.setStatus("work");
+
+                //maybe remove work from home
+                if (request.getReason().getReason().equals("Work from Home")) {
+                    continue;
                 } else {
-                    report.setStatus("work");
+                    report.setStatus("leave");
                 }
                 reportRepository.save(report);
             }
@@ -344,6 +336,15 @@ public class RequestService {
         }
 
         return "Request of employee created";
+    }
+
+    public RequestDTO getRequestById(int id) {
+        Request request = requestRepository.findById(id).orElse(null);
+        RequestDTO requestDTO = new RequestDTO(request.getId(), request.getStartDate(), request.getFinishDate(),
+                request.getCreatedAt(), request.getUniqueCode(), request.getDateOfResult(), request.getStatus().getStatus(),
+                request.getReason().getReason());
+
+        return requestDTO;
     }
 
 }

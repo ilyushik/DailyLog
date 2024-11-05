@@ -61,4 +61,14 @@ public class RequestController {
     public ResponseEntity<?> declineRequest(@PathVariable int id) {
         return ResponseEntity.ok(requestService.declineRequest(id));
     }
+
+    @GetMapping("/request/{id}")
+    public ResponseEntity<?> requestById(@PathVariable int id) {
+        if (requestService.getRequestById(id) == null) {
+            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Request not found"));
+        }
+
+        return ResponseEntity.ok(requestService.getRequestById(id));
+    }
+
 }

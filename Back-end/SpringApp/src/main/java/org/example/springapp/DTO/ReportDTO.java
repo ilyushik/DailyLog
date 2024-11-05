@@ -15,6 +15,14 @@ public class ReportDTO {
     private String text;
     private int countOfHours;
     private int user;
-    private int request;
+    private Integer request;
     private String status;
+
+    public ReportDTO(LocalDate date, String text, int countOfHours, int user, String status) {
+        this.date = date;
+        this.text = text;
+        this.countOfHours = countOfHours;
+        this.user = user;
+        this.status = status;
+    }
 }

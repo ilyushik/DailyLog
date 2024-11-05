@@ -88,4 +88,16 @@ public class UserController {
 
         return ResponseEntity.ok(requestService.addRequest(user.getId(), requestDTO));
     }
+
+    @GetMapping("/peopleList")
+    public ResponseEntity<?> peopleList() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        User user = userRepository.findByEmail(email).orElse(null);
+        if (userService.usersByLead(user.getId()).isEmpty()) {
+            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Users not found"));
+        }
+
+        return ResponseEntity.ok(userService.usersByLead(user.getId()));
+    }
 }

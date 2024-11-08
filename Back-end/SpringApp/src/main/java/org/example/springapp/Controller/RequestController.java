@@ -36,6 +36,16 @@ public class RequestController {
         return ResponseEntity.ok(requestService.combinedList(user.getId()));
     }
 
+    @GetMapping("/userRequests/{id}")
+    public ResponseEntity<?> requestByUserId(@PathVariable int id) {
+
+        if (requestService.combinedList(id).isEmpty()) {
+            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "No request found"));
+        }
+
+        return ResponseEntity.ok(requestService.combinedList(id));
+    }
+
     @GetMapping("/approver")
     public ResponseEntity<?> requestsByApprover() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

@@ -1,7 +1,6 @@
 package org.example.springapp.Controller;
 
 import org.example.springapp.DTO.ReportDTO;
-import org.example.springapp.Model.Report;
 import org.example.springapp.Model.User;
 import org.example.springapp.Repository.ReportRepository;
 import org.example.springapp.Repository.UserRepository;
@@ -38,6 +37,15 @@ public class ReportController {
         }
 
         return ResponseEntity.ok(reportService.getReportsByUserId(user.getId()));
+    }
+
+    @GetMapping("/usersReports/{id}")
+    public ResponseEntity<?> getReportByUser(@PathVariable int id) {
+        if (reportService.getReportsByUserId(id).isEmpty()) {
+            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "No reports"));
+        }
+
+        return ResponseEntity.ok(reportService.getReportsByUserId(id));
     }
 
     @PostMapping("add-report")

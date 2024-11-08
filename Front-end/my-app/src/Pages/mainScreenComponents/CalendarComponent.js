@@ -6,8 +6,10 @@ import {useSelector} from "react-redux";
 import {PopupReport} from "../../Components/PopupReport";
 import axios from "axios";
 import {PopupSuccess} from "../../Components/PopupSuccess";
+import {useParams} from "react-router";
 
 export function CalendarComponent() {
+    const params = useParams();
     const [value, onChange] = useState(new Date());
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [selectedDate, setSelectedDate] = useState(null);
@@ -15,24 +17,26 @@ export function CalendarComponent() {
     const [reports, setReports] = useState([]);
     const [popupSuccessIsOpen, setPopupSuccessIsOpen] = useState(false);
 
-    const fetchUsersReports = useCallback(async () => {
+    const fetchData = async (url, setData) => {
         try {
-            const response = await axios.get("http://localhost:8080/report/usersReports", {
+            const response = await axios.get(url, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
-                },
+                }
             });
-            console.log(response.data);
-            setReports(response.data);
+            setData(response.data);
         } catch (error) {
-            console.log(error.response.data);
         }
-    }, []);
+    };
 
     useEffect(() => {
-        fetchUsersReports();
-    }, [fetchUsersReports]);
+        const url = params.id
+            ? "http://localhost:8080/report/usersReports/" + params.id
+            : "http://localhost:8080/report/usersReports";
+        fetchData(url, setReports);
+        // fetchUsersReports();
+    }, [params.id]);
 
     const formatDate = (date) => {
         const day = String(date.getDate()).padStart(2, '0');

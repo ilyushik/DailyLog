@@ -148,7 +148,10 @@ export function Header() {
                                     successfully sent!" message="Wait for a message
                                     confirming your request"/>}
             <header className={`header ${mode === "Dark" ? "dark" : "light"}`}>
-                <button className="button-logo" onClick={() => {navigate("/")}}>
+                <button className="button-logo" onClick={() => {
+                    navigate("/my-info")
+                    window.location.reload()
+                }}>
                     <img className="logo" src={logo} alt="logo"/>
                 </button>
 

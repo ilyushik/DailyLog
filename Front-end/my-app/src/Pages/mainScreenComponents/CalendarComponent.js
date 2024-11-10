@@ -13,7 +13,7 @@ export function CalendarComponent() {
     const [value, onChange] = useState(new Date());
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [selectedDate, setSelectedDate] = useState(null);
-    const mode = useSelector(state => state.mode);
+    const mode = useSelector(state => state.theme.theme);
     const [reports, setReports] = useState([]);
     const [popupSuccessIsOpen, setPopupSuccessIsOpen] = useState(false);
 
@@ -74,7 +74,7 @@ export function CalendarComponent() {
         : null;
 
     return (
-        <div className={mode === "Dark" ? 'dark-theme' : 'light-theme'}>
+        <div className={mode === "dark" ? 'dark-theme' : 'light-theme'}>
             {popupSuccessIsOpen && <PopupSuccess close={closePopupSuccess} title="The report was
                                     successfully sent!" message="Thanks for your activity"/>}
             <Calendar

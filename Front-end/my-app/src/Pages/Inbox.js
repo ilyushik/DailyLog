@@ -6,7 +6,7 @@ import axios from "axios";
 
 
 export function Inbox() {
-    const mode = useSelector((state) => state.mode);
+    const mode = useSelector(state => state.theme.theme);
     const [requests, setRequests] = useState([])
     const [errors, setErrors] = useState({})
 
@@ -73,11 +73,11 @@ export function Inbox() {
 
     return (
         <Fragment>
-            <div className={`inbox-main-screen ${mode === "Light" ? "light" : "dark"}`}>
-                <div className={`inbox ${mode === "Light" ? "light" : "dark"}`}>
-                    <div className={`inbox-title ${mode === "Light" ? "light" : "dark"}`}>Inbox</div>
-                    <div className={`messages-block ${mode === "Light" ? "light" : "dark"}`}>
-                        {requests.length < 1 && <p className={`no-messages ${mode === "Light" ? "light" : "dark"}`}>{errors.message}</p>}
+            <div className={`inbox-main-screen ${mode === "light" ? "light" : "dark"}`}>
+                <div className={`inbox ${mode === "light" ? "light" : "dark"}`}>
+                    <div className={`inbox-title ${mode === "light" ? "light" : "dark"}`}>Inbox</div>
+                    <div className={`messages-block ${mode === "light" ? "light" : "dark"}`}>
+                        {requests.length < 1 && <p className={`no-messages ${mode === "light" ? "light" : "dark"}`}>{errors.message}</p>}
                         {requests.map((request) => (
                             <InboxComponent request={request} key={request.id}
                                             approve={(event) => approveRequest(event, request.id)}

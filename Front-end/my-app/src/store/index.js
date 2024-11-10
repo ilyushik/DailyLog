@@ -1,23 +1,58 @@
-import {createSlice, configureStore} from '@reduxjs/toolkit';
+// import {createSlice, configureStore} from '@reduxjs/toolkit';
+//
+// const initialState = {mode: "Light"}
+//
+// const modeSlice = createSlice({
+//     name: "mode",
+//     initialState,
+//     reducers: {
+//         lightMode: (state) => {
+//             state.mode = "Light"
+//         },
+//         darkMode: (state) => {
+//             state.mode = "Dark"
+//         }
+//     }
+// })
+//
+// const store = configureStore({
+//     reducer: modeSlice.reducer
+// })
+//
+// export const modeActions = modeSlice.actions;
+// export default store;
 
-const initialState = {mode: "Light"}
+// themeSlice.js
+import { createSlice } from '@reduxjs/toolkit';
+import { configureStore } from '@reduxjs/toolkit';
 
-const modeSlice = createSlice({
-    name: "mode",
+const initialState = {
+    theme: localStorage.getItem('theme') || 'light', // Изначальное значение из localStorage
+};
+
+const themeSlice = createSlice({
+    name: 'theme',
     initialState,
     reducers: {
-        lightMode: (state) => {
-            state.mode = "Light"
+        toggleTheme: (state) => {
+            state.theme = state.theme === 'light' ? 'dark' : 'light';
+            localStorage.setItem('theme', state.theme); // Сохраняем выбранную тему в localStorage
         },
-        darkMode: (state) => {
-            state.mode = "Dark"
-        }
-    }
-})
+        setTheme: (state, action) => {
+            state.theme = action.payload;
+            localStorage.setItem('theme', state.theme);
+        },
+    },
+});
 
 const store = configureStore({
-    reducer: modeSlice.reducer
-})
+    reducer: {
+        theme: themeSlice.reducer,
+    },
+});
 
-export const modeActions = modeSlice.actions;
+
 export default store;
+
+export const { toggleTheme, setTheme } = themeSlice.actions;
+

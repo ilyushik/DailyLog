@@ -9,7 +9,7 @@ export function Login() {
     const [password, setPassword] = useState('')
     const [errors, setErrors] = useState({});
     const [formIsValid, setFormIsValid] = useState(true);
-    const mode = useSelector(state => state.mode)
+    const mode = useSelector(state => state.theme.theme);
     const navigate = useNavigate();
 
     const emailHandler = (event) => {
@@ -54,13 +54,13 @@ export function Login() {
 
     return (
         <div className="main-block">
-            <div className={`form-container ${mode === "Light" ? "light" : "dark"}`}>
+            <div className={`form-container ${mode === "light" ? "light" : "dark"}`}>
                 <div className="log-in-text">Log In</div>
                 <form onSubmit={loginHandler}>
                     <div className="center-block">
                         <div className="email-block">
                             <label className="label" htmlFor="email">Email</label>
-                            <input className={`input ${mode === "Light" ? "light" : "dark"}`} id="email" type="email" placeholder="name@example.com"
+                            <input className={`input ${mode === "light" ? "light" : "dark"}`} id="email" type="email" placeholder="name@example.com"
                                    onChange={emailHandler} value={email}/>
                             {errors.email && (<h3 className={`error-message`}>{errors.email}</h3>)}
                         </div>
@@ -69,7 +69,7 @@ export function Login() {
                     <div className="center-block">
                         <div className="password-block">
                             <label className="label" htmlFor="password">Password</label>
-                            <input className={`input ${mode === "Light" ? "light" : "dark"}`} id="password" type="password" placeholder="********"
+                            <input className={`input ${mode === "light" ? "light" : "dark"}`} id="password" type="password" placeholder="********"
                                    onChange={passwordHandler} value={password}/>
                             {errors.password && (<h3 className={`error-message`}>{errors.password}</h3>)}
                         </div>

@@ -4,7 +4,7 @@ import "./PopupReport.css"
 import axios from "axios";
 
 export function PopupReport(props) {
-    const mode = useSelector((state) => state.mode)
+    const mode = useSelector(state => state.theme.theme);
     const [reportDate, setReportDate] = useState("");
     const [reportText, setReportText] = useState("");
     const [reportHours, setReportHours] = useState(0);
@@ -95,26 +95,26 @@ export function PopupReport(props) {
         <Fragment>
             <div>
                 <div className="back" onClick={props.closeModal} />
-                <div className={`modal-justify ${mode === "Dark" ? "dark" : "light"}`}>
-                    <div className={`modal-screen ${mode === "Dark" ? "dark" : "light"}`}>
+                <div className={`modal-justify ${mode === "dark" ? "dark" : "light"}`}>
+                    <div className={`modal-screen ${mode === "dark" ? "dark" : "light"}`}>
                         <button
-                            className={`close-button ${mode === "Dark" ? "dark" : "light"}`}
+                            className={`close-button ${mode === "dark" ? "dark" : "light"}`}
                             onClick={props.closeModal}>&times;</button>
                         <div className="report-block">
                             {props.report && (
                                 <div>
                                     {props.report.request !== null ? (
                                         <div>
-                                            <p className={`title-report-block ${mode === "Dark" ? "dark" : "light"}`}>Info about request</p>
+                                            <p className={`title-report-block ${mode === "dark" ? "dark" : "light"}`}>Info about request</p>
                                             <div className={`request-info-block`}>
                                                 <div
-                                                    className={`request-info-block-reason-block ${mode === "Dark" ? "dark" : "light"}`}>
+                                                    className={`request-info-block-reason-block ${mode === "dark" ? "dark" : "light"}`}>
                                                     <p>Reason:</p>
                                                     <p>{requests.reason}</p>
                                                 </div>
 
                                                 <div
-                                                    className={`request-info-block-startDate-block ${mode === "Dark" ? "dark" : "light"}`}>
+                                                    className={`request-info-block-startDate-block ${mode === "dark" ? "dark" : "light"}`}>
                                                     <p>Start:</p>
                                                     {requests.startDate && requests.startDate.length >= 3 && (
                                                         <p>{requests.startDate[0]}-{requests.startDate[1]}-{requests.startDate[2]}</p>
@@ -122,7 +122,7 @@ export function PopupReport(props) {
                                                 </div>
 
                                                 <div
-                                                    className={`request-info-block-endDate-block ${mode === "Dark" ? "dark" : "light"}`}>
+                                                    className={`request-info-block-endDate-block ${mode === "dark" ? "dark" : "light"}`}>
                                                     <p>End:</p>
                                                     {requests.finishDate && requests.finishDate.length >= 3 && (
                                                         <p>{requests.finishDate[0]}-{requests.finishDate[1]}-{requests.finishDate[2]}</p>
@@ -130,19 +130,19 @@ export function PopupReport(props) {
                                                 </div>
 
 
-                                                <div className={`request-info-block-comment-block ${mode === "Dark" ? "dark" : "light"}`}>
+                                                <div className={`request-info-block-comment-block ${mode === "dark" ? "dark" : "light"}`}>
                                                     <p>Comment:</p>
-                                                    <p className={`request-info-block-comment-block-data ${mode === "Dark" ? "dark" : "light"}`}>{requests.comment}</p>
+                                                    <p className={`request-info-block-comment-block-data ${mode === "dark" ? "dark" : "light"}`}>{requests.comment}</p>
                                                 </div>
                                             </div>
                                         </div>
                                     ) : (
                                         <div>
-                                            <p className={`title-report-block ${mode === "Dark" ? "dark" : "light"}`}>Info
+                                            <p className={`title-report-block ${mode === "dark" ? "dark" : "light"}`}>Info
                                                 about report</p>
                                             <div className={`report-info-block`}>
                                                 <div
-                                                    className={`report-info-block-date-block ${mode === "Dark" ? "dark" : "light"}`}>
+                                                    className={`report-info-block-date-block ${mode === "dark" ? "dark" : "light"}`}>
                                                     <p>Date:</p>
                                                     {props.report.date && props.report.date.length >= 3 && (
                                                         <p>{props.report.date[0]}-{props.report.date[1]}-{props.report.date[2]}</p>
@@ -150,7 +150,7 @@ export function PopupReport(props) {
                                                 </div>
 
                                                 <div
-                                                    className={`report-info-block-hours-block ${mode === "Dark" ? "dark" : "light"}`}>
+                                                    className={`report-info-block-hours-block ${mode === "dark" ? "dark" : "light"}`}>
                                                     <p>Hours:</p>
                                                     {props.report.countOfHours && (
                                                         <p>{props.report.countOfHours}</p>
@@ -158,7 +158,7 @@ export function PopupReport(props) {
                                                 </div>
 
                                                 <div
-                                                    className={`report-info-block-comment-block ${mode === "Dark" ? "dark" : "light"}`}>
+                                                    className={`report-info-block-comment-block ${mode === "dark" ? "dark" : "light"}`}>
                                                     <p>Comment:</p>
                                                     <p className={`report-info-block-comment-block-data`}>{props.report.text}</p>
                                                 </div>
@@ -169,35 +169,35 @@ export function PopupReport(props) {
                             )}
                             {!props.report && (
                                 <div>
-                                    <p className={`title-report-block ${mode === "Dark" ? "dark" : "light"}`}>Add a
+                                    <p className={`title-report-block ${mode === "dark" ? "dark" : "light"}`}>Add a
                                         report</p>
                                     <form onSubmit={submitHandler}>
-                                        <div className={`report-date-block ${mode === "Dark" ? "dark" : "light"}`}>
+                                        <div className={`report-date-block ${mode === "dark" ? "dark" : "light"}`}>
                                             <label htmlFor="report-date">Date</label>
                                             <input id="report-date" type="date" value={reportDate}
                                                    onChange={dateHandler}/>
                                         </div>
                                         {errors.date && <p className="error-message">{errors.date}</p>}
 
-                                        <div className={`report-hours-block ${mode === "Dark" ? "dark" : "light"}`}>
+                                        <div className={`report-hours-block ${mode === "dark" ? "dark" : "light"}`}>
                                             <label htmlFor="report-hours">Amount of hours</label>
                                             <input id="report-hours" type="number" value={reportHours}
                                                    onChange={hoursHandler}/>
                                         </div>
                                         {errors.hours && <p className="error-message">{errors.hours}</p>}
 
-                                        <div className={`report-text-block ${mode === "Dark" ? "dark" : "light"}`}>
+                                        <div className={`report-text-block ${mode === "dark" ? "dark" : "light"}`}>
                                             <label htmlFor="report-text">Comment</label>
                                             <textarea id="report-text" value={reportText} onChange={textHandler}/>
                                         </div>
                                         {errors.text && <p className="error-message">{errors.text}</p>}
                                         {errors.message && <p className="error-message">{errors.message}</p>}
 
-                                        <div className={`report-buttons-block ${mode === "Dark" ? "dark" : "light"}`}>
-                                            <button className={`report-button-create ${mode === "Dark" ? "dark" : "light"}`}>Create</button>
+                                        <div className={`report-buttons-block ${mode === "dark" ? "dark" : "light"}`}>
+                                            <button className={`report-button-create ${mode === "dark" ? "dark" : "light"}`}>Create</button>
                                             <button
                                                 type="button"
-                                                className={`report-button-cancel ${mode === "Dark" ? "dark" : "light"}`}
+                                                className={`report-button-cancel ${mode === "dark" ? "dark" : "light"}`}
                                                 onClick={props.closeModal}>Cancel</button>
                                         </div>
                                     </form>

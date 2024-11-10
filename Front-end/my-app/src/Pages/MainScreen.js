@@ -10,7 +10,7 @@ import {useParams} from "react-router";
 
 export function MainScreen() {
     const params = useParams();
-    const mode = useSelector(state => state.mode);
+    const mode = useSelector(state => state.theme.theme);
     const [user, setUser] = useState({});
     const [requests, setRequests] = useState([]);
     const [error, setError] = useState({});
@@ -62,29 +62,29 @@ export function MainScreen() {
 
     return (
         <Fragment>
-            <div className={`mainScreen-main-block ${themeClass}`}>
-                <div className={`image-text-block ${themeClass}`}>
-                    <img className={`image-logo ${themeClass}`} src={user.image} alt="User profile" />
+            <div className={`mainScreen-main-block ${mode === "light" ? "light" : "dark"}`}>
+                <div className={`image-text-block ${mode === "light" ? "light" : "dark"}`}>
+                    <img className={`image-logo ${mode === "light" ? "light" : "dark"}`} src={user.image} alt="User profile" />
                     <div className="position-icon-position-title-container">
                         <div className="empty-div"></div>
                         <div className="right-image-info-block">
                             <div className="name-block">
-                                <p className={`name ${themeClass}`}>{user.firstName} {user.secondName}</p>
+                                <p className={`name ${mode === "light" ? "light" : "dark"}`}>{user.firstName} {user.secondName}</p>
                             </div>
                             <div className="position-icon-position-title-block">
                                 {positionIcon()}
-                                <p className={`position ${themeClass}`}>{user.position}</p>
+                                <p className={`position ${mode === "light" ? "light" : "dark"}`}>{user.position}</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <div className="requests-calendar-block">
-                    <div className={`active-requests ${themeClass}`}>
+                    <div className={`active-requests ${mode === "light" ? "light" : "dark"}`}>
                         <div className="active-requests-title">Active requests</div>
                         <div className="requests-block">
                             {error.message && (
-                                <p className={`no-active-requests ${themeClass}`}>{error.message}</p>
+                                <p className={`no-active-requests ${mode === "light" ? "light" : "dark"}`}>{error.message}</p>
                             )}
                             {requests.map((request) => (
                                 <RequestComponent key={request.id} request={request}/>

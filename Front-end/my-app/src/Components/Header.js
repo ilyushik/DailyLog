@@ -1,5 +1,4 @@
 import {useDispatch, useSelector} from "react-redux";
-import {modeActions} from "../store/index";
 import logo from "../images/logo.png";
 import {NavLink, useNavigate} from "react-router-dom"
 import "./Header.css"
@@ -13,10 +12,11 @@ import axios from "axios";
 import logout_img from "../images/logout.svg"
 import peopleList from "../images/peopleList.svg"
 import {PopupLogout} from "./PopupLogout";
+import { toggleTheme } from '../store/index';
 
 
 export function Header() {
-    const mode = useSelector(state => state.mode);
+    const mode = useSelector(state => state.theme.theme);
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [popupIsOpen, setPopupIsOpen] = useState(false);
@@ -72,27 +72,19 @@ export function Header() {
         }
     }, [fetchUserHandler]);
 
-    const lightMode = () => {
-        dispatch(modeActions.lightMode())
-    }
-
-    const darkMode = () => {
-        dispatch(modeActions.darkMode())
-    }
-
     const modeChanger = () => {
         if (mode === "Light") {
-            return (<button className="button-theme" onClick={darkMode}><img src={dark_theme} alt={dark_theme}/></button>)
+            return (<button className="button-theme" onClick={() => {dispatch(toggleTheme())}}><img src={dark_theme} alt={dark_theme}/></button>)
         } else {
             return (
-                <button className="button-theme" onClick={lightMode}><img src={light_theme} alt={light_theme}/></button>)
+                <button className="button-theme" onClick={() => {dispatch(toggleTheme())}}><img src={light_theme} alt={light_theme}/></button>)
         }
     }
 
     const inbox = () => {
         if (isAuthenticated()) {
             if (user.role === "ROLE_LEAD" || user.role === "ROLE_CEO") {
-                return(<NavLink to="/inbox" className={`nav-inbox ${mode === "Light" ? "light" : "dark"}`}>
+                return(<NavLink to="/inbox" className={`nav-inbox ${mode === "light" ? "light" : "dark"}`}>
                     <div className="button-inbox-wrapper">
                         <img className="button-inbox" src={inbox_icon} alt=""/>
                         {requests.length !== 0 && <div className="notification-dot"></div>}
@@ -106,7 +98,7 @@ export function Header() {
     const peopleIcon = () => {
         if (isAuthenticated()) {
             if ((user.role === "ROLE_LEAD" && user.position !== "Project Manager")  || user.role === "ROLE_CEO") {
-                return (<NavLink to="/people" className={`nav-inbox ${mode === "Light" ? "light" : "dark"}`}>
+                return (<NavLink to="/people" className={`nav-inbox ${mode === "light" ? "light" : "dark"}`}>
                     <div className="button-people-wrapper">
                         <img className="button-people" src={peopleList} alt=""/>
                     </div>
@@ -147,7 +139,7 @@ export function Header() {
             {popupSuccessIsOpen && <PopupSuccess close={closePopupSuccess} title="The request was
                                     successfully sent!" message="Wait for a message
                                     confirming your request"/>}
-            <header className={`header ${mode === "Dark" ? "dark" : "light"}`}>
+            <header className={`header ${mode === "dark" ? "dark" : "light"}`}>
                 <button className="button-logo" onClick={() => {
                     navigate("/my-info")
                     window.location.reload()
@@ -166,7 +158,7 @@ export function Header() {
                     <button onClick={openLogoutPopup} className={`logout_button`}><img src={logout_img} alt=""/></button>}
 
                     {isAuthenticated() &&
-                        <button className={`button-request ${mode === "Dark" ? "dark" : "light"}`} onClick={openPopup}>+
+                        <button className={`button-request ${mode === "dark" ? "dark" : "light"}`} onClick={openPopup}>+
                             Add a request</button>}
                 </div>
             </header>

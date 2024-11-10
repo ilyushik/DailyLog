@@ -4,7 +4,7 @@ import {useSelector} from "react-redux";
 import axios from "axios";
 
 export function Popup(props) {
-    const mode = useSelector(state => state.mode);
+    const mode = useSelector(state => state.theme.theme);
     const [reason, setReason] = useState("Annual Leave");
     const [startDate, setStartDate] = useState("");
     const [finishDate, setFinishDate] = useState("");
@@ -90,13 +90,13 @@ export function Popup(props) {
 
                 </div>
 
-                <div className={`modal-justify ${mode === "Dark" ? "dark" : "light"}`}>
-                    <div className={`modal-screen ${mode === "Dark" ? "dark" : "light"}`}>
-                        <button className={`close-button ${mode === "Dark" ? "dark" : "light"}`} onClick={props.close}>&times;</button>
+                <div className={`modal-justify ${mode === "dark" ? "dark" : "light"}`}>
+                    <div className={`modal-screen ${mode === "dark" ? "dark" : "light"}`}>
+                        <button className={`close-button ${mode === "dark" ? "dark" : "light"}`} onClick={props.close}>&times;</button>
                         <p className="title">Create a request</p>
                         <form onSubmit={submitHandler}>
                             <div className="select-wrapper">
-                                <select className={`select ${mode === "Dark" ? "dark" : "light"}`} name="reasons"
+                                <select className={`select ${mode === "dark" ? "dark" : "light"}`} name="reasons"
                                         id="reasons" value={reason} onChange={reasonHandler}>
                                     {reasons.map((reason) => (
                                         <option key={reason.id} value={reason.reason}>{reason.reason}</option>
@@ -106,26 +106,26 @@ export function Popup(props) {
 
                             <div className="block">
                                 <div className="date-block">
-                                    <div className={`date-input ${mode === "Dark" ? "dark" : "light"}`}>
+                                    <div className={`date-input ${mode === "dark" ? "dark" : "light"}`}>
                                         <label htmlFor="start">Start</label>
-                                        <input className={`date-field ${mode === "Dark" ? "dark" : "light"}`} id="start" type={"date"} value={startDate} onChange={startDateHandler}/>
+                                        <input className={`date-field ${mode === "dark" ? "dark" : "light"}`} id="start" type={"date"} value={startDate} onChange={startDateHandler}/>
                                     </div>
 
                                     <div className="line-block">
                                         <div className="line"></div>
                                     </div>
 
-                                    <div className={`date-input ${mode === "Dark" ? "dark" : "light"}`}>
+                                    <div className={`date-input ${mode === "dark" ? "dark" : "light"}`}>
                                         <label htmlFor="end">End</label>
-                                        <input className={`date-field ${mode === "Dark" ? "dark" : "light"}`} id="end" type={"date"} value={finishDate} onChange={endDateHandler}/>
+                                        <input className={`date-field ${mode === "dark" ? "dark" : "light"}`} id="end" type={"date"} value={finishDate} onChange={endDateHandler}/>
                                     </div>
                                 </div>
                             </div>
                             {errors.errorDate && <p className={`errorDate-message`}>{errors.errorDate}</p>}
 
-                            <div className={`comment-block ${mode === "Dark" ? "dark" : "light"}`}>
+                            <div className={`comment-block ${mode === "dark" ? "dark" : "light"}`}>
                                 <label htmlFor="comment">Comment</label>
-                                <textarea className={`comment-area ${mode === "Dark" ? "dark" : "light"}`} id="comment" value={comment} placeholder={"Write something..."} onChange={commentHandler}/>
+                                <textarea className={`comment-area ${mode === "dark" ? "dark" : "light"}`} id="comment" value={comment} placeholder={"Write something..."} onChange={commentHandler}/>
                             </div>
 
                             <div className="buttons-block">

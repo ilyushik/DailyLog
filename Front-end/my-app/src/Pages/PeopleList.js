@@ -5,7 +5,7 @@ import axios from "axios";
 import {PeopleListComponent} from "./PeopleListComponents/PeopleListComponent";
 
 export function PeopleList() {
-    const mode = useSelector((state) => state.mode);
+    const mode = useSelector(state => state.theme.theme);
     const [users, setUsers] = useState([]);
     const [errors, setErrors] = useState({});
 
@@ -32,12 +32,12 @@ export function PeopleList() {
 
     return (
         <Fragment>
-            <div className={`people-main-screen ${mode === "Light" ? "light" : "dark"}`}>
-                <div className={`people ${mode === "Light" ? "light" : "dark"}`}>
-                    <div className={`people-title ${mode === "Light" ? "light" : "dark"}`}>Team</div>
-                    <div className={`peoples-block ${mode === "Light" ? "light" : "dark"}`}>
+            <div className={`people-main-screen ${mode === "light" ? "light" : "dark"}`}>
+                <div className={`people ${mode === "light" ? "light" : "dark"}`}>
+                    <div className={`people-title ${mode === "light" ? "light" : "dark"}`}>Team</div>
+                    <div className={`peoples-block ${mode === "light" ? "light" : "dark"}`}>
                         {users.length < 1 &&
-                            <p className={`no-messages ${mode === "Light" ? "light" : "dark"}`}>{errors.message}</p>}
+                            <p className={`no-messages ${mode === "light" ? "light" : "dark"}`}>{errors.message}</p>}
                         {users.map((user) => (
                             <PeopleListComponent user={user} key={user.id} />
                         ))}

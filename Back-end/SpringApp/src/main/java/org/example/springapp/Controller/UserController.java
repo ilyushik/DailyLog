@@ -67,13 +67,19 @@ public class UserController {
         }
 
         if (requestDTO.getReason().equals("Personal Leave")) {
-            if (ChronoUnit.DAYS.between(requestDTO.getStartDate(), requestDTO.getFinishDate()) > user.getDaysToSkip()) {
+            if ((ChronoUnit.DAYS.between(requestDTO.getStartDate(), requestDTO.getFinishDate()) + 1) > user.getDaysToSkip()) {
+                return ResponseEntity.badRequest().body(Collections.singletonMap("errorDate", "You have only " + user.getDaysToSkip() + " days to skip"));
+            }
+        }
+
+        if (requestDTO.getReason().equals("Sick Leave")) {
+            if ((ChronoUnit.DAYS.between(requestDTO.getStartDate(), requestDTO.getFinishDate()) + 1) > user.getDaysToSkip()) {
                 return ResponseEntity.badRequest().body(Collections.singletonMap("errorDate", "You have only " + user.getDaysToSkip() + " days to skip"));
             }
         }
 
         if (requestDTO.getReason().equals("Annual Leave")) {
-            if (ChronoUnit.DAYS.between(requestDTO.getStartDate(), requestDTO.getFinishDate()) > user.getDaysForVacation()) {
+            if ((ChronoUnit.DAYS.between(requestDTO.getStartDate(), requestDTO.getFinishDate()) + 1) > user.getDaysForVacation()) {
                 return ResponseEntity.badRequest().body(Collections.singletonMap("errorDate", "You have only " + user.getDaysForVacation() + " days for vacation"));
             }
         }

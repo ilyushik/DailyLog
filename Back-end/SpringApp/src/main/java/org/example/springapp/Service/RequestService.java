@@ -181,11 +181,16 @@ public class RequestService {
 
         if (request.getStatus().getStatus().equals("Approved")) {
             if (request.getReason().getReason().equals("Annual Leave")) {
-                user.setDaysForVacation(user.getDaysForVacation() - (int)ChronoUnit.DAYS.between(request.getStartDate(), request.getFinishDate()));
+                user.setDaysForVacation(user.getDaysForVacation() - (int)ChronoUnit.DAYS.between(request.getStartDate(), request.getFinishDate()) - 1);
             }
-            if (request.getReason().getReason().equals("Personal Leave") || request.getReason().getReason().equals("Sick Leave")) {
-                user.setDaysToSkip(user.getDaysToSkip() - (int)ChronoUnit.DAYS.between(request.getStartDate(), request.getFinishDate()));
+            if (request.getReason().getReason().equals("Personal Leave")) {
+                user.setDaysToSkip(user.getDaysToSkip() - (int)ChronoUnit.DAYS.between(request.getStartDate(), request.getFinishDate()) - 1);
             }
+            if (request.getReason().getReason().equals("Sick Leave")) {
+                user.setDaysToSkip(user.getDaysToSkip() - (int)ChronoUnit.DAYS.between(request.getStartDate(), request.getFinishDate()) - 1);
+            }
+
+            userRepository.save(user);
 
 
             // maybe remove work from home
@@ -262,10 +267,18 @@ public class RequestService {
                     new Timestamp(System.currentTimeMillis()), uniqueCode, new Timestamp(System.currentTimeMillis()),
                     user, user, statusCEO, reason, actionCEO, requesT.getComment());
             if (request.getReason().getReason().equals("Annual Leave")) {
-                user.setDaysForVacation(user.getDaysForVacation() - (int)ChronoUnit.DAYS.between(request.getStartDate(), request.getFinishDate()));
-            } else {
-                user.setDaysToSkip(user.getDaysToSkip() - (int)ChronoUnit.DAYS.between(request.getStartDate(), request.getFinishDate()));
+                user.setDaysForVacation(user.getDaysForVacation() - (int)ChronoUnit.DAYS.between(request.getStartDate(), request.getFinishDate()) - 1);
+                userRepository.save(user);
             }
+            if (request.getReason().getReason().equals("Personal Leave")) {
+                user.setDaysToSkip(user.getDaysToSkip() - (int)ChronoUnit.DAYS.between(request.getStartDate(), request.getFinishDate()) - 1);
+                userRepository.save(user);
+            }
+            if (request.getReason().getReason().equals("Sick Leave")) {
+                user.setDaysToSkip(user.getDaysToSkip() - (int)ChronoUnit.DAYS.between(request.getStartDate(), request.getFinishDate()) - 1);
+                userRepository.save(user);
+            }
+
             requestRepository.save(request);
 
             while (!currentDate.isAfter(finishDate)) {

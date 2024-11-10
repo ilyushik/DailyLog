@@ -26,8 +26,9 @@ public class RequestDTO {
     private String status;
     private String reason;
     private String action;
+    private String comment;
 
-    public RequestDTO(int id, LocalDate startDate, LocalDate finishDate, Timestamp createdAt, String uniqueCode, Timestamp dateOfResult, String status, String reason) {
+    public RequestDTO(int id, LocalDate startDate, LocalDate finishDate, Timestamp createdAt, String uniqueCode, Timestamp dateOfResult, String status, String reason, String comment) {
         this.id = id;
         this.startDate = startDate;
         this.finishDate = finishDate;
@@ -36,5 +37,6 @@ public class RequestDTO {
         this.dateOfResult = dateOfResult;
         this.status = status;
         this.reason = reason;
+        this.comment = comment;
     }
 }

@@ -63,9 +63,11 @@ public class Request {
     @OneToMany(mappedBy = "request")
     private List<Report> report;
 
+    private String comment;
+
     public Request(LocalDate startDate, LocalDate finishDate, Timestamp createdAt, String uniqueCode,
                    Timestamp dateOfResult, User approverId, User user, RequestStatus status,
-                   RequestReason reason, ApproverAction action) {
+                   RequestReason reason, ApproverAction action, String comment) {
         this.startDate = startDate;
         this.finishDate = finishDate;
         this.createdAt = createdAt;
@@ -76,6 +78,7 @@ public class Request {
         this.status = status;
         this.reason = reason;
         this.action = action;
+        this.comment = comment;
     }
 
     @Override

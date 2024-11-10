@@ -52,7 +52,8 @@ public class RequestService {
                 s.getUser().getFirstName() + " " + s.getUser().getSecondName(),
                 s.getStatus().getStatus(),
                 s.getReason().getReason(),
-                s.getAction().getAction()
+                s.getAction().getAction(),
+                s.getComment()
         )).collect(Collectors.toList());
     }
 
@@ -69,7 +70,8 @@ public class RequestService {
                 s.getUser().getFirstName() + " " + s.getUser().getSecondName(),
                 s.getStatus().getStatus(),
                 s.getReason().getReason(),
-                s.getAction().getAction()
+                s.getAction().getAction(),
+                s.getComment()
         )).filter(r->r.getApprover() == approverId && r.getStatus().equals("Pending") && r.getAction().equals("Unchecked")).collect(Collectors.toList());
     }
 
@@ -88,6 +90,7 @@ public class RequestService {
         String userFullName = representativeRequest.getUser().getFirstName() + " " + representativeRequest.getUser().getSecondName();
         String reason = representativeRequest.getReason().getReason();
         int approverId = representativeRequest.getApproverId().getId();
+        String comment = representativeRequest.getComment();
 
         // Определяем общий статус для запросов с этим uniqueCode
         boolean allApproved = requests.stream()
@@ -105,7 +108,7 @@ public class RequestService {
             overallStatus = "Pending";
         }
 
-        return new RequestDTO(id, startDate, finishDate, createdAt, unique_Code, null, approverId, user, userFullName, overallStatus, reason, null);
+        return new RequestDTO(id, startDate, finishDate, createdAt, unique_Code, null, approverId, user, userFullName, overallStatus, reason, null, comment);
     }
 
     public List<RequestDTO> combinedList(int userId) {
@@ -196,7 +199,7 @@ public class RequestService {
             }
 
             for (LocalDate l : dates) {
-                Report report = new Report(l, request.getReason().getReason(), user, request);
+                Report report = new Report(l, request.getComment(), user, request);
                 report.setStatus("leave");
                 reportRepository.save(report);
             }
@@ -257,7 +260,7 @@ public class RequestService {
         if (user.getRole().getRole().equals("ROLE_CEO")) {
             Request request = new Request(requesT.getStartDate(), requesT.getFinishDate(),
                     new Timestamp(System.currentTimeMillis()), uniqueCode, new Timestamp(System.currentTimeMillis()),
-                    user, user, statusCEO, reason, actionCEO);
+                    user, user, statusCEO, reason, actionCEO, requesT.getComment());
             if (request.getReason().getReason().equals("Annual Leave")) {
                 user.setDaysForVacation(user.getDaysForVacation() - (int)ChronoUnit.DAYS.between(request.getStartDate(), request.getFinishDate()));
             } else {
@@ -297,6 +300,7 @@ public class RequestService {
             request.setReason(reason);
             request.setAction(action);
             request.setApproverId(user.getTeamLead());
+            request.setComment(requesT.getComment());
             requestRepository.save(request);
 
             MailStructure mailStructure = new MailStructure("Info about request", "Your have new request");
@@ -313,6 +317,7 @@ public class RequestService {
             request1.setReason(reason);
             request1.setAction(action);
             request1.setApproverId(user.getTechLead());
+            request1.setComment(requesT.getComment());
             requestRepository.save(request1);
 
             MailStructure mailStructure = new MailStructure("Info about request", "Your have new request");
@@ -329,6 +334,7 @@ public class RequestService {
             request2.setReason(reason);
             request2.setAction(action);
             request2.setApproverId(user.getPm());
+            request2.setComment(requesT.getComment());
             requestRepository.save(request2);
 
             MailStructure mailStructure = new MailStructure("Info about request", "Your have new request");
@@ -342,7 +348,7 @@ public class RequestService {
         Request request = requestRepository.findById(id).orElse(null);
         RequestDTO requestDTO = new RequestDTO(request.getId(), request.getStartDate(), request.getFinishDate(),
                 request.getCreatedAt(), request.getUniqueCode(), request.getDateOfResult(), request.getStatus().getStatus(),
-                request.getReason().getReason());
+                request.getReason().getReason(), request.getComment());
 
         return requestDTO;
     }

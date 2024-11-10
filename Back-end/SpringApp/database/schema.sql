@@ -60,6 +60,7 @@ CREATE TABLE Request (
                          status INT,
                          reason INT,
                          approver_action INT,
+                         comment text ,
                          FOREIGN KEY (approver_id) REFERENCES User(id),
                          FOREIGN KEY (status) REFERENCES Request_Status(id),
                          FOREIGN KEY (reason) REFERENCES Request_Reason(id),
@@ -97,7 +98,7 @@ INSERT INTO Approver_Action (action) VALUES
 
 -- Шаг 1: Создание CEO и Project Manager
 INSERT INTO User (first_name, second_name, password, email, image, days_for_vac, days_to_skip, role, job_position, team_lead, tech_lead, pm) VALUES
-    ('Hannah', 'Thomas', 'password008', 'hannah.thomas@example.com', 'https://firebasestorage.googleapis.com/v0/b/dailylog-44de4.appspot.com/o/face1.png?alt=media&token=5850c13e-b62a-49f9-80ee-8daec0947c4e', 20, 2, 3, 'CEO', NULL, NULL, NULL); -- СЕО
+    ('Hannah', 'Thomas', 'password008', 'hannah.thomas@example.com', 'https://firebasestorage.googleapis.com/v0/b/dailylog-44de4.appspot.com/o/face1.png?alt=media&token=16531758-4933-487c-bf2a-8a027acf307a', 20, 2, 3, 'CEO', NULL, NULL, NULL); -- СЕО
 
 -- Добавление Project Manager
 INSERT INTO User (first_name, second_name, password, email, image, days_for_vac, days_to_skip, role, job_position, team_lead, tech_lead, pm) VALUES

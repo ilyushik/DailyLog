@@ -166,3 +166,31 @@
 .report-button-cancel:hover {
     transform: scale(1.15);
 }
+
+.request-info-block,
+.report-info-block {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.request-info-block-reason-block,
+.request-info-block-startDate-block,
+.request-info-block-endDate-block,
+.request-info-block-comment-block,
+.report-info-block-date-block,
+.report-info-block-hours-block,
+.report-info-block-comment-block {
+    display: flex;
+    width: 100%;
+    height: auto;
+    justify-content: space-between;
+}
+
+.request-info-block-comment-block-data,
+.report-info-block-comment-block-data{
+    max-width: 50%;
+    height: auto; /* Ограничьте максимальную высоту блока */
+    overflow-y: auto; /* Добавляет вертикальную прокрутку, если текст не помещается */
+    word-wrap: break-word;
+}

@@ -66,7 +66,7 @@ export function Popup(props) {
         console.log(request)
 
         try {
-            const response = await axios.post("http://localhost:8080/addRequest", {reason: reason, startDate: startDate, finishDate: finishDate},{
+            const response = await axios.post("http://localhost:8080/addRequest", {reason: reason, startDate: startDate, finishDate: finishDate, comment: comment},{
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem('token')}`

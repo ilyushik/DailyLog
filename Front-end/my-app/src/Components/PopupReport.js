@@ -90,6 +90,7 @@ export function PopupReport(props) {
         }
     };
 
+
     return (
         <Fragment>
             <div>
@@ -105,30 +106,83 @@ export function PopupReport(props) {
                                     {props.report.request !== null ? (
                                         <div>
                                             <p className={`title-report-block ${mode === "Dark" ? "dark" : "light"}`}>Info about request</p>
+                                            <div className={`request-info-block`}>
+                                                <div
+                                                    className={`request-info-block-reason-block ${mode === "Dark" ? "dark" : "light"}`}>
+                                                    <p>Reason:</p>
+                                                    <p>{requests.reason}</p>
+                                                </div>
+
+                                                <div
+                                                    className={`request-info-block-startDate-block ${mode === "Dark" ? "dark" : "light"}`}>
+                                                    <p>Start:</p>
+                                                    {requests.startDate && requests.startDate.length >= 3 && (
+                                                        <p>{requests.startDate[0]}-{requests.startDate[1]}-{requests.startDate[2]}</p>
+                                                    )}
+                                                </div>
+
+                                                <div
+                                                    className={`request-info-block-endDate-block ${mode === "Dark" ? "dark" : "light"}`}>
+                                                    <p>End:</p>
+                                                    {requests.finishDate && requests.finishDate.length >= 3 && (
+                                                        <p>{requests.finishDate[0]}-{requests.finishDate[1]}-{requests.finishDate[2]}</p>
+                                                    )}
+                                                </div>
+
+
+                                                <div className={`request-info-block-comment-block ${mode === "Dark" ? "dark" : "light"}`}>
+                                                    <p>Comment:</p>
+                                                    <p className={`request-info-block-comment-block-data ${mode === "Dark" ? "dark" : "light"}`}>{requests.comment}</p>
+                                                </div>
+                                            </div>
                                         </div>
                                     ) : (
                                         <div>
-                                            <p className={`title-report-block ${mode === "Dark" ? "dark" : "light"}`}>Info about report</p>
-                                            <p>{props.report.date[0]}-{props.report.date[1]}-{props.report.date[2]}</p>
-                                            <p>{props.report.text}</p>
-                                            <p>{props.report.status}</p>
+                                            <p className={`title-report-block ${mode === "Dark" ? "dark" : "light"}`}>Info
+                                                about report</p>
+                                            <div className={`report-info-block`}>
+                                                <div
+                                                    className={`report-info-block-date-block ${mode === "Dark" ? "dark" : "light"}`}>
+                                                    <p>Date:</p>
+                                                    {props.report.date && props.report.date.length >= 3 && (
+                                                        <p>{props.report.date[0]}-{props.report.date[1]}-{props.report.date[2]}</p>
+                                                    )}
+                                                </div>
+
+                                                <div
+                                                    className={`report-info-block-hours-block ${mode === "Dark" ? "dark" : "light"}`}>
+                                                    <p>Hours:</p>
+                                                    {props.report.countOfHours && (
+                                                        <p>{props.report.countOfHours}</p>
+                                                    )}
+                                                </div>
+
+                                                <div
+                                                    className={`report-info-block-comment-block ${mode === "Dark" ? "dark" : "light"}`}>
+                                                    <p>Comment:</p>
+                                                    <p className={`report-info-block-comment-block-data`}>{props.report.text}</p>
+                                                </div>
+                                            </div>
                                         </div>
                                     )}
                                 </div>
                             )}
                             {!props.report && (
                                 <div>
-                                    <p className={`title-report-block ${mode === "Dark" ? "dark" : "light"}`}>Add a report</p>
+                                    <p className={`title-report-block ${mode === "Dark" ? "dark" : "light"}`}>Add a
+                                        report</p>
                                     <form onSubmit={submitHandler}>
                                         <div className={`report-date-block ${mode === "Dark" ? "dark" : "light"}`}>
                                             <label htmlFor="report-date">Date</label>
-                                            <input id="report-date" type="date" value={reportDate} onChange={dateHandler}/>
+                                            <input id="report-date" type="date" value={reportDate}
+                                                   onChange={dateHandler}/>
                                         </div>
                                         {errors.date && <p className="error-message">{errors.date}</p>}
 
                                         <div className={`report-hours-block ${mode === "Dark" ? "dark" : "light"}`}>
                                             <label htmlFor="report-hours">Amount of hours</label>
-                                            <input id="report-hours" type="number" value={reportHours} onChange={hoursHandler}/>
+                                            <input id="report-hours" type="number" value={reportHours}
+                                                   onChange={hoursHandler}/>
                                         </div>
                                         {errors.hours && <p className="error-message">{errors.hours}</p>}
 

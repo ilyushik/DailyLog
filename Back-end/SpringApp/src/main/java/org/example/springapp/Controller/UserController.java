@@ -1,9 +1,11 @@
 package org.example.springapp.Controller;
 
+import org.example.springapp.DTO.ReportDTO;
 import org.example.springapp.DTO.RequestDTO;
 import org.example.springapp.Model.Request;
 import org.example.springapp.Model.User;
 import org.example.springapp.Repository.UserRepository;
+import org.example.springapp.Service.ReportService;
 import org.example.springapp.Service.RequestService;
 import org.example.springapp.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +16,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("")
@@ -26,6 +31,8 @@ public class UserController {
     private UserRepository userRepository;
     @Autowired
     private RequestService requestService;
+    @Autowired
+    private ReportService reportService;
 
     @GetMapping("/getMyInfo")
     public ResponseEntity<?> getMyInfo() {
@@ -54,9 +61,14 @@ public class UserController {
 
     @PostMapping("/addRequest")
     public ResponseEntity<?> addRequest(@RequestBody RequestDTO requestDTO) {
+        LocalDate startDate = requestDTO.getStartDate();
+        LocalDate finishDate = requestDTO.getFinishDate();
+        LocalDate currentDate = startDate;
+        List<LocalDate> dates = new ArrayList<>();
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
         User user = userRepository.findByEmail(email).orElse(null);
+        List<ReportDTO> usersReports = reportService.getReportsByUserId(user.getId());
 
         if (requestDTO.getReason() == null) {
             return ResponseEntity.badRequest().body(Collections.singletonMap("reason", "Is empty"));
@@ -90,6 +102,19 @@ public class UserController {
 
         if (requestDTO.getFinishDate().isBefore(requestDTO.getStartDate())) {
             return ResponseEntity.badRequest().body(Collections.singletonMap("errorDate", "Finish date before start date"));
+        }
+
+        while (!currentDate.isAfter(finishDate)) {
+            dates.add(currentDate);
+            currentDate = currentDate.plusDays(1);
+        }
+
+        for (LocalDate date : dates) {
+            for (ReportDTO reportDTO : usersReports) {
+                if (reportDTO.getDate().equals(date)) {
+                    return ResponseEntity.badRequest().body(Collections.singletonMap("errorDate", date + " is already in the report"));
+                }
+            }
         }
 
         return ResponseEntity.ok(requestService.addRequest(user.getId(), requestDTO));

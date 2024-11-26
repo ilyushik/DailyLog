@@ -16,7 +16,6 @@ export function MainScreen() {
     const [error, setError] = useState({});
     const token = localStorage.getItem("token");
 
-    const themeClass = mode === "Light" ? "light" : "dark"; // Store the theme class
 
     // Utility function for fetching data with error handling
     const fetchData = async (url, setData) => {

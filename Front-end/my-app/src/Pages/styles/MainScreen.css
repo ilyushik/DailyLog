@@ -81,7 +81,7 @@
     margin-top: 4vh
 }
 
-.active-requests {
+.active-requests {;
     border-radius: 10px;
     margin-top: 4vh;
     width: 55vw;
@@ -134,5 +134,103 @@
 @media screen and (max-width: 1500px) {
     .active-requests {
         width: 45vw;
+    }
+}
+
+@media screen and (max-width: 1100px) {
+    .requests-calendar-block {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .active-requests {
+        position: relative;
+        order: 2;
+        top: 200px;
+        width: auto;
+        bottom: 100px;
+    }
+
+    .calendar-block {
+        position: relative;
+        order: 1;
+    }
+
+    .requests-block {
+        max-height: 450px;
+    }
+
+}
+
+@media screen and (max-width: 800px) {
+    .mainScreen-main-block {
+        margin-top: 7vh;
+    }
+
+    .image-logo {
+        height: 12vh;
+    }
+
+    .position-icon-position-title-container {
+        grid-template-rows: 30% 40%;
+    }
+
+    .name {
+        font-size: 2vh;
+    }
+
+    .position-icon {
+        position: relative;
+        height: 2vh;
+        top: 10px;
+    }
+
+    .position {
+        font-size: 1.5vh;
+    }
+
+    .requests-block {
+        max-height: 300px;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .mainScreen-main-block {
+        margin-top: 5vh;
+    }
+
+    .image-logo {
+        height: 10vh;
+    }
+
+    .empty-div {
+        display: none;
+    }
+
+    .image-text-block {
+        display: block;
+    }
+
+    .position-icon-position-title-container {
+        display: block;
+        position: relative;
+        bottom: 2vh;
+    }
+
+    .requests-calendar-block {
+        position: relative;
+        top: -30px;
+    }
+
+    .requests-block {
+        max-height: 340px;
+        overflow-y: scroll;
+    }
+}
+
+@media screen and (max-width: 400px) and (max-height: 700px) {
+    .requests-block {
+        max-height: 170px;
+        overflow-y: scroll;
     }
 }

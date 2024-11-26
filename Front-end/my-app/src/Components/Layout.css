@@ -1,6 +1,9 @@
 .back {
-    height: 100vh;
+    display: block;
+    position: relative;
+    height: 100%;
     width: 100%;
+    overflow-y: scroll;
 }
 
 .back.light {
@@ -22,15 +25,34 @@
     justify-content: center;
     width: 100%;
     height: 100%;
+    margin-bottom: 70px;
 }
 
 .content-center {
     width: 80%;
-    height: 100%;
+    height: 100vh;
+}
+
+.empty-area {
+    position: relative;
+    height: 70px;
 }
 
 @media screen and (max-width: 1500px) {
     .banner {
         height: 17%;
+    }
+}
+
+
+@media screen and (max-width: 800px) {
+    .banner {
+        height: 13vh;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .banner {
+        height: 10vh;
     }
 }

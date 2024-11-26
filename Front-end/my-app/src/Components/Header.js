@@ -13,6 +13,7 @@ import logout_img from "../images/logout.svg"
 import peopleList from "../images/peopleList.svg"
 import {PopupLogout} from "./PopupLogout";
 import { toggleTheme } from '../store/index';
+import burger from '../images/burger-menu.svg'
 
 
 export function Header() {
@@ -24,6 +25,7 @@ export function Header() {
     const [user, setUser] = useState({});
     const [requests, setRequests] = useState([]);
     const [logoutPopupIsOpen, setLogoutPopupIsOpen] = useState(false);
+    const [isMenuOpened, setIsMenuOpened] = useState(false);
 
     const fetchRequestsHandler = useCallback(async () => {
         try {
@@ -73,22 +75,41 @@ export function Header() {
     }, [fetchUserHandler]);
 
     const modeChanger = () => {
-        if (mode === "Light") {
-            return (<button className="button-theme" onClick={() => {dispatch(toggleTheme())}}><img src={dark_theme} alt={dark_theme}/></button>)
-        } else {
-            return (
-                <button className="button-theme" onClick={() => {dispatch(toggleTheme())}}><img src={light_theme} alt={light_theme}/></button>)
+        if (isAuthenticated()) {
+            if (mode === "Light") {
+                return (<button className={`navbar-button-b ${mode === "light" ? "light" : "dark"}`} onClick={() => {
+                    setIsMenuOpened(false)
+                    dispatch(toggleTheme())
+                }}>
+                    <div className={`change-theme-wrapper`}>
+                        <img className={`mode-button`} src={dark_theme} alt=""/>
+                        <p className={`navbar-text ${mode === "light" ? "light" : "dark"}`}>Change theme</p>
+                    </div>
+                </button>)
+            } else {
+                return (
+                    <button className={`navbar-button-b ${mode === "light" ? "light" : "dark"}`} onClick={() => {
+                        setIsMenuOpened(false)
+                        dispatch(toggleTheme())
+                    }}>
+                        <div className={`change-theme-wrapper`}>
+                            <img className={`mode-button`} src={light_theme} alt=""/>
+                            <p className={`navbar-text ${mode === "light" ? "light" : "dark"}`}>Change theme</p>
+                        </div>
+                    </button>)
+            }
         }
     }
 
     const inbox = () => {
         if (isAuthenticated()) {
             if (user.role === "ROLE_LEAD" || user.role === "ROLE_CEO") {
-                return(<NavLink to="/inbox" className={`nav-inbox ${mode === "light" ? "light" : "dark"}`}>
+                return(<NavLink to="/inbox" onClick={() => setIsMenuOpened(false)} className={`navbar-button ${mode === "light" ? "light" : "dark"}`}>
                     <div className="button-inbox-wrapper">
                         <img className="button-inbox" src={inbox_icon} alt=""/>
                         {requests.length !== 0 && <div className="notification-dot"></div>}
                     </div>
+                    <p className={`navbar-text ${mode === "light" ? "light" : "dark"}`}>Inbox</p>
 
                 </NavLink>)
             }
@@ -97,14 +118,21 @@ export function Header() {
 
     const peopleIcon = () => {
         if (isAuthenticated()) {
-            if ((user.role === "ROLE_LEAD" && user.position !== "Project Manager")  || user.role === "ROLE_CEO") {
-                return (<NavLink to="/people" className={`nav-inbox ${mode === "light" ? "light" : "dark"}`}>
+            if ((user.role === "ROLE_LEAD" && user.position !== "Project Manager") || user.role === "ROLE_CEO") {
+                return (<NavLink to="/people" onClick={() => setIsMenuOpened(false)} className={`navbar-button ${mode === "light" ? "light" : "dark"}`}>
                     <div className="button-people-wrapper">
                         <img className="button-people" src={peopleList} alt=""/>
                     </div>
+                    <p className={`navbar-text ${mode === "light" ? "light" : "dark"}`}>Team</p>
+
                 </NavLink>)
             }
         }
+    }
+
+    const toggleMenu = (e) => {
+        e.preventDefault();
+        setIsMenuOpened(!isMenuOpened);
     }
 
     const openPopup = () => {
@@ -139,6 +167,9 @@ export function Header() {
             {popupSuccessIsOpen && <PopupSuccess close={closePopupSuccess} title="The request was
                                     successfully sent!" message="Wait for a message
                                     confirming your request"/>}
+            <div className={`blur-layer ${isMenuOpened ? "open" : ""}`} onClick={toggleMenu}>
+
+            </div>
             <header className={`header ${mode === "dark" ? "dark" : "light"}`}>
                 <button className="button-logo" onClick={() => {
                     navigate("/my-info")
@@ -148,18 +179,34 @@ export function Header() {
                 </button>
 
                 <div className="nav">
-                    {modeChanger()}
+                    <div
+                        className={`navbar-hidden-buttons ${isMenuOpened ? "open" : ""} ${mode === "light" ? "light" : "dark"}`}>
+                        {modeChanger()}
 
-                    {inbox()}
+                        {inbox()}
 
-                    {peopleIcon()}
+                        {peopleIcon()}
+
+                        {isAuthenticated() &&
+                            <button onClick={() => {
+                                setIsMenuOpened(false)
+                                openLogoutPopup()
+                            }} className={`logout_button`}>
+                                <div className={`logout-wrapper`}>
+                                    <img className={`logout_img`} src={logout_img} alt="Log out"/>
+                                    <p className={`navbar-text ${mode === "light" ? "light" : "dark"}`}>Logout</p>
+                                </div>
+                            </button>}
+                    </div>
 
                     {isAuthenticated() &&
-                    <button onClick={openLogoutPopup} className={`logout_button`}><img src={logout_img} alt=""/></button>}
-
-                    {isAuthenticated() &&
-                        <button className={`button-request ${mode === "dark" ? "dark" : "light"}`} onClick={openPopup}>+
+                        <button className={`button-request ${mode === "dark" ? "dark" : "light"}`}
+                                onClick={openPopup}>+
                             Add a request</button>}
+
+                    {isAuthenticated() &&
+                        <button className={`burger-button`} onClick={toggleMenu}><img className={`burger-img`}
+                                                                                      src={burger} alt=""/></button>}
                 </div>
             </header>
         </Fragment>

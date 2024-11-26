@@ -22,7 +22,6 @@
 
 .dark-theme .react-calendar {
     background: #2c2c2c;
-    border-radius: 10px;
 }
 
 .dark-theme .react-calendar__tile {
@@ -58,7 +57,6 @@
 
 
 .react-calendar {
-    /*border-radius: 10px;*/
 }
 
 /* Стили для верхней панели календаря */
@@ -95,5 +93,11 @@
 
 .light-theme .react-calendar__navigation__arrow {
     color: black;
+}
+
+@media screen and (max-width: 1100px) {
+    .react-calendar {
+        width: auto;
+    }
 }
 

@@ -16,10 +16,11 @@ export function Layout(props) {
             <Header />
             {isAuthenticated() && <img className="banner" src={banner} alt="banner"/>}
             <div className="content">
-            <div className="content-center">
-                    {props.children}
+                <div className="content-center">
+                        {props.children}
                 </div>
             </div>
+            <div className={`empty-area`}></div>
         </div>
     )
 }

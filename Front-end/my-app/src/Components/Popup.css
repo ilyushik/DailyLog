@@ -7,16 +7,17 @@
     background-color: rgba(0, 0, 0, 0.5);
     z-index: 1000;
     cursor: pointer;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
 }
 
-.modal-justify {
+.modal-justify-add {
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 1001;
-    width: 35%;
-    max-width: 500px;
+    width: 500px;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     padding: 20px;
@@ -25,30 +26,30 @@
     align-items: center;
 }
 
-.modal-justify.light {
+.modal-justify-add.light {
     background: white;
 }
 
-.modal-justify.dark {
+.modal-justify-add.dark {
     background: #2c2c2c;
 }
 
-.modal-screen {
+.modal-screen-add {
     width: 100%;
     padding: 20px;
     text-align: center;
     font-size: 16px;
 }
 
-.modal-screen.light {
+.modal-screen-add.light {
     color: #1e1e1e;
 }
 
-.modal-screen.dark {
+.modal-screen-add.dark {
     color: #eeeeee;
 }
 
-.close-button {
+.close-button-add {
     position: absolute;
     top: 10px;
     right: 10px;
@@ -59,14 +60,14 @@
     transition: color 0.3s;
 }
 
-.close-button.light {
+.close-button-add.light {
     color: #696969;
 }
-.close-button.dark {
+.close-button-add.dark {
     color: #eeeeee;
 }
 
-.title {
+.title-add {
     font-size: 20px;
     font-weight: 500;
     margin-bottom: 40px;
@@ -127,6 +128,8 @@ form {
 }
 
 .line {
+    position: relative;
+    top: 10px;
     width: 25px;
     height: 2px;
     background-color: #696969;
@@ -241,6 +244,82 @@ form {
     color: #cb0000;
     font-family: "Poppins", sans-serif;
     height: 10px;
+}
+
+@media screen and (max-width: 800px) {
+    .modal-justify-add {
+        width: 400px;
+    }
+}
+
+@media screen and (max-width: 500px) {
+    .modal-justify-add {
+        width: 330px;
+    }
+
+    .select {
+        width: 310px;
+    }
+
+    .block {
+        width: 330px;
+    }
+
+    .date-input {
+        width: 120px;
+    }
+
+    .comment-block textarea {
+        width: 290px;
+    }
+}
+
+@media screen and (max-width: 420px) {
+    .modal-justify-add {
+        width: 300px;
+    }
+
+    .select {
+        width: 290px;
+    }
+
+    .block {
+        width: 300px;
+    }
+
+    .date-input {
+        width: 115px;
+    }
+
+    .comment-block textarea {
+        width: 270px;
+    }
+}
+
+@media screen and (max-width: 380px) {
+    .modal-justify-add {
+        width: 260px;
+    }
+
+    .select {
+        width: 250px;
+    }
+
+    .block {
+        width: 260px;
+    }
+
+    .date-input {
+        width: 105px;
+    }
+
+    .comment-block textarea {
+        width: 240px;
+    }
+
+    .line {
+        width: 20px;
+    }
 }
 
 

@@ -19,9 +19,9 @@ export function PopupLogout(props) {
 
                 </div>
 
-                <div className={`modal-justify ${mode === "dark" ? "dark" : "light"}`}>
-                    <div className={`modal-screen ${mode === "dark" ? "dark" : "light"}`}>
-                        <button className={`close-button ${mode === "dark" ? "dark" : "light"}`} onClick={props.close}>&times;</button>
+                <div className={`modal-justify-logout ${mode === "dark" ? "dark" : "light"}`}>
+                    <div className={`modal-screen-logout ${mode === "dark" ? "dark" : "light"}`}>
+                        <button className={`close-button-logout ${mode === "dark" ? "dark" : "light"}`} onClick={props.close}>&times;</button>
                         <div className="logout-block">
                             <img className="logout-image" src={logout_icon} alt="" />
 

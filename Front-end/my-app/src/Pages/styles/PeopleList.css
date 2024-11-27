@@ -1,8 +1,5 @@
-.people-main-screen {
-    height: 100%;
-}
-
 .people {
+    height: auto;
     position: relative;
     width: 100%;
     border-radius: 10px;
@@ -35,6 +32,18 @@
 
 @media screen and (min-width: 1500px) {
     .people {
-        margin-top: 15vh;
+        margin-top: 13vh;
+    }
+}
+
+@media screen and (max-width: 800px) {
+    .people {
+        margin-top: 8vh;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .people {
+        margin-top: 5vh;
     }
 }

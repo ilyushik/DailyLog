@@ -12,6 +12,7 @@
 .person-info-block {
     display: flex;
     padding: 10px 15px;
+    align-items: center;
 }
 
 .person-img {
@@ -53,6 +54,7 @@
 }
 
 .person-position {
+    position: relative;
     margin-left: 5px;
 }
 
@@ -78,6 +80,81 @@
 
 .link-info-block a:hover {
     text-decoration-line: underline;
+}
+
+@media (max-width: 800px) {
+    .person-img {
+        height: 60px;
+        width: 60px;
+    }
+
+    .position-icon {
+        height: 17px;
+        position: relative;
+        width: 17px;
+        top: 12px;
+    }
+
+    .person-position {
+        position: relative;
+        font-size: 13px;
+        bottom: 1px
+    }
+}
+
+@media (max-width: 450px) {
+    .person-img {
+        height: 50px;
+        width: 50px;
+    }
+
+    .position-icon {
+        height: 15px;
+        position: relative;
+        width: 15px;
+        bottom: 5px;
+    }
+
+    .person-position {
+        font-size: 13px;
+        bottom: 4.5px
+    }
+
+    .person-name,
+    .person-surname {
+        font-size: 15px;
+    }
+
+    .link-info-block a {
+        font-size: 10px;
+    }
+}
+
+@media screen and (max-width: 400px) {
+    .person-img {
+        height: 45px;
+        width: 45px;
+    }
+
+    .position-icon {
+        height: 13px;
+        position: relative;
+        width: 13px;
+        top: 7px;
+    }
+
+    .person-position {
+        font-size: 11px;
+    }
+
+    .person-name,
+    .person-surname {
+        font-size: 13px;
+    }
+
+    .link-info-block a {
+        font-size: 10px;
+    }
 }
 
 

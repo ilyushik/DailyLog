@@ -90,10 +90,10 @@ export function Popup(props) {
 
                 </div>
 
-                <div className={`modal-justify ${mode === "dark" ? "dark" : "light"}`}>
-                    <div className={`modal-screen ${mode === "dark" ? "dark" : "light"}`}>
-                        <button className={`close-button ${mode === "dark" ? "dark" : "light"}`} onClick={props.close}>&times;</button>
-                        <p className="title">Create a request</p>
+                <div className={`modal-justify-add ${mode === "dark" ? "dark" : "light"}`}>
+                    <div className={`modal-screen-add ${mode === "dark" ? "dark" : "light"}`}>
+                        <button className={`close-button-add ${mode === "dark" ? "dark" : "light"}`} onClick={props.close}>&times;</button>
+                        <p className="title-add">Create a request</p>
                         <form onSubmit={submitHandler}>
                             <div className="select-wrapper">
                                 <select className={`select ${mode === "dark" ? "dark" : "light"}`} name="reasons"

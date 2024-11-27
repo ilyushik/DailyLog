@@ -7,24 +7,27 @@
     background-color: rgba(0, 0, 0, 0.5);
     z-index: 1000;
     cursor: pointer;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
 }
 
-.modal-justify {
+.modal-justify-report {
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 1001;
     width: 500px;
-    height: 500px;
-    height: auto; /* Делаем высоту автоматической */
-    max-height: 90vh; /* Чтобы не выходить за экран */
+    height: auto;
+    max-height: 90vh;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     padding: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .error-message {
@@ -34,30 +37,30 @@
 }
 
 
-.modal-justify.light {
+.modal-justify-report.light {
     background: white;
 }
 
-.modal-justify.dark {
+.modal-justify-report.dark {
     background: #2c2c2c;
 }
 
-.modal-screen {
+.modal-screen-report {
     width: 100%;
     padding: 20px;
     text-align: center;
     font-size: 16px;
 }
 
-.modal-screen.light {
+.modal-screen-report.light {
     color: #1e1e1e;
 }
 
-.modal-screen.dark {
+.modal-screen-report.dark {
     color: #eeeeee;
 }
 
-.close-button {
+.close-button-report {
     position: absolute;
     top: 10px;
     right: 10px;
@@ -68,10 +71,10 @@
     transition: color 0.3s;
 }
 
-.close-button.light {
+.close-button-report.light {
     color: #696969;
 }
-.close-button.dark {
+.close-button-report.dark {
     color: #eeeeee;
 }
 
@@ -177,20 +180,69 @@
 .request-info-block-reason-block,
 .request-info-block-startDate-block,
 .request-info-block-endDate-block,
-.request-info-block-comment-block,
 .report-info-block-date-block,
-.report-info-block-hours-block,
-.report-info-block-comment-block {
+.report-info-block-hours-block {
     display: flex;
     width: 100%;
     height: auto;
     justify-content: space-between;
 }
 
+.request-info-block-comment-block {
+    display: block;
+    text-align: left;
+}
+
+.request-title-block {
+    display: block;
+    position: relative;
+    background: transparent;
+    height: 100px;
+    width: 100%;
+    border-radius: 10px;
+    overflow-y: auto;
+}
+
+.request-title-block.light {
+    border: 1px solid #333333;
+}
+
+.request-title-block.dark {
+    border: 1px solid #e3e3e3;
+}
+
 .request-info-block-comment-block-data,
 .report-info-block-comment-block-data{
-    max-width: 50%;
-    height: auto; /* Ограничьте максимальную высоту блока */
-    overflow-y: auto; /* Добавляет вертикальную прокрутку, если текст не помещается */
     word-wrap: break-word;
+    position: relative;
+    margin-left: 5px;
+}
+
+@media screen and (max-width: 650px) {
+    .modal-justify-report {
+        width: 300px;
+        height: auto;
+    }
+
+}
+
+@media screen and (max-width: 400px) {
+    .modal-justify-report {
+        width: 250px;
+        height: auto;
+    }
+
+    .report-date-block input,
+    .report-hours-block input,
+    .report-buttons-block {
+        width: 250px;
+    }
+
+    .report-text-block textarea {
+        width: 230px;
+    }
+
+    .report-buttons-block button {
+        width: 110px;
+    }
 }

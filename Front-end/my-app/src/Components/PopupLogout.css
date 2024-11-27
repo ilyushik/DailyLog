@@ -7,9 +7,11 @@
     background-color: rgba(0, 0, 0, 0.5);
     z-index: 1000;
     cursor: pointer;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
 }
 
-.modal-justify {
+.modal-justify-logout {
     position: fixed;
     top: 50%;
     left: 50%;
@@ -25,30 +27,30 @@
     align-items: center;
 }
 
-.modal-justify.light {
+.modal-justify-logout.light {
     background: white;
 }
 
-.modal-justify.dark {
+.modal-justify-logout.dark {
     background: #2c2c2c;
 }
 
-.modal-screen {
+.modal-screen-logout {
     width: 100%;
     padding: 20px;
     text-align: center;
     font-size: 16px;
 }
 
-.modal-screen.light {
+.modal-screen-logout.light {
     color: #1e1e1e;
 }
 
-.modal-screen.dark {
+.modal-screen-logout.dark {
     color: #eeeeee;
 }
 
-.close-button {
+.close-button-logout {
     position: absolute;
     top: 10px;
     right: 10px;
@@ -59,10 +61,10 @@
     transition: color 0.3s;
 }
 
-.close-button.light {
+.close-button-logout.light {
     color: #696969;
 }
-.close-button.dark {
+.close-button-logout.dark {
     color: #eeeeee;
 }
 
@@ -95,7 +97,7 @@
 .logout-buttons {
     display: flex;
     justify-content: space-between;
-    margin-top: 30px;
+    margin: 30px 50px 0 50px;
 }
 
 .logout_button_no, .logout_button_yes {
@@ -125,6 +127,60 @@
     font-family: "Poppins", sans-serif;
     font-weight: 500;
     margin-right: 10px;
+}
+
+@media screen and (max-width: 650px) {
+    .modal-justify-logout {
+        width: 300px;
+        height: 200px;
+    }
+
+    .logout-block {
+        margin-top: 10px;
+    }
+
+    .logout-image {
+        width: 45px;
+    }
+
+    .title {
+        font-size: 17px;
+    }
+
+    .logout-buttons {
+        margin: 30px 0 0 0;
+    }
+
+    .logout_button_no, .logout_button_yes {
+        width: 120px;
+    }
+}
+
+@media screen and (max-width: 400px) {
+    .modal-justify-logout {
+        width: 250px;
+        height: 200px;
+    }
+
+    .logout-block {
+        margin-top: 10px;
+    }
+
+    .logout-image {
+        width: 40px;
+    }
+
+    .title {
+        font-size: 17px;
+    }
+
+    .logout-buttons {
+        margin: 30px 0 0 0;
+    }
+
+    .logout_button_no, .logout_button_yes {
+        width: 100px;
+    }
 }
 
 

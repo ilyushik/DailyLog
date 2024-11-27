@@ -1,5 +1,5 @@
 .mainScreen-main-block {
-    margin-top: 10vh;
+    margin-top: 100px;
 }
 
 .image-text-block {
@@ -19,7 +19,7 @@
 }
 
 .name-block {
-    height: 2.5vh;
+    height: 25px;
     width: 100%;
 }
 
@@ -29,10 +29,15 @@
     margin-left: 10px;
 }
 
+.position-icon {
+    position: relative;
+    width: 15px;
+}
+
 .image-logo {
     position: relative;
     border-radius: 50%;
-    height: 15vh;
+    height: 150px;
     aspect-ratio: 1 / 1;
 }
 
@@ -45,7 +50,7 @@
 }
 
 .name {
-    font-size: 2.5vh;
+    font-size: 20px;
     font-weight: 500;
 }
 
@@ -58,7 +63,8 @@
 }
 
 .position {
-    font-size: 1.5vh;
+    position: relative;
+    font-size: 15px;
     margin-left: 5px;
 }
 
@@ -122,7 +128,7 @@
 
 @media screen and (min-width: 1500px) {
     .image-logo {
-        height: 20vh;
+        height: 200px;
     }
 
     .position-icon-position-title-container {
@@ -134,6 +140,10 @@
 @media screen and (max-width: 1500px) {
     .active-requests {
         width: 45vw;
+    }
+
+    .position-icon-position-title-container {
+        grid-template-rows: 40% 40%;
     }
 }
 
@@ -163,30 +173,30 @@
 }
 
 @media screen and (max-width: 800px) {
+
     .mainScreen-main-block {
-        margin-top: 7vh;
+        margin-top: 70px;
     }
 
     .image-logo {
-        height: 12vh;
+        height: 120px;
     }
 
     .position-icon-position-title-container {
-        grid-template-rows: 30% 40%;
+        grid-template-rows: 40px 40%;
     }
 
     .name {
-        font-size: 2vh;
+        font-size: 20px;
     }
 
     .position-icon {
         position: relative;
-        height: 2vh;
-        top: 10px;
+        height: 20px;
     }
 
     .position {
-        font-size: 1.5vh;
+        bottom: 6px;
     }
 
     .requests-block {
@@ -196,11 +206,11 @@
 
 @media screen and (max-width: 600px) {
     .mainScreen-main-block {
-        margin-top: 5vh;
+        margin-top: 50px;
     }
 
     .image-logo {
-        height: 10vh;
+        height: 100px;
     }
 
     .empty-div {
@@ -211,10 +221,15 @@
         display: block;
     }
 
+    .name {
+        font-size: 15px;
+        bottom: 5px;
+    }
+
     .position-icon-position-title-container {
         display: block;
         position: relative;
-        bottom: 2vh;
+        bottom: 20px;
     }
 
     .requests-calendar-block {
@@ -228,9 +243,23 @@
     }
 }
 
-@media screen and (max-width: 400px) and (max-height: 700px) {
+@media screen and (max-width: 400px) {
+    .name {
+        font-size: 15px;
+        bottom: 5px;
+    }
+
+    .position {
+        font-size: 12px;
+    }
+
     .requests-block {
         max-height: 170px;
         overflow-y: scroll;
     }
+
+    .position-icon {
+        width: 20px;
+    }
 }
+

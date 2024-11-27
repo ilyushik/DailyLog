@@ -32,16 +32,14 @@ export function PeopleList() {
 
     return (
         <Fragment>
-            <div className={`people-main-screen ${mode === "light" ? "light" : "dark"}`}>
-                <div className={`people ${mode === "light" ? "light" : "dark"}`}>
-                    <div className={`people-title ${mode === "light" ? "light" : "dark"}`}>Team</div>
-                    <div className={`peoples-block ${mode === "light" ? "light" : "dark"}`}>
-                        {users.length < 1 &&
-                            <p className={`no-messages ${mode === "light" ? "light" : "dark"}`}>{errors.message}</p>}
-                        {users.map((user) => (
-                            <PeopleListComponent user={user} key={user.id} />
-                        ))}
-                    </div>
+            <div className={`people ${mode === "light" ? "light" : "dark"}`}>
+                <div className={`people-title ${mode === "light" ? "light" : "dark"}`}>Team</div>
+                <div className={`peoples-block ${mode === "light" ? "light" : "dark"}`}>
+                    {users.length < 1 &&
+                        <p className={`no-messages ${mode === "light" ? "light" : "dark"}`}>{errors.message}</p>}
+                    {users.map((user) => (
+                        <PeopleListComponent user={user} key={user.id}/>
+                    ))}
                 </div>
             </div>
         </Fragment>

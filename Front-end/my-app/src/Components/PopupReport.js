@@ -95,10 +95,10 @@ export function PopupReport(props) {
         <Fragment>
             <div>
                 <div className="back" onClick={props.closeModal} />
-                <div className={`modal-justify ${mode === "dark" ? "dark" : "light"}`}>
-                    <div className={`modal-screen ${mode === "dark" ? "dark" : "light"}`}>
+                <div className={`modal-justify-report ${mode === "dark" ? "dark" : "light"}`}>
+                    <div className={`modal-screen-report ${mode === "dark" ? "dark" : "light"}`}>
                         <button
-                            className={`close-button ${mode === "dark" ? "dark" : "light"}`}
+                            className={`close-button-report ${mode === "dark" ? "dark" : "light"}`}
                             onClick={props.closeModal}>&times;</button>
                         <div className="report-block">
                             {props.report && (
@@ -131,8 +131,10 @@ export function PopupReport(props) {
 
 
                                                 <div className={`request-info-block-comment-block ${mode === "dark" ? "dark" : "light"}`}>
-                                                    <p>Comment:</p>
-                                                    <p className={`request-info-block-comment-block-data ${mode === "dark" ? "dark" : "light"}`}>{requests.comment}</p>
+                                                    <p className={`request-info-block-comment-block-title ${mode === "dark" ? "dark" : "light"}`}>Comment:</p>
+                                                    <div className={`request-title-block ${mode === "dark" ? "dark" : "light"}`}>
+                                                        <p className={`request-info-block-comment-block-data ${mode === "dark" ? "dark" : "light"}`}>{requests.comment}</p>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -158,9 +160,11 @@ export function PopupReport(props) {
                                                 </div>
 
                                                 <div
-                                                    className={`report-info-block-comment-block ${mode === "dark" ? "dark" : "light"}`}>
-                                                    <p>Comment:</p>
-                                                    <p className={`report-info-block-comment-block-data`}>{props.report.text}</p>
+                                                    className={`request-info-block-comment-block ${mode === "dark" ? "dark" : "light"}`}>
+                                                    <p className={`request-info-block-comment-block-title ${mode === "dark" ? "dark" : "light"}`}>Comment:</p>
+                                                    <div className={`request-title-block ${mode === "dark" ? "dark" : "light"}`}>
+                                                        <p className={`request-info-block-comment-block-data`}>{props.report.text}</p>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>

@@ -11,7 +11,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -56,6 +62,9 @@ public class ReportController {
         List<ReportDTO> usersReportsByDate = reportService.getReportsByUserId(user.getId()).stream().filter(s->s.getDate().equals(reportDTO.getDate())).collect(Collectors.toList());
         if (!usersReportsByDate.isEmpty()) {
             return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Report already exists"));
+        }
+        if(reportDTO.getDate().isAfter(LocalDate.now())) {
+            return ResponseEntity.badRequest().body(Collections.singletonMap("date", "That day has not yet come"));
         }
 
         return ResponseEntity.ok(reportService.addReport(reportDTO, user));

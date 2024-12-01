@@ -1,7 +1,6 @@
 .main-block {
     height: 85%;
     align-items: center;
-    /*margin-top: 15vh;*/
     display: flex;
     justify-content: center;
 }
@@ -62,6 +61,7 @@ form {
 }
 
 .input {
+    position: relative;
     border: 1px solid #d9d9d9;
     padding: 0.7rem;
     border-radius: 10px;
@@ -104,6 +104,37 @@ form {
     height: 10px;
 }
 
+.input-img {
+    position: relative;
+    display: flex;
+    width: 100%;
+    align-items: center;
+}
+
+.input-img input {
+    margin-left: 15px;
+}
+
+.eye-icon {
+    position: absolute;
+    right: 20px;
+    border: none;
+    background: transparent;
+}
+
+.eye-icon {
+    color: #7a7a7a;
+}
+
+.eye-icon.dark:hover {
+    color: #b0b0b0;
+}
+
+.eye-icon.light:hover {
+    color: #484848;
+}
+
+
 @media screen and (min-width: 1050px) {
     .center-block {
         margin: 15px 0;
@@ -117,7 +148,7 @@ form {
     }
 
     .form-container {
-        width: 40vw;
+        width: 400px;
     }
 
     .error-message {
@@ -133,47 +164,82 @@ form {
         position: relative;
         margin-top: 20px;
     }
+
 }
 
 @media (max-width: 900px) {
     .form-container {
-        width: 43vw;
+        width: 430px;
+    }
+
+    .input-img input {
+        margin-left: 18px;
     }
 }
 
 @media (max-width: 700px) {
     .form-container {
-        width: 45vw;
+        width: 450px;
+    }
+
+    .input-img input {
+        margin-left: 18px;
     }
 }
 
 @media (max-width: 600px) {
     .form-container {
-        width: 55vw;
+        width: 450px;
+    }
+
+    .input-img input {
+        margin-left: 17px;
+    }
+}
+@media (max-width: 550px) {
+    .form-container {
+        width: 400px;
     }
 }
 
-@media (max-width: 550px) {
-    .form-container {
-        width: 60vw;
-    }
-}
 @media (max-width: 500px) {
     .form-container {
-        width: 70vw;
+        width: 370px;
+    }
+
+    .input-img input {
+        margin-left: 12px;
     }
 }
 
 @media (max-width: 450px) {
+    .input-img input {
+        margin-left: 8px;
+    }
+
+    .eye-icon {
+        right: 15px;
+    }
+
     .form-container {
-        width: 80vw;
+        width: 300px;
     }
 }
 
 
+@media (max-width: 400px) {
+    .form-container {
+        width: 280px;
+    }
+}
+
 @media (max-width: 350px) {
     .form-container {
-        width: 85vw;
+        width: 250px;
+    }
+
+    .eye-icon {
+        right: 10px;
     }
 }
 

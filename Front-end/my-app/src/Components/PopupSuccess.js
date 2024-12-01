@@ -20,8 +20,8 @@ export function PopupSuccess(props) {
                             <img className="success-image" src={success_icon} alt="success icon" />
 
                             <div className="text-block">
-                                <p className={`title ${mode === "light" ? "light" : "dark"}`}>{props.title}</p>
-                                <p className={`message ${mode === "light" ? "light" : "dark"}`}>{props.message}</p>
+                                <p className={`title-succ ${mode === "light" ? "light" : "dark"}`}>{props.title}</p>
+                                <p className={`message-succ ${mode === "light" ? "light" : "dark"}`}>{props.message}</p>
                             </div>
                         </div>
                     </div>

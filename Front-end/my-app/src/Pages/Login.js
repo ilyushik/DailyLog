@@ -11,6 +11,15 @@ export function Login() {
     const [formIsValid, setFormIsValid] = useState(true);
     const mode = useSelector(state => state.theme.theme);
     const navigate = useNavigate();
+    const [showPassword, setShowPassword] = useState(false);
+
+    const showPasswordHandler = () => {
+        setShowPassword(true);
+    }
+
+    const hidePasswprdHandler = () => {
+        setShowPassword(false);
+    }
 
     const emailHandler = (event) => {
         event.preventDefault()
@@ -69,8 +78,13 @@ export function Login() {
                     <div className="center-block">
                         <div className="password-block">
                             <label className="label" htmlFor="password">Password</label>
-                            <input className={`input ${mode === "light" ? "light" : "dark"}`} id="password" type="password" placeholder="********"
-                                   onChange={passwordHandler} value={password}/>
+                            <div className={`input-img`}>
+                                <input className={`input ${mode === "light" ? "light" : "dark"}`} id="password"
+                                       type={showPassword ? "text" : "password"} placeholder={showPassword ? "password" : "********"}
+                                       onChange={passwordHandler} value={password}/>
+                                {showPassword && <button onClick={hidePasswprdHandler} className={`far fa-eye eye-icon ${mode === "light" ? "light" : "dark"}`}></button>}
+                                {!showPassword && <button onClick={showPasswordHandler} className={`far fa-eye-slash eye-icon ${mode === "light" ? "light" : "dark"}`}></button>}
+                            </div>
                             {errors.password && (<h3 className={`error-message`}>{errors.password}</h3>)}
                         </div>
                     </div>

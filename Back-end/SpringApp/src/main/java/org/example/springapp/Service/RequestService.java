@@ -1,8 +1,7 @@
 package org.example.springapp.Service;
 
+import org.example.springapp.DTO.AddRequestReturnDTO;
 import org.example.springapp.DTO.RequestDTO;
-import org.example.springapp.Mail.MailService;
-import org.example.springapp.Mail.MailStructure;
 import org.example.springapp.Model.*;
 import org.example.springapp.Repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +25,6 @@ public class RequestService {
     private ApproverActionRepository approverActionRepository;
     @Autowired
     private RequestStatusRepository requestStatusRepository;
-    @Autowired
-    private MailService mailService;
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -131,7 +128,7 @@ public class RequestService {
         return sortedList;
     }
 
-    public Request approveRequest(int id) {
+    public String approveRequest(int id) {
         Request request = requestRepository.findById(id).orElse(null);
         String uniqueCode = request.getUniqueCode();
         List<Request> sameRequests = new ArrayList<>();
@@ -159,25 +156,15 @@ public class RequestService {
         boolean allApproved = sameRequests.stream()
                 .allMatch(req -> req.getAction().equals(action));
 
-        if (sameRequests.size() == 1) {
-            request.setStatus(status);
-            request.setDateOfResult(new Timestamp(System.currentTimeMillis()));
-
-            MailStructure mailStructure = new MailStructure("Info about your request", "Your request was approved");
-            mailService.sendMail(request.getUser().getEmail(), mailStructure);
-        }
-
-        if (sameRequests.size() > 1) {
-            if (allApproved) {
-                for(Request r : sameRequests) {
+        if (!sameRequests.isEmpty()) {
+            if (sameRequests.size() == 1 || allApproved) {
+                sameRequests.forEach(r -> {
                     r.setStatus(status);
                     r.setDateOfResult(new Timestamp(System.currentTimeMillis()));
-                }
-
-                MailStructure mailStructure = new MailStructure("Info about your request", "Your request was approved");
-                mailService.sendMail(request.getUser().getEmail(), mailStructure);
+                });
             }
         }
+
 
         if (request.getStatus().getStatus().equals("Approved")) {
             if (request.getReason().getReason().equals("Annual Leave")) {
@@ -195,7 +182,8 @@ public class RequestService {
 
             // maybe remove work from home
             if (request.getReason().getReason().equals("Work from Home")) {
-                return requestRepository.save(request);
+                requestRepository.save(request);
+                return user.getEmail();
             }
 
             while (!currentDate.isAfter(finishDate)) {
@@ -208,12 +196,15 @@ public class RequestService {
                 report.setStatus("leave");
                 reportRepository.save(report);
             }
+
+            return user.getEmail();
         }
 
-        return requestRepository.save(request);
+        requestRepository.save(request);
+        return "Approved";
     }
 
-    public Request declineRequest(int id) {
+    public String declineRequest(int id) {
         Request request = requestRepository.findById(id).orElse(null);
         String uniqueCode = request.getUniqueCode();
         ApproverAction action = approverActionRepository.findApproverActionByAction("Decline");
@@ -230,11 +221,9 @@ public class RequestService {
                 r.setDateOfResult(new Timestamp(System.currentTimeMillis()));
             }
         }
+        requestRepository.save(request);
 
-        MailStructure mailStructure = new MailStructure("Info about your request", "Your request was declined");
-        mailService.sendMail(request.getUser().getEmail(), mailStructure);
-
-        return requestRepository.save(request);
+        return request.getUser().getEmail();
     }
 
     public String generateRandomString() {
@@ -248,7 +237,24 @@ public class RequestService {
         return sb.toString();
     }
 
-    public String addRequest(int userId, RequestDTO requesT) {
+    private void createRequestAndAddApprover(User user, User approver, String uniqueCode,
+                                             RequestStatus status, RequestReason reason, ApproverAction action, RequestDTO requesT) {
+        Request request = new Request();
+        request.setStartDate(requesT.getStartDate());
+        request.setFinishDate(requesT.getFinishDate());
+        request.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+        request.setUniqueCode(uniqueCode);
+        request.setUser(user);
+        request.setStatus(status);
+        request.setReason(reason);
+        request.setAction(action);
+        request.setApproverId(approver);
+        request.setComment(requesT.getComment());
+        requestRepository.save(request);
+    }
+
+    public AddRequestReturnDTO addRequest(int userId, RequestDTO requesT) {
+        AddRequestReturnDTO addRequestReturnDTO = new AddRequestReturnDTO();
         String uniqueCode = generateRandomString();
         User user = userRepository.findById(userId).orElse(null);
         RequestStatus status = requestStatusRepository.findByStatus("Pending");
@@ -261,6 +267,8 @@ public class RequestService {
         LocalDate startDate = requesT.getStartDate();
         LocalDate finishDate = requesT.getFinishDate();
         LocalDate currentDate = startDate;
+
+        addRequestReturnDTO.setUserEmail(user.getEmail());
 
         if (user.getRole().getRole().equals("ROLE_CEO")) {
             Request request = new Request(requesT.getStartDate(), requesT.getFinishDate(),
@@ -298,63 +306,24 @@ public class RequestService {
                 reportRepository.save(report);
             }
 
-            return "Request of CEO saved";
+            return addRequestReturnDTO;
         }
 
         assert user != null;
         if (user.getTeamLead() != null) {
-            Request request = new Request();
-            request.setStartDate(requesT.getStartDate());
-            request.setFinishDate(requesT.getFinishDate());
-            request.setCreatedAt(new Timestamp(System.currentTimeMillis()));
-            request.setUniqueCode(uniqueCode);
-            request.setUser(user);
-            request.setStatus(status);
-            request.setReason(reason);
-            request.setAction(action);
-            request.setApproverId(user.getTeamLead());
-            request.setComment(requesT.getComment());
-            requestRepository.save(request);
-
-            MailStructure mailStructure = new MailStructure("Info about request", "Your have new request");
-            mailService.sendMail(user.getTeamLead().getEmail(), mailStructure);
+            createRequestAndAddApprover(user, user.getTeamLead(), uniqueCode, status, reason, action, requesT);
+            addRequestReturnDTO.setFirstApproverEmail(user.getTeamLead().getEmail());
         }
         if (user.getTechLead() != null) {
-            Request request1 = new Request();
-            request1.setStartDate(requesT.getStartDate());
-            request1.setFinishDate(requesT.getFinishDate());
-            request1.setCreatedAt(new Timestamp(System.currentTimeMillis()));
-            request1.setUniqueCode(uniqueCode);
-            request1.setUser(user);
-            request1.setStatus(status);
-            request1.setReason(reason);
-            request1.setAction(action);
-            request1.setApproverId(user.getTechLead());
-            request1.setComment(requesT.getComment());
-            requestRepository.save(request1);
-
-            MailStructure mailStructure = new MailStructure("Info about request", "Your have new request");
-            mailService.sendMail(user.getTechLead().getEmail(), mailStructure);
+            createRequestAndAddApprover(user, user.getTechLead(), uniqueCode, status, reason, action, requesT);
+            addRequestReturnDTO.setSecondApproverEmail(user.getTechLead().getEmail());
         }
         if (user.getPm() != null) {
-            Request request2 = new Request();
-            request2.setStartDate(requesT.getStartDate());
-            request2.setFinishDate(requesT.getFinishDate());
-            request2.setCreatedAt(new Timestamp(System.currentTimeMillis()));
-            request2.setUniqueCode(uniqueCode);
-            request2.setUser(user);
-            request2.setStatus(status);
-            request2.setReason(reason);
-            request2.setAction(action);
-            request2.setApproverId(user.getPm());
-            request2.setComment(requesT.getComment());
-            requestRepository.save(request2);
-
-            MailStructure mailStructure = new MailStructure("Info about request", "Your have new request");
-            mailService.sendMail(user.getPm().getEmail(), mailStructure);
+            createRequestAndAddApprover(user, user.getPm(), uniqueCode, status, reason, action, requesT);
+            addRequestReturnDTO.setThirdApproverEmail(user.getPm().getEmail());
         }
 
-        return "Request of employee created";
+        return addRequestReturnDTO;
     }
 
     public RequestDTO getRequestById(int id) {

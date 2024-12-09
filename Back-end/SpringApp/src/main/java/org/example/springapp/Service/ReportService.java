@@ -22,10 +22,10 @@ public class ReportService {
                 .collect(Collectors.toList());
     }
 
-    public ReportDTO addReport(ReportDTO reportDTO, User user) {
+    public String addReport(ReportDTO reportDTO, User user) {
         Report report = new Report(reportDTO.getDate(), reportDTO.getText(), reportDTO.getCountOfHours(),
                 user, "work");
         reportRepository.save(report);
-        return reportDTO;
+        return user.getEmail();
     }
 }

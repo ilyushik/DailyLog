@@ -4,7 +4,6 @@ import "./styles/Inbox.css"
 import {InboxComponent} from "./inboxComponents/InboxComponent";
 import axios from "axios";
 
-
 export function Inbox() {
     const mode = useSelector(state => state.theme.theme);
     const [requests, setRequests] = useState([])
@@ -34,7 +33,6 @@ export function Inbox() {
 
     const approveRequest = async (event, requestId) => {
         event.preventDefault();
-        console.log(`Approve request: ${requestId}`)
 
         try {
             const response = await axios.post(`http://localhost:8080/requests/approve/${requestId}`, {requestId: requestId},{
@@ -44,6 +42,8 @@ export function Inbox() {
                 },
             })
             console.log(response.data);
+            //logic to send email
+            //if response.data !== "Approved
             setRequests([]);
             fetchRequestsHandler()
         } catch(error) {
@@ -63,6 +63,7 @@ export function Inbox() {
                 },
             })
             console.log(response.data);
+            //logic to send emails
             setRequests([]);
             fetchRequestsHandler()
         } catch(error) {

@@ -1,7 +1,10 @@
+import ReactDOMServer from 'react-dom/server';
 import {Fragment, useState, useEffect, useCallback} from "react";
 import "./Popup.css"
 import {useSelector} from "react-redux";
 import axios from "axios";
+// import {Resend} from "resend";
+import {Email} from "../emails/Email.tsx";
 
 export function Popup(props) {
     const mode = useSelector(state => state.theme.theme);
@@ -12,6 +15,21 @@ export function Popup(props) {
     const [reasons, setReasons] = useState([]);
     const [errors, setErrors] = useState({});
     const [isFormValid, setIsFormValid] = useState(true);
+
+
+    const handleSendEmail = async (email, message, link, buttonText) => {
+        const htmlContent = ReactDOMServer.renderToString(<Email message={message} link={link} buttonText={buttonText} />)
+
+        try {
+            const response = await axios.post("http://localhost:8080/api/send-email", {
+                html: htmlContent,
+                userEmail: email,
+            })
+            console.log(response.data)
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
     const fetchReasonsHandler = useCallback(async () => {
         try {
@@ -65,6 +83,8 @@ export function Popup(props) {
         const request = {reason: reason, startDate: startDate, finishDate: finishDate}
         console.log(request)
 
+        const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
         try {
             const response = await axios.post("http://localhost:8080/addRequest", {reason: reason, startDate: startDate, finishDate: finishDate, comment: comment},{
                 headers: {
@@ -74,6 +94,33 @@ export function Popup(props) {
             })
 
             console.log(response.data)
+
+            console.log(response.data.userEmail)
+            console.log(response.data.firstApproverEmail)
+            console.log(response.data.secondApproverEmail)
+            console.log(response.data.thirdApproverEmail)
+
+            handleSendEmail(response.data.userEmail, "Your request has been received!",
+                "http://localhost:3000/my-info", "Back to application")
+
+            await delay(5000)
+
+            if (response.data.firstApproverEmail !== null) {
+                handleSendEmail(response.data.firstApproverEmail, "Your have new request",
+                    "http://localhost:3000/inbox", "Back to application")
+            }
+            await delay(5000)
+            if (response.data.secondApproverEmail !== null) {
+                handleSendEmail(response.data.secondApproverEmail, "Your have new request",
+                    "http://localhost:3000/inbox", "Back to application")
+            }
+            await delay(5000)
+            if (response.data.thirdApproverEmail !== null) {
+                handleSendEmail(response.thirdApproverEmail, "Your have new request",
+                    "http://localhost:3000/inbox", "Back to application")
+            }
+
+
             props.close()
             props.openSuccess()
         } catch (error) {

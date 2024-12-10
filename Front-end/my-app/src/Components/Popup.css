@@ -246,6 +246,11 @@ form {
     height: 10px;
 }
 
+.comment-message {
+    color: #cb0000;
+    font-family: "Poppins", sans-serif;
+}
+
 @media screen and (max-width: 800px) {
     .modal-justify-add {
         width: 400px;

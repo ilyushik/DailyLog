@@ -3,7 +3,6 @@ import {Fragment, useState, useEffect, useCallback} from "react";
 import "./Popup.css"
 import {useSelector} from "react-redux";
 import axios from "axios";
-// import {Resend} from "resend";
 import {Email} from "../emails/Email.tsx";
 
 export function Popup(props) {
@@ -95,34 +94,35 @@ export function Popup(props) {
 
             console.log(response.data)
 
-            console.log(response.data.userEmail)
-            console.log(response.data.firstApproverEmail)
-            console.log(response.data.secondApproverEmail)
-            console.log(response.data.thirdApproverEmail)
+            if (response.status !== 400) {
+                props.close()
+                props.openLoad()
 
-            handleSendEmail(response.data.userEmail, "Your request has been received!",
-                "http://localhost:3000/my-info", "Back to application")
+                handleSendEmail(response.data.userEmail, "Your request has been received!",
+                    "http://localhost:3000/my-info", "Back to requests")
 
-            await delay(5000)
 
-            if (response.data.firstApproverEmail !== null) {
-                handleSendEmail(response.data.firstApproverEmail, "Your have new request",
-                    "http://localhost:3000/inbox", "Back to application")
+                await delay(1000)
+
+                if (response.data.firstApproverEmail !== null) {
+                    handleSendEmail(response.data.firstApproverEmail, "You have new request",
+                        "http://localhost:3000/inbox", "Back to requests")
+                }
+                await delay(1000)
+                if (response.data.secondApproverEmail !== null) {
+                    handleSendEmail(response.data.secondApproverEmail, "You have new request",
+                        "http://localhost:3000/inbox", "Back to requests")
+                }
+                await delay(1000)
+                if (response.data.thirdApproverEmail !== null) {
+                    handleSendEmail(response.data.thirdApproverEmail, "You have new request",
+                        "http://localhost:3000/inbox", "Back to requests")
+                }
+
+                props.closeLoad()
             }
-            await delay(5000)
-            if (response.data.secondApproverEmail !== null) {
-                handleSendEmail(response.data.secondApproverEmail, "Your have new request",
-                    "http://localhost:3000/inbox", "Back to application")
-            }
-            await delay(5000)
-            if (response.data.thirdApproverEmail !== null) {
-                handleSendEmail(response.thirdApproverEmail, "Your have new request",
-                    "http://localhost:3000/inbox", "Back to application")
-            }
-
-
-            props.close()
             props.openSuccess()
+
         } catch (error) {
             console.log(error.response.data)
             setErrors(error.response.data)
@@ -173,6 +173,7 @@ export function Popup(props) {
                             <div className={`comment-block ${mode === "dark" ? "dark" : "light"}`}>
                                 <label htmlFor="comment">Comment</label>
                                 <textarea className={`comment-area ${mode === "dark" ? "dark" : "light"}`} id="comment" value={comment} placeholder={"Write something..."} onChange={commentHandler}/>
+                                {errors.comment && <p className={`comment-message`}>{errors.comment}</p>}
                             </div>
 
                             <div className="buttons-block">

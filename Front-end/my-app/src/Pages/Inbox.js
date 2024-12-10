@@ -3,11 +3,27 @@ import { useSelector } from "react-redux";
 import "./styles/Inbox.css"
 import {InboxComponent} from "./inboxComponents/InboxComponent";
 import axios from "axios";
+import ReactDOMServer from "react-dom/server";
+import {Email} from "../emails/Email.tsx";
 
 export function Inbox() {
     const mode = useSelector(state => state.theme.theme);
     const [requests, setRequests] = useState([])
     const [errors, setErrors] = useState({})
+
+    const handleSendEmail = async (email, message, link, buttonText) => {
+        const htmlContent = ReactDOMServer.renderToString(<Email message={message} link={link} buttonText={buttonText} />)
+
+        try {
+            const response = await axios.post("http://localhost:8080/api/send-email", {
+                html: htmlContent,
+                userEmail: email,
+            })
+            console.log(response.data)
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
     const fetchRequestsHandler = useCallback(async () => {
         try {
@@ -42,8 +58,11 @@ export function Inbox() {
                 },
             })
             console.log(response.data);
-            //logic to send email
-            //if response.data !== "Approved
+
+            if (response.data.requestStatus === "Approved") {
+                handleSendEmail(response.data.userEmail, "Your request has been approved!",
+                    "http://localhost:3000/my-info", "Back to requests")
+            }
             setRequests([]);
             fetchRequestsHandler()
         } catch(error) {
@@ -63,7 +82,12 @@ export function Inbox() {
                 },
             })
             console.log(response.data);
-            //logic to send emails
+
+            if (response.data.requestStatus === "Declined") {
+                handleSendEmail(response.data.userEmail, "Your request has been declined!",
+                    "http://localhost:3000/my-info", "Back to requests")
+            }
+
             setRequests([]);
             fetchRequestsHandler()
         } catch(error) {

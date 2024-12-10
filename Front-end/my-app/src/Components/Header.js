@@ -14,6 +14,7 @@ import peopleList from "../images/peopleList.svg"
 import {PopupLogout} from "./PopupLogout";
 import { toggleTheme } from '../store/index';
 import burger from '../images/burger-menu.svg'
+import {PopupLoading} from "./PopupLoading";
 
 
 export function Header() {
@@ -26,6 +27,7 @@ export function Header() {
     const [requests, setRequests] = useState([]);
     const [logoutPopupIsOpen, setLogoutPopupIsOpen] = useState(false);
     const [isMenuOpened, setIsMenuOpened] = useState(false);
+    const [isLoadingPopup, setIsLoadingPopup] = useState(false);
 
     const fetchRequestsHandler = useCallback(async () => {
         try {
@@ -160,10 +162,19 @@ export function Header() {
         setLogoutPopupIsOpen(false);
     }
 
+    const closeLoading = () => {
+        setIsLoadingPopup(false)
+    }
+
+    const openLoading = () => {
+        setIsLoadingPopup(true)
+    }
+
     return (
         <Fragment>
+            {isLoadingPopup && <PopupLoading />}
             {logoutPopupIsOpen && <PopupLogout close={closeLogoutPopup}/>}
-            {popupIsOpen && <Popup openSuccess={openPopupSuccess} close={closePopup}/>}
+            {popupIsOpen && <Popup openSuccess={openPopupSuccess} close={closePopup} closeLoad={closeLoading} openLoad={openLoading}/>}
             {popupSuccessIsOpen && <PopupSuccess close={closePopupSuccess} title="The request was
                                     successfully sent!" message="Wait for a message
                                     confirming your request"/>}

@@ -24,11 +24,9 @@ public class Request {
     private int id;
 
     @Column(name = "start_date")
-//    @NotEmpty(message = "Not empty...")
     private LocalDate startDate;
 
     @Column(name = "finish_date")
-//    @NotEmpty(message = "Not empty...")
     private LocalDate finishDate;
 
     @Column(name = "created_at")
@@ -63,6 +61,8 @@ public class Request {
     @OneToMany(mappedBy = "request")
     private List<Report> report;
 
+    @Size(min = 2, max = 1000, message = "Text should be between 2 and 1000")
+    @Column(name = "comment")
     private String comment;
 
     public Request(LocalDate startDate, LocalDate finishDate, Timestamp createdAt, String uniqueCode,

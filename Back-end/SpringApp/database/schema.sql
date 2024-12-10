@@ -116,19 +116,4 @@ INSERT INTO User (first_name, second_name, password, email, image, days_for_vac,
                                                                                                                                                  ('Bohdan', 'Khokhlov', 'password004', 'hohlovb123@gmail.com', 'https://firebasestorage.googleapis.com/v0/b/dailylog-44de4.appspot.com/o/face7.png?alt=media&token=2ef56ec2-d4dc-4dbe-8614-aaadb1da3c70', 20, 2, 2, 'Data Analyst', 3, 4, 2), -- Разработчик с Тим Лидом (Alice)
                                                                                                                                                  ('Frank', 'Miller', 'password006', 'frank.miller@example.com', 'https://firebasestorage.googleapis.com/v0/b/dailylog-44de4.appspot.com/o/face8.png?alt=media&token=518caa3b-a792-44ce-aa91-38a853895cbf', 20, 2, 2, 'Developer', 3, 4, 2); -- Разработчик с Тех Лидом (Eve)
 
--- Вставка отчетов
-# INSERT INTO Report (date, text, count_of_hours, user) VALUES
-#     ('2024-10-01', 'Completed module A', 8, 1),
-#     ('2024-10-02', 'Worked on bug fixing', 6, 2),
-#     ('2024-10-03', 'Developed new feature', 7, 3),
-#     ('2024-10-04', 'Project management tasks', 5, 4);
-
--- Вставка запросов
-# INSERT INTO Request (start_date, finish_date, created_at, unique_code, date_of_result, approver_id, status, reason, approver_action, user) VALUES
-#     ('2024-11-01', '2024-11-10', '2024-10-10 08:00:00', 'REQ12345', '2024-10-11 12:00:00', 2, 2, 2, 1, 5),
-#     ('2024-11-01', '2024-11-10', '2024-10-10 08:00:00', 'REQ12345', '2024-10-16 10:00:00', 3, 2, 2, 1, 5),
-#     ('2024-11-01', '2024-11-10', '2024-10-10 08:00:00', 'REQ12345', '2024-10-17 16:00:00', 4, 2, 2, 1, 5),
-#     ('2024-10-24', '2024-10-25', '2024-10-24 21:13:43', 'REQ12346', null, 2, 1, 1, 3, 6),
-#     ('2024-10-24', '2024-10-25', '2024-10-24 21:13:43', 'REQ12346', null, 3, 1, 1, 3, 6),
-#     ('2024-10-24', '2024-10-25', '2024-10-24 21:13:43', 'REQ12346', null, 4, 1, 1, 3, 6);
 

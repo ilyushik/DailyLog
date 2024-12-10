@@ -1,6 +1,7 @@
 package org.example.springapp.Service;
 
 import org.example.springapp.DTO.AddRequestReturnDTO;
+import org.example.springapp.DTO.CheckRequestDTO;
 import org.example.springapp.DTO.RequestDTO;
 import org.example.springapp.Model.*;
 import org.example.springapp.Repository.*;
@@ -128,7 +129,8 @@ public class RequestService {
         return sortedList;
     }
 
-    public String approveRequest(int id) {
+    public CheckRequestDTO approveRequest(int id) {
+        CheckRequestDTO checkRequestDTO = new CheckRequestDTO();
         Request request = requestRepository.findById(id).orElse(null);
         String uniqueCode = request.getUniqueCode();
         List<Request> sameRequests = new ArrayList<>();
@@ -165,6 +167,8 @@ public class RequestService {
             }
         }
 
+        checkRequestDTO.setUserEmail(user.getEmail());
+
 
         if (request.getStatus().getStatus().equals("Approved")) {
             if (request.getReason().getReason().equals("Annual Leave")) {
@@ -178,12 +182,13 @@ public class RequestService {
             }
 
             userRepository.save(user);
+            checkRequestDTO.setRequestStatus("Approved");
 
 
             // maybe remove work from home
             if (request.getReason().getReason().equals("Work from Home")) {
                 requestRepository.save(request);
-                return user.getEmail();
+                return checkRequestDTO;
             }
 
             while (!currentDate.isAfter(finishDate)) {
@@ -197,14 +202,16 @@ public class RequestService {
                 reportRepository.save(report);
             }
 
-            return user.getEmail();
+            return checkRequestDTO;
         }
 
         requestRepository.save(request);
-        return "Approved";
+        checkRequestDTO.setRequestStatus("Pending");
+        return checkRequestDTO;
     }
 
-    public String declineRequest(int id) {
+    public CheckRequestDTO declineRequest(int id) {
+        CheckRequestDTO checkRequestDTO = new CheckRequestDTO();
         Request request = requestRepository.findById(id).orElse(null);
         String uniqueCode = request.getUniqueCode();
         ApproverAction action = approverActionRepository.findApproverActionByAction("Decline");
@@ -223,7 +230,10 @@ public class RequestService {
         }
         requestRepository.save(request);
 
-        return request.getUser().getEmail();
+        checkRequestDTO.setRequestStatus("Declined");
+        checkRequestDTO.setUserEmail(request.getUser().getEmail());
+
+        return checkRequestDTO;
     }
 
     public String generateRandomString() {

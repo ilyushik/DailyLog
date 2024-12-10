@@ -17,7 +17,7 @@ public class EmailController {
     @PostMapping("/send-email")
     public String sendEmail(@RequestBody EmailRequest emailRequest) {
         CreateEmailOptions params = CreateEmailOptions.builder()
-                .from("DailyLog <onboarding@resend.dev>")
+                .from("DailyLog <illia.kamarali.admin@dailylogapp.com>")
                 .to(emailRequest.getUserEmail())
                 .subject("")
                 .html(emailRequest.getHtml())
@@ -28,7 +28,7 @@ public class EmailController {
             return "Email to " + emailRequest.getUserEmail() + " sent successfully";
         } catch (ResendException e) {
             e.printStackTrace();
-            return "Failed to send email";
+            return "Failed to send email to " + emailRequest.getUserEmail();
         }
     }
 }

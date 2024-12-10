@@ -1,5 +1,6 @@
 package org.example.springapp.Controller;
 
+import jakarta.validation.Valid;
 import org.example.springapp.DTO.ReportDTO;
 import org.example.springapp.DTO.RequestDTO;
 import org.example.springapp.Model.Request;
@@ -69,6 +70,10 @@ public class UserController {
         String email = authentication.getName();
         User user = userRepository.findByEmail(email).orElse(null);
         List<ReportDTO> usersReports = reportService.getReportsByUserId(user.getId());
+
+        if (requestDTO.getComment().length() < 2) {
+            return ResponseEntity.badRequest().body(Collections.singletonMap("comment", "Should be more than 2 characters"));
+        }
 
         if (requestDTO.getReason() == null) {
             return ResponseEntity.badRequest().body(Collections.singletonMap("reason", "Is empty"));

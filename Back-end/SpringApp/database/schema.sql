@@ -32,6 +32,7 @@ CREATE TABLE User (
                       team_lead INT,
                       tech_lead INT,
                       pm INT,
+                      days_worked INT,
                       FOREIGN KEY (role) REFERENCES User_Role(id),
                       FOREIGN KEY (team_lead) REFERENCES User(id),
                       FOREIGN KEY (tech_lead) REFERENCES User(id),
@@ -102,12 +103,12 @@ INSERT INTO User (first_name, second_name, password, email, image, days_for_vac,
 
 -- Добавление Project Manager
 INSERT INTO User (first_name, second_name, password, email, image, days_for_vac, days_to_skip, role, job_position, team_lead, tech_lead, pm) VALUES
-    ('Grace', 'Anderson', 'password007', 'grace.anderson@example.com', 'https://firebasestorage.googleapis.com/v0/b/dailylog-44de4.appspot.com/o/face2.png?alt=media&token=00b3ff76-f272-4fde-a6ad-07f83088d115', 20, 2, 1, 'Project Manager', 1, NULL, NULL); -- ПМ с СЕО
+    ('Grace', 'Anderson', 'password007', 'illia.kamarali.work@gmail.com', 'https://firebasestorage.googleapis.com/v0/b/dailylog-44de4.appspot.com/o/face2.png?alt=media&token=00b3ff76-f272-4fde-a6ad-07f83088d115', 20, 2, 1, 'Project Manager', 1, NULL, NULL); -- ПМ с СЕО
 
 -- Шаг 2: Добавление Team Lead и Tech Lead
 INSERT INTO User (first_name, second_name, password, email, image, days_for_vac, days_to_skip, role, job_position, team_lead, tech_lead, pm) VALUES
-                                                                                                                                                 ('Alice', 'Johnson', 'password001', 'alice.johnson@example.com', 'https://firebasestorage.googleapis.com/v0/b/dailylog-44de4.appspot.com/o/face3.png?alt=media&token=68f1684a-d5cd-4698-9b86-fffbd734ea77', 20, 2, 1, 'Team Lead', 1, NULL, 2), -- Тим Лид с ПМ
-                                                                                                                                                 ('Eve', 'Davis', 'password005', 'eve.davis@example.com', 'https://firebasestorage.googleapis.com/v0/b/dailylog-44de4.appspot.com/o/face4.png?alt=media&token=b7fe6dde-d9ae-49ba-8fb5-d5fa0aeade12', 20, 2, 1, 'Tech Lead', 1, NULL, 2); -- Тех Лид с ПМ
+                                                                                                                                                 ('Alice', 'Johnson', 'password001', 'fastandfoodycorp@gmail.com', 'https://firebasestorage.googleapis.com/v0/b/dailylog-44de4.appspot.com/o/face3.png?alt=media&token=68f1684a-d5cd-4698-9b86-fffbd734ea77', 20, 2, 1, 'Team Lead', 1, NULL, 2), -- Тим Лид с ПМ
+                                                                                                                                                 ('Eve', 'Davis', 'password005', 'kamarali2025mf12@student.karazin.ua', 'https://firebasestorage.googleapis.com/v0/b/dailylog-44de4.appspot.com/o/face4.png?alt=media&token=b7fe6dde-d9ae-49ba-8fb5-d5fa0aeade12', 20, 2, 1, 'Tech Lead', 1, NULL, 2); -- Тех Лид с ПМ
 
 -- Шаг 3: Вставка разработчиков
 INSERT INTO User (first_name, second_name, password, email, image, days_for_vac, days_to_skip, role, job_position, team_lead, tech_lead, pm) VALUES

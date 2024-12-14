@@ -80,6 +80,9 @@ public class User implements UserDetails {
     @Column(name = "requests_to")
     private List<Request> requestsTo;
 
+    @Column(name = "days_worked")
+    private Integer daysWorked;
+
     public User(String firstName, String secondName, String password, String email, String image, int daysForVacation, int daysToSkip, String jobPosition) {
         this.firstName = firstName;
         this.secondName = secondName;

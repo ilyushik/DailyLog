@@ -1,5 +1,6 @@
 package org.example.springapp.Configuration;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,12 +17,15 @@ import java.util.Arrays;
 @EnableWebMvc
 public class WebConfig {
 
+    @Value("${FRONTEND_LINK_CORS_DISABLE}")
+    private String frontend_link_cors_disable;
+
     @Bean
     public FilterRegistrationBean corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.addAllowedOriginPattern("http://localhost:3000");
+        config.addAllowedOriginPattern(frontend_link_cors_disable);
         config.setAllowedHeaders(Arrays.asList("*"));
         config.setAllowedMethods(Arrays.asList("*"));
         config.setMaxAge(3600L);

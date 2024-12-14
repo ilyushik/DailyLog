@@ -20,7 +20,7 @@ export function Popup(props) {
         const htmlContent = ReactDOMServer.renderToString(<Email message={message} link={link} buttonText={buttonText} />)
 
         try {
-            const response = await axios.post("http://localhost:8080/api/send-email", {
+            const response = await axios.post(`${process.env.REACT_APP_BACKEND_LINK}/api/send-email`, {
                 html: htmlContent,
                 userEmail: email,
             })
@@ -32,7 +32,7 @@ export function Popup(props) {
 
     const fetchReasonsHandler = useCallback(async () => {
         try {
-            const response = await axios.get("http://localhost:8080/reasons",{
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_LINK}/reasons`,{
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -85,7 +85,7 @@ export function Popup(props) {
         const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
         try {
-            const response = await axios.post("http://localhost:8080/addRequest", {reason: reason, startDate: startDate, finishDate: finishDate, comment: comment},{
+            const response = await axios.post(`${process.env.REACT_APP_BACKEND_LINK}/addRequest`, {reason: reason, startDate: startDate, finishDate: finishDate, comment: comment},{
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -99,24 +99,24 @@ export function Popup(props) {
                 props.openLoad()
 
                 handleSendEmail(response.data.userEmail, "Your request has been received!",
-                    "http://localhost:3000/my-info", "Back to requests")
+                    `${process.env.REACT_APP_FRONTEND_LINK}/my-info`, "Back to requests")
 
 
                 await delay(1000)
 
                 if (response.data.firstApproverEmail !== null) {
                     handleSendEmail(response.data.firstApproverEmail, "You have new request",
-                        "http://localhost:3000/inbox", "Back to requests")
+                        `${process.env.REACT_APP_FRONTEND_LINK}/inbox`, "Back to requests")
                 }
                 await delay(1000)
                 if (response.data.secondApproverEmail !== null) {
                     handleSendEmail(response.data.secondApproverEmail, "You have new request",
-                        "http://localhost:3000/inbox", "Back to requests")
+                        `${process.env.REACT_APP_FRONTEND_LINK}/inbox`, "Back to requests")
                 }
                 await delay(1000)
                 if (response.data.thirdApproverEmail !== null) {
                     handleSendEmail(response.data.thirdApproverEmail, "You have new request",
-                        "http://localhost:3000/inbox", "Back to requests")
+                        `${process.env.REACT_APP_FRONTEND_LINK}/inbox`, "Back to requests")
                 }
 
                 props.closeLoad()

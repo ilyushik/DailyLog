@@ -31,7 +31,7 @@ export function Header() {
 
     const fetchRequestsHandler = useCallback(async () => {
         try {
-            const response = await axios.get("http://localhost:8080/requests/approver",{
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_LINK}/requests/approver`,{
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -58,7 +58,7 @@ export function Header() {
     const fetchUserHandler = useCallback(async () => {
         try {
             const token = localStorage.getItem("token");
-            const response = await axios.get("http://localhost:8080/getMyInfo",
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_LINK}/getMyInfo`,
                 {headers: { Authorization: `Bearer ${token}` }});
             if (response.status !== 200) {
                 throw new Error("Fail...");

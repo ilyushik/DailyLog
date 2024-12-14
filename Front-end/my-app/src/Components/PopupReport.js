@@ -2,6 +2,8 @@ import {Fragment, useCallback, useEffect, useState} from "react";
 import {useSelector} from "react-redux";
 import "./PopupReport.css"
 import axios from "axios";
+import ReactDOMServer from "react-dom/server";
+import {Email} from "../emails/Email.tsx";
 
 export function PopupReport(props) {
     const mode = useSelector(state => state.theme.theme);
@@ -15,7 +17,7 @@ export function PopupReport(props) {
     const fetchRequestHandler = useCallback(async () => {
         if (props.report?.request) { // Проверка на существование props.report и props.report.request
             try {
-                const response = await axios.get(`http://localhost:8080/requests/request/${props.report.request}`, {
+                const response = await axios.get(`${process.env.REACT_APP_BACKEND_LINK}/requests/request/${props.report.request}`, {
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -47,6 +49,20 @@ export function PopupReport(props) {
         setReportHours(Number(event.target.value));
     };
 
+    const handleSendEmail = async (email, message, link, buttonText) => {
+        const htmlContent = ReactDOMServer.renderToString(<Email message={message} link={link} buttonText={buttonText} />)
+
+        try {
+            const response = await axios.post(`${process.env.REACT_APP_BACKEND_LINK}/api/send-email`, {
+                html: htmlContent,
+                userEmail: email,
+            })
+            console.log(response.data)
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     const submitHandler = async (event) => {
         event.preventDefault();
 
@@ -71,7 +87,7 @@ export function PopupReport(props) {
 
         // Если форма валидна, отправляем данные
         try {
-            const response = await axios.post("http://localhost:8080/report/add-report", {
+            const response = await axios.post(`${process.env.REACT_APP_BACKEND_LINK}/report/add-report`, {
                 date: reportDate,
                 text: reportText,
                 countOfHours: reportHours
@@ -82,6 +98,10 @@ export function PopupReport(props) {
                 },
             });
             console.log(response.data);
+            if (response.data.days === 20) {
+                handleSendEmail(response.data.userEmail, "You have already 20 days for vacation. Take a break for 🏝️",
+                    `${process.env.REACT_APP_FRONTEND_LINK}/my-info`, "Back to main page")
+            }
             props.closeModal && props.closeModal();  // Проверка на существование функции
             props.openSuccess && props.openSuccess();
         } catch (error) {

@@ -32,8 +32,8 @@ export function CalendarComponent() {
 
     useEffect(() => {
         const url = params.id
-            ? "http://localhost:8080/report/usersReports/" + params.id
-            : "http://localhost:8080/report/usersReports";
+            ? `${process.env.REACT_APP_BACKEND_LINK}/report/usersReports/` + params.id
+            : `${process.env.REACT_APP_BACKEND_LINK}/report/usersReports`;
         fetchData(url, setReports);
         // fetchUsersReports();
     }, [params.id]);

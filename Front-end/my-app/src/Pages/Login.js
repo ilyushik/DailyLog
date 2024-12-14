@@ -1,8 +1,8 @@
 import {useState} from "react";
 import "./styles/Login.css"
 import {useSelector} from "react-redux";
-import {request} from "../axios_helper";
 import {useNavigate} from "react-router-dom";
+import axios from "axios";
 
 export function Login() {
     const [email, setEmail] = useState('')
@@ -31,7 +31,7 @@ export function Login() {
         setPassword(event.target.value)
     }
 
-    const loginHandler = (event) => {
+    const loginHandler = async (event) => {
         event.preventDefault()
 
         if (email.trim().length === 0) {
@@ -48,16 +48,15 @@ export function Login() {
         setErrors({})
         setFormIsValid(true)
 
-        request("POST", `/login`, {email: email, password: password})
-            .then((res) => {
-                localStorage.setItem('token', res.data.token)
-                console.log(res.data)
-                navigate('/my-info')
-                window.location.reload()
-            })
-            .catch((err) => {
-                setErrors(err.response.data)
-            })
+        try {
+            const response = await axios.post(`${process.env.REACT_APP_BACKEND_LINK}/login`, {email: email, password: password})
+            localStorage.setItem('token', response.data.token)
+            console.log(response.data)
+            navigate('/my-info')
+            window.location.reload()
+        } catch (error) {
+            setErrors(error.response.data)
+        }
 
     }
 

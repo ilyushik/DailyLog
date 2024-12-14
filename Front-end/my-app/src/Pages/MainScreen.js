@@ -35,15 +35,15 @@ export function MainScreen() {
 
     const fetchUserHandler = useCallback(() => {
         const url = params.id
-            ? `http://localhost:8080/users/${params.id}`
-            : "http://localhost:8080/getMyInfo";
+            ? `${process.env.REACT_APP_BACKEND_LINK}/users/${params.id}`
+            : `${process.env.REACT_APP_BACKEND_LINK}/getMyInfo`;
         fetchData(url, setUser);
     }, [params.id]);
 
     const fetchRequestHandler = useCallback(() => {
         const url = params.id
-            ? `http://localhost:8080/requests/userRequests/${params.id}`
-            : "http://localhost:8080/requests";
+            ? `${process.env.REACT_APP_BACKEND_LINK}/requests/userRequests/${params.id}`
+            : `${process.env.REACT_APP_BACKEND_LINK}/requests`;
         fetchData(url, setRequests);
     }, [params.id]);
 

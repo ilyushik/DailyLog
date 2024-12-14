@@ -11,7 +11,7 @@ export function PeopleList() {
 
     const fetchUsersHandler = useCallback(async () => {
         try {
-            const response = await axios.get("http://localhost:8080/peopleList", {
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_LINK}/peopleList`, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem('token')}`

@@ -15,7 +15,7 @@ export function Inbox() {
         const htmlContent = ReactDOMServer.renderToString(<Email message={message} link={link} buttonText={buttonText} />)
 
         try {
-            const response = await axios.post("http://localhost:8080/api/send-email", {
+            const response = await axios.post(`${process.env.REACT_APP_BACKEND_LINK}/api/send-email`, {
                 html: htmlContent,
                 userEmail: email,
             })
@@ -27,7 +27,7 @@ export function Inbox() {
 
     const fetchRequestsHandler = useCallback(async () => {
         try {
-            const response = await axios.get("http://localhost:8080/requests/approver",{
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_LINK}/requests/approver`,{
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -51,7 +51,7 @@ export function Inbox() {
         event.preventDefault();
 
         try {
-            const response = await axios.post(`http://localhost:8080/requests/approve/${requestId}`, {requestId: requestId},{
+            const response = await axios.post(`${process.env.REACT_APP_BACKEND_LINK}/requests/approve/${requestId}`, {requestId: requestId},{
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -61,7 +61,7 @@ export function Inbox() {
 
             if (response.data.requestStatus === "Approved") {
                 handleSendEmail(response.data.userEmail, "Your request has been approved!",
-                    "http://localhost:3000/my-info", "Back to requests")
+                    `${process.env.REACT_APP_FRONTEND_LINK}/my-info`, "Back to requests")
             }
             setRequests([]);
             fetchRequestsHandler()
@@ -75,7 +75,7 @@ export function Inbox() {
         console.log(`Decline request: ${requestId}`)
 
         try {
-            const response = await axios.post(`http://localhost:8080/requests/decline/${requestId}`, {requestId: requestId},{
+            const response = await axios.post(`${process.env.REACT_APP_BACKEND_LINK}/requests/decline/${requestId}`, {requestId: requestId},{
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -85,7 +85,7 @@ export function Inbox() {
 
             if (response.data.requestStatus === "Declined") {
                 handleSendEmail(response.data.userEmail, "Your request has been declined!",
-                    "http://localhost:3000/my-info", "Back to requests")
+                    `${process.env.REACT_APP_FRONTEND_LINK}/my-info`, "Back to requests")
             }
 
             setRequests([]);

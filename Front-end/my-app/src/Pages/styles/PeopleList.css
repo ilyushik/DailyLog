@@ -16,11 +16,31 @@
 
 .people-title {
     background-color: #617DA6;
+    border-radius: 10px 10px 0 0;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 15px;
+    align-items: center;
+}
+
+.people-title button {
+    border: 1px solid #eee;
+    border-radius: 10px;
+    background-color: transparent;
+    padding: 5px 10px;
+    font-family: "Poppins", sans-serif;
+    color: #eee;
+    transition: ease-in 0.2s;
+}
+
+.people-title button:hover {
+    transform: scale(1.15);
+}
+
+.people-title p {
     color: white;
-    padding: 10px 5px;
     display: flex;
     justify-content: center;
-    border-radius: 10px 10px 0 0;
 }
 
 .peoples-block {

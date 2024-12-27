@@ -82,6 +82,19 @@
     text-decoration-line: underline;
 }
 
+.link-info-block button {
+    color: #617DA6;
+    text-decoration: none;
+    background-color: transparent;
+    border: none;
+    font-family: "Poppins", sans-serif;
+    transition: ease-in 0.2s;
+}
+
+.link-info-block button:hover {
+    text-decoration-line: underline;
+}
+
 @media (max-width: 800px) {
     .person-img {
         height: 60px;
@@ -128,6 +141,10 @@
     .link-info-block a {
         font-size: 10px;
     }
+
+    .link-info-block button {
+        font-size: 10px;
+    }
 }
 
 @media screen and (max-width: 400px) {
@@ -153,6 +170,10 @@
     }
 
     .link-info-block a {
+        font-size: 10px;
+    }
+
+    .link-info-block button {
         font-size: 10px;
     }
 }

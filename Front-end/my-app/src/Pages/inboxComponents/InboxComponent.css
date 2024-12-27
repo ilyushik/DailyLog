@@ -169,6 +169,10 @@
         height: 15px;
     }
 
+    .inbox-request-duration-value-block {
+        white-space: nowrap;
+    }
+
     .button-img {
         width: 30px;
     }

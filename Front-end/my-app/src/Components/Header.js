@@ -120,7 +120,7 @@ export function Header() {
 
     const peopleIcon = () => {
         if (isAuthenticated()) {
-            if ((user.role === "ROLE_LEAD" && user.position !== "Project Manager") || user.role === "ROLE_CEO") {
+            if ((user.role === "ROLE_LEAD") || user.role === "ROLE_CEO") {
                 return (<NavLink to="/people" onClick={() => setIsMenuOpened(false)} className={`navbar-button ${mode === "light" ? "light" : "dark"}`}>
                     <div className="button-people-wrapper">
                         <img className="button-people" src={peopleList} alt=""/>

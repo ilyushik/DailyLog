@@ -1,23 +1,23 @@
 package org.example.springapp.Controller;
 
+import jakarta.servlet.http.HttpServletResponse;
+import org.example.springapp.DTO.PeriodReport;
 import org.example.springapp.DTO.ReportDTO;
 import org.example.springapp.Model.User;
 import org.example.springapp.Repository.ReportRepository;
 import org.example.springapp.Repository.UserRepository;
 import org.example.springapp.Service.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Time;
-import java.sql.Timestamp;
-import java.time.Instant;
+import java.io.IOException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -68,5 +68,61 @@ public class ReportController {
         }
 
         return ResponseEntity.ok(reportService.addReport(reportDTO, user));
+    }
+
+    // download all users
+    @GetMapping("/download/excel")
+    public ResponseEntity<?> downloadReportExcel(
+            @RequestParam("startDate") String startDate,
+            @RequestParam("endDate") String endDate) throws IOException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        User user = userRepository.findByEmail(email).orElse(null);
+
+        PeriodReport periodReport = new PeriodReport();
+        periodReport.setStartDate(LocalDate.parse(startDate));
+        periodReport.setEndDate(LocalDate.parse(endDate));
+
+        if (periodReport.getStartDate().isAfter(periodReport.getEndDate())) {
+            return ResponseEntity.badRequest().body(Collections.singletonMap("dateEr", "Start date can not be after end date"));
+        }
+        if (periodReport.getStartDate().isAfter(LocalDate.now()) || periodReport.getEndDate().isAfter(LocalDate.now())) {
+            return ResponseEntity.badRequest().body(Collections.singletonMap("dateEr", "Date can not be after current date"));
+        }
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=report.xlsx")
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(reportService.createExcelUsers(user.getId(), periodReport));
+    }
+
+
+    //test
+    @GetMapping("/excel/download")
+    public ResponseEntity<?> restExcel() throws IOException {
+        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=report.xlsx")
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(reportService.excelTest());
+    }
+
+    //download one user by id
+    @GetMapping("/download/excel/{id}")
+    public ResponseEntity<?> downloadReportExcel(@PathVariable int id, @RequestBody PeriodReport periodReport) throws IOException {
+        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=report.xlsx")
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(reportService.createExcelUserById(id, periodReport));
+    }
+
+    //test
+    @PostMapping("usersReport-perPeriod/{id}")
+    public ResponseEntity<?> usersReportsPerPeriod(@PathVariable("id") int userId, @RequestBody PeriodReport periodReport) {
+        if (periodReport.getStartDate().isAfter(periodReport.getEndDate())) {
+            return ResponseEntity.badRequest().body(Collections.singletonMap("dateEr", "Start date can not be after end date"));
+        }
+        if (periodReport.getStartDate().isAfter(LocalDate.now()) || periodReport.getEndDate().isAfter(LocalDate.now())) {
+            return ResponseEntity.badRequest().body(Collections.singletonMap("dateEr", "Date can not be after current date"));
+        }
+
+        return ResponseEntity.ok(reportService.getUsersWorkReport(userId, periodReport));
     }
 }

@@ -75,6 +75,8 @@ public class UserService {
                         usersByL.add(u);
                     } else if (u.getTechLead() != null && u.getTechLead().getId() == lead.getId()) {
                         usersByL.add(u);
+                    } else if (u.getPm() != null && u.getPm().getId() == lead.getId()) {
+                        usersByL.add(u);
                     } else {
                         continue;
                     }

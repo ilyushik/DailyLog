@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.example.springapp.Model.User;
 import org.example.springapp.Repository.UserRepository;
 import org.example.springapp.Security.AuthenticationRequest;
-import org.example.springapp.Security.AuthenticationResponse;
 import org.example.springapp.Security.AuthenticationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;

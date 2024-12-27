@@ -83,6 +83,9 @@ public class User implements UserDetails {
     @Column(name = "days_worked")
     private Integer daysWorked;
 
+    @Column(name = "price_per_hour")
+    private int pricePerHour;
+
     public User(String firstName, String secondName, String password, String email, String image, int daysForVacation, int daysToSkip, String jobPosition) {
         this.firstName = firstName;
         this.secondName = secondName;

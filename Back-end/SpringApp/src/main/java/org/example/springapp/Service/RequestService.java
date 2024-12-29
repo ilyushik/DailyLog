@@ -56,7 +56,7 @@ public class RequestService {
     }
 
     public List<RequestDTO> findByApprover(int approverId) {
-        return requestRepository.findAll().stream().map(s -> new RequestDTO(
+        List<RequestDTO> list = requestRepository.findAll().stream().map(s -> new RequestDTO(
                 s.getId(),
                 s.getStartDate(),
                 s.getFinishDate(),
@@ -71,6 +71,9 @@ public class RequestService {
                 s.getAction().getAction(),
                 s.getComment()
         )).filter(r->r.getApprover() == approverId && r.getStatus().equals("Pending") && r.getAction().equals("Unchecked")).collect(Collectors.toList());
+
+        Collections.reverse(list);
+        return list;
     }
 
 

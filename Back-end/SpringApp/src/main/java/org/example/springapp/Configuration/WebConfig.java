@@ -18,21 +18,25 @@ import java.util.List;
 public class WebConfig {
 
     @Value("${FRONTEND_LINK_CORS_DISABLE}")
-    private String frontend_link_cors_disable;
+    private String frontendLinkCorsDisable;
 
-    private String mobile_link_cors_disable = "http://192.168.0.137:8081";
+    private String mobileLinkCorsDisable = "http://192.168.0.137:8081";
 
     @Bean
-    public FilterRegistrationBean corsFilter() {
+    public FilterRegistrationBean<CorsFilter> corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.addAllowedOriginPattern(frontend_link_cors_disable);
-        config.setAllowedHeaders(Arrays.asList("*"));
-        config.setAllowedMethods(Arrays.asList("*"));
+
+        // Добавляем разрешенные источники
+        config.setAllowedOriginPatterns(Arrays.asList(frontendLinkCorsDisable, mobileLinkCorsDisable));
+
+        config.setAllowedHeaders(Collections.singletonList("*"));
+        config.setAllowedMethods(Collections.singletonList("*"));
         config.setMaxAge(3600L);
         source.registerCorsConfiguration("/**", config);
-        FilterRegistrationBean bean = new FilterRegistrationBean(new CorsFilter(source));
+
+        FilterRegistrationBean<CorsFilter> bean = new FilterRegistrationBean<>(new CorsFilter(source));
         bean.setOrder(-102);
         return bean;
     }

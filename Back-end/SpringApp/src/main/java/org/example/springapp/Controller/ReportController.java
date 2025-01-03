@@ -1,6 +1,7 @@
 package org.example.springapp.Controller;
 
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import org.example.springapp.DTO.PeriodReport;
 import org.example.springapp.DTO.ReportDTO;
 import org.example.springapp.Model.User;
@@ -13,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -55,7 +57,7 @@ public class ReportController {
     }
 
     @PostMapping("add-report")
-    public ResponseEntity<?> addReport(@RequestBody ReportDTO reportDTO) {
+    public ResponseEntity<?> addReport(@Valid @RequestBody ReportDTO reportDTO) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
         User user = userRepository.findByEmail(email).orElse(null);

@@ -61,7 +61,7 @@ public class UserController {
     }
 
     @PostMapping("/addRequest")
-    public ResponseEntity<?> addRequest(@RequestBody RequestDTO requestDTO) {
+    public ResponseEntity<?> addRequest(@Valid @RequestBody RequestDTO requestDTO) {
         LocalDate startDate = requestDTO.getStartDate();
         LocalDate finishDate = requestDTO.getFinishDate();
         LocalDate currentDate = startDate;

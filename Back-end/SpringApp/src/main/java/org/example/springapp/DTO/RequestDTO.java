@@ -1,5 +1,7 @@
 package org.example.springapp.DTO;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -14,6 +16,9 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RequestDTO {
+
+    @Valid
+
     private int id;
     private LocalDate startDate;
     private LocalDate finishDate;
@@ -26,6 +31,7 @@ public class RequestDTO {
     private String status;
     private String reason;
     private String action;
+    @Size(min = 2, max = 1000, message = "Text should be between 2 and 1000")
     private String comment;
 
     public RequestDTO(int id, LocalDate startDate, LocalDate finishDate, Timestamp createdAt, String uniqueCode, Timestamp dateOfResult, String status, String reason, String comment) {

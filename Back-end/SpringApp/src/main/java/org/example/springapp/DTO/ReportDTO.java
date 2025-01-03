@@ -1,5 +1,7 @@
 package org.example.springapp.DTO;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,8 +12,12 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReportDTO {
+
+    @Valid
+
     private int id;
     private LocalDate date;
+    @Size(min = 2, max = 1000, message = "Text should be between 2 and 1000")
     private String text;
     private int countOfHours;
     private int user;

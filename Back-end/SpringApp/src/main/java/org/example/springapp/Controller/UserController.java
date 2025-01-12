@@ -3,8 +3,9 @@ package org.example.springapp.Controller;
 import jakarta.validation.Valid;
 import org.example.springapp.DTO.ReportDTO;
 import org.example.springapp.DTO.RequestDTO;
-import org.example.springapp.Model.Request;
+import org.example.springapp.Model.RequestStatus;
 import org.example.springapp.Model.User;
+import org.example.springapp.Repository.RequestStatusRepository;
 import org.example.springapp.Repository.UserRepository;
 import org.example.springapp.Service.ReportService;
 import org.example.springapp.Service.RequestService;
@@ -34,6 +35,8 @@ public class UserController {
     private RequestService requestService;
     @Autowired
     private ReportService reportService;
+    @Autowired
+    private RequestStatusRepository requestStatusRepository;
 
     @GetMapping("/getMyInfo")
     public ResponseEntity<?> getMyInfo() {
@@ -64,12 +67,18 @@ public class UserController {
     public ResponseEntity<?> addRequest(@Valid @RequestBody RequestDTO requestDTO) {
         LocalDate startDate = requestDTO.getStartDate();
         LocalDate finishDate = requestDTO.getFinishDate();
+
         LocalDate currentDate = startDate;
         List<LocalDate> dates = new ArrayList<>();
+        List<LocalDate> requestDates = new ArrayList<>();
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
         User user = userRepository.findByEmail(email).orElse(null);
+
         List<ReportDTO> usersReports = reportService.getReportsByUserId(user.getId());
+        List<RequestDTO> usersRequests = requestService.findByUser(user.getId());
+        usersRequests = usersRequests.stream().filter(r->!r.getStatus().equals("Declined")).toList();
 
         if (requestDTO.getComment().length() < 2) {
             return ResponseEntity.badRequest().body(Collections.singletonMap("comment", "Should be more than 2 characters"));
@@ -118,6 +127,22 @@ public class UserController {
             for (ReportDTO reportDTO : usersReports) {
                 if (reportDTO.getDate().equals(date)) {
                     return ResponseEntity.badRequest().body(Collections.singletonMap("errorDate", date + " is already in the report"));
+                }
+            }
+        }
+
+        for (LocalDate date : dates) {
+            for (RequestDTO usersRequestDTO : usersRequests) {
+                LocalDate requestCurrentDate = usersRequestDTO.getStartDate();
+                while (!requestCurrentDate.isAfter(usersRequestDTO.getFinishDate())) {
+                    requestDates.add(requestCurrentDate);
+                    requestCurrentDate = requestCurrentDate.plusDays(1);
+                }
+
+                for (LocalDate requestDate : requestDates) {
+                    if (date.equals(requestDate)) {
+                        return ResponseEntity.badRequest().body(Collections.singletonMap("errorDate", date + " is already in the request"));
+                    }
                 }
             }
         }

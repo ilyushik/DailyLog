@@ -102,18 +102,18 @@ export function Popup(props) {
                     `${process.env.REACT_APP_FRONTEND_LINK}/my-info`, "Back to requests")
 
 
-                await delay(1000)
+                await delay(1500)
 
                 if (response.data.firstApproverEmail !== null) {
                     handleSendEmail(response.data.firstApproverEmail, "You have new request",
                         `${process.env.REACT_APP_FRONTEND_LINK}/inbox`, "Back to requests")
                 }
-                await delay(1000)
+                await delay(1500)
                 if (response.data.secondApproverEmail !== null) {
                     handleSendEmail(response.data.secondApproverEmail, "You have new request",
                         `${process.env.REACT_APP_FRONTEND_LINK}/inbox`, "Back to requests")
                 }
-                await delay(1000)
+                await delay(1500)
                 if (response.data.thirdApproverEmail !== null) {
                     handleSendEmail(response.data.thirdApproverEmail, "You have new request",
                         `${process.env.REACT_APP_FRONTEND_LINK}/inbox`, "Back to requests")

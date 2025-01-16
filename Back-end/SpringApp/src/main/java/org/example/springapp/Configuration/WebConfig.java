@@ -17,8 +17,7 @@ import java.util.List;
 @EnableWebMvc
 public class WebConfig {
 
-    @Value("${FRONTEND_LINK_CORS_DISABLE}")
-    private String frontendLinkCorsDisable;
+    private String frontendLinkCorsDisable = "http://localhost:3000";
 
     private String mobileLinkCorsDisable = "http://192.168.0.137:8081";
 

@@ -65,7 +65,10 @@ public class ReportController {
         if (!usersReportsByDate.isEmpty()) {
             return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Report already exists"));
         }
-        if(reportDTO.getDate().isAfter(LocalDate.now())) {
+        if (reportDTO.getCountOfHours() > 8) {
+            return ResponseEntity.badRequest().body(Collections.singletonMap("hours", "Work day can not be more than 8 hours"));
+        }
+        if (reportDTO.getDate().isAfter(LocalDate.now())) {
             return ResponseEntity.badRequest().body(Collections.singletonMap("date", "That day has not yet come"));
         }
 

@@ -10,6 +10,7 @@ export function PeopleList() {
     const [users, setUsers] = useState([]);
     const [errors, setErrors] = useState({});
     const [popupAllUsers, setPopupAllUsers] = useState(false);
+    const [user, setUser] = useState({});
 
 
     const fetchUsersHandler = useCallback(async () => {
@@ -29,9 +30,36 @@ export function PeopleList() {
         }
     }, [])
 
+    const fetchUserHandler = useCallback(async () => {
+        try {
+            const response = await axios.get(`${process.env.REACT_APP_BACKEND_LINK}/getMyInfo`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                },
+            })
+
+            setUser(response.data);
+            console.log(user);
+        } catch (e) {
+            console.error(e.response.data);
+        }
+    }, [])
+
     useEffect(() => {
         fetchUsersHandler();
-    }, [fetchUsersHandler])
+        fetchUserHandler()
+    }, [fetchUsersHandler, fetchUserHandler])
+
+    const getReports = () => {
+        if (user?.position === "Project Manager") {
+            return (
+                <div>
+                    <button onClick={() => setPopupAllUsers(true)}>All reports</button>
+                </div>
+            )
+        }
+    }
 
     return (
         <Fragment>
@@ -39,9 +67,8 @@ export function PeopleList() {
             <div className={`people ${mode === "light" ? "light" : "dark"}`}>
                 <div className={`people-title ${mode === "light" ? "light" : "dark"}`}>
                     <p>Team</p>
-                    <div>
-                        <button onClick={() => setPopupAllUsers(true)}>All reports</button>
-                    </div>
+
+                    {getReports()}
                 </div>
                 <div className={`peoples-block ${mode === "light" ? "light" : "dark"}`}>
                     {users.length < 1 &&

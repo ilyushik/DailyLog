@@ -1,48 +1,54 @@
+version: '3.8'
+
 services:
-  
-  mysql:
-    image: mysql:8.0
-    restart: always 
-    container_name: mysql_container
+  mysql_db:
+    image: mysql
+    container_name: mysqldb
+    restart: always
     environment:
       MYSQL_ROOT_PASSWORD: 30042005
       MYSQL_DATABASE: DailyLogDB
-    volumes:
-      - ./mysql:/var/lib/mysql
-      - ./Back-end/SpringApp/database/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+      MYSQL_USER: user
+      MYSQL_PASSWORD: 30042005
     ports:
       - "3307:3306"
+    volumes:
+      - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql
     networks:
-      - app_network
+      - dailylog_docker_app
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
   backend:
-    # build:
-    #   context: .
-    #   dockerfile: Dockerfile
-    # container_name: spring_backend
-    image: kamaraliilya/backend:latest
-    environment:
-      SPRING_PROFILES_ACTIVE: docker
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/DailyLogDB
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: 30042005
+    image: kamaraliilya/dailylog_backend:latest  
+    container_name: spring_app
+    restart: always
     depends_on:
-      - mysql
+      mysql_db:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql_db:3306/DailyLogDB
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: 30042005
     ports:
       - "8080:8080"
     networks:
-      - app_network
+      - dailylog_docker_app
 
   frontend:
-    image: kamaraliilya/frontend:latest
-    # build:
-    #   context: ./Front-end/my-app
+    image: kamaraliilya/dailylog_frontend:latest  
+    container_name: react_app
     restart: always
-    ports:
-      - "3000:3000"
     depends_on:
       - backend
+    ports:
+      - "3000:3000"
+    networks:
+      - dailylog_docker_app
 
 networks:
-  app_network:
+  dailylog_docker_app:
     driver: bridge

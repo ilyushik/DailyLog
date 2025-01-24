@@ -20,6 +20,7 @@ export function MainScreen() {
     // Utility function for fetching data with error handling
     const fetchData = async (url, setData) => {
         try {
+            setData([])
             const response = await axios.get(url, {
                 headers: {
                     'Content-Type': 'application/json',
@@ -59,16 +60,33 @@ export function MainScreen() {
         <img className="position-icon" src={mode === "dark" ? positionIconDark : positionIconLight} alt="position-icon" />
     );
 
+    const deleteRequest = async (id) => {
+        try {
+            const response =
+                await axios.get(`${process.env.REACT_APP_BACKEND_LINK}/requests/delete/${id}`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+            console.log(response.data)
+            fetchRequestHandler()
+        } catch (e) {
+            console.log(e.response.data)
+        }
+    }
+
     return (
         <Fragment>
             <div className={`mainScreen-main-block ${mode === "light" ? "light" : "dark"}`}>
                 <div className={`image-text-block ${mode === "light" ? "light" : "dark"}`}>
-                    <img className={`image-logo ${mode === "light" ? "light" : "dark"}`} src={user.image} alt="User profile" />
+                    <img className={`image-logo ${mode === "light" ? "light" : "dark"}`} src={user.image} />
                     <div className="position-icon-position-title-container">
                         <div className="empty-div"></div>
                         <div className="right-image-info-block">
                             <div className="name-block">
-                                <p className={`name ${mode === "light" ? "light" : "dark"}`}>{user.firstName} {user.secondName}</p>
+                                <p className={`name ${mode === "light" ? "light" : "dark"}`}>
+                                    {user.firstName} {user.secondName}</p>
                             </div>
                             <div className="position-icon-position-title-block">
                                 {positionIcon()}
@@ -83,10 +101,12 @@ export function MainScreen() {
                         <div className="active-requests-title">Active requests</div>
                         <div className="requests-block">
                             {error.message && (
-                                <p className={`no-active-requests ${mode === "light" ? "light" : "dark"}`}>{error.message}</p>
+                                <p className={`no-active-requests ${mode === "light" ? "light" : "dark"}`}>
+                                    {error.message}</p>
                             )}
                             {requests.map((request) => (
-                                <RequestComponent key={request.id} request={request}/>
+                                <RequestComponent deleteRequest={() => deleteRequest(request.id)}
+                                                  key={request.id} request={request}/>
                             ))}
                         </div>
                     </div>

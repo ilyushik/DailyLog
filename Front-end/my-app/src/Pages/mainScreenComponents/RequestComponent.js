@@ -34,7 +34,6 @@ export function RequestComponent(props) {
         }
     }
 
-
     return (
         <div className={`request-block ${mode === "light" ? "light" : "dark"}`} key={request.id}>
             <div className={`request-reason-block ${mode === "light" ? "light" : "dark"}`}>
@@ -61,6 +60,16 @@ export function RequestComponent(props) {
             <div className={`request-status-block`}>
                 <p className={`inner-request-status-text-block ${mode === "light" ? "light" : "dark"}`}>Status:</p>
                 {statusHandler(request.status)}
+            </div>
+
+            <div className="request-buttons-block">
+                <div className="request-edit-button-block">
+                    <button className="request-edit-button">Edit</button>
+                </div>
+
+                <div className="request-delete-button-block">
+                    <button className="request-delete-button" onClick={props.deleteRequest}>Delete</button>
+                </div>
             </div>
         </div>
     )

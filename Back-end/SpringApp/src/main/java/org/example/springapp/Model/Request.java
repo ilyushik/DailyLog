@@ -1,5 +1,6 @@
 package org.example.springapp.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
@@ -38,26 +39,32 @@ public class Request {
     @Column(name = "date_of_result")
     private Timestamp dateOfResult;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "approver_id", referencedColumnName = "id")
     private User approverId;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user", referencedColumnName = "id")
     private User user;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "status", referencedColumnName = "id")
     private RequestStatus status;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "reason", referencedColumnName = "id")
     private RequestReason reason;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "approver_action", referencedColumnName = "id")
     private ApproverAction action;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "request")
     private List<Report> report;
 

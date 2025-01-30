@@ -251,7 +251,8 @@ public class RequestService {
     }
 
     private void createRequestAndAddApprover(User user, User approver, String uniqueCode,
-                                             RequestStatus status, RequestReason reason, ApproverAction action, RequestDTO requesT) {
+                                             RequestStatus status, RequestReason reason, ApproverAction action,
+                                             RequestDTO requesT) {
         Request request = new Request();
         request.setStartDate(requesT.getStartDate());
         request.setFinishDate(requesT.getFinishDate());
@@ -346,6 +347,45 @@ public class RequestService {
                 request.getReason().getReason(), request.getComment());
 
         return requestDTO;
+    }
+
+    public Request updateRequest(int id, RequestDTO requestDto) {
+        Request request = requestRepository.findById(id).orElse(null);
+        RequestReason reason = requestReasonRepository.findByReason(requestDto.getReason());
+        List<Request> sameRequests = requestRepository.findAll();
+        sameRequests = sameRequests.stream().filter(r-> {
+            assert request != null;
+            return r.getUniqueCode().equals(request.getUniqueCode());
+        }).toList();
+
+        sameRequests.forEach(r->{
+            r.setReason(reason);
+            r.setStartDate(requestDto.getStartDate());
+            r.setFinishDate(requestDto.getFinishDate());
+            r.setComment(requestDto.getComment());
+            requestRepository.save(r);
+        });
+
+        return request;
+    }
+
+    public String deleteRequest(int id) {
+        List<Report> reports = reportRepository.findAll();
+        Request request = requestRepository.findById(id).orElse(null);
+        List<Request> requests = requestRepository.findAll();
+        reports.forEach(r-> {
+            if (r.getRequest() != null) {
+                if (r.getRequest().getId() == id) {
+                    reportRepository.delete(r);
+                }
+            }
+        });
+        requests.forEach(r -> {
+            if (r.getUniqueCode().equals(request.getUniqueCode())) {
+                requestRepository.deleteById(r.getId());
+            }
+        });
+        return "Request deleted";
     }
 
 }

@@ -3,7 +3,6 @@ package org.example.springapp.Controller;
 import jakarta.validation.Valid;
 import org.example.springapp.DTO.ReportDTO;
 import org.example.springapp.DTO.RequestDTO;
-import org.example.springapp.Model.RequestStatus;
 import org.example.springapp.Model.User;
 import org.example.springapp.Repository.RequestStatusRepository;
 import org.example.springapp.Repository.UserRepository;
@@ -21,7 +20,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("")

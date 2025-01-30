@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,8 +30,8 @@ public class ReportService {
     public List<ReportDTO> getReportsByUserId(int userId) {
         return reportRepository.findAll().stream().filter(s->s.getUser().getId() == userId)
                 .map(r-> new ReportDTO(r.getId(), r.getDate(), r.getText(), r.getCountOfHours(),
-                        r.getUser().getId(), r.getRequest() != null ? r.getRequest().getId() : null, r.getStatus()))
-                .collect(Collectors.toList());
+                        r.getUser().getId(), r.getRequest() != null ? r.getRequest().getId() : null,
+                        r.getStatus())).collect(Collectors.toList());
     }
 
     public AddReportReturnDTO addReport(ReportDTO reportDTO, User user) {
@@ -71,7 +70,8 @@ public class ReportService {
                     return reportDTO;
                 }).collect(Collectors.toList());
 
-        reports.removeIf(r->r.getDate().isBefore(periodReport.getStartDate()) || r.getDate().isAfter(periodReport.getEndDate()));
+        reports.removeIf(r->r.getDate().isBefore(periodReport.getStartDate()) ||
+                r.getDate().isAfter(periodReport.getEndDate()));
 
         return reports;
     }
@@ -143,8 +143,8 @@ public class ReportService {
                 if (user.getPm() != null && user.getPm().getId() == userId) {
                     List<Report> reports = reportRepository.findAll().stream()
                             .filter(r -> r.getUser().getId() == user.getId())
-                            .filter(r -> !r.getDate().isBefore(periodReport.getStartDate()) && !r.getDate().isAfter(periodReport.getEndDate()))
-                            .toList();
+                            .filter(r -> !r.getDate().isBefore(periodReport.getStartDate()) &&
+                                    !r.getDate().isAfter(periodReport.getEndDate())).toList();
 
                     if (!reports.isEmpty()) {
                         UsersWorkReport usersWorkReport = getUsersWorkReport(user.getId(), periodReport);
@@ -186,6 +186,20 @@ public class ReportService {
             workbook.close();
             return outputStream.toByteArray();
         }
+    }
+
+    public Report updateReport(ReportDTO reportDto, int id) {
+        Report report = reportRepository.findById(reportDto.getId()).orElse(null);
+        report.setDate(reportDto.getDate());
+        report.setText(reportDto.getText());
+        report.setCountOfHours(reportDto.getCountOfHours());
+
+        return reportRepository.save(report);
+    }
+
+    public String deleteReport(int id) {
+        reportRepository.deleteById(id);
+        return "Report deleted";
     }
 
 }

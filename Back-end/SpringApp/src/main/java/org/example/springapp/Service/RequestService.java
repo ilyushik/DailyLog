@@ -352,6 +352,7 @@ public class RequestService {
     public Request updateRequest(int id, RequestDTO requestDto) {
         Request request = requestRepository.findById(id).orElse(null);
         RequestReason reason = requestReasonRepository.findByReason(requestDto.getReason());
+        ApproverAction action = approverActionRepository.findApproverActionByAction("Unchecked");
         List<Request> sameRequests = requestRepository.findAll();
         sameRequests = sameRequests.stream().filter(r-> {
             assert request != null;
@@ -363,6 +364,7 @@ public class RequestService {
             r.setStartDate(requestDto.getStartDate());
             r.setFinishDate(requestDto.getFinishDate());
             r.setComment(requestDto.getComment());
+            r.setAction(action);
             requestRepository.save(r);
         });
 

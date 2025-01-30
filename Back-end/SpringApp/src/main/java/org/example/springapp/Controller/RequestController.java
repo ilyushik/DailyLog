@@ -15,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -161,6 +162,25 @@ public class RequestController {
                                 "The date " + date + " is already in the report"));
                     }
                 }
+            }
+        }
+
+        if (requestDTO.getReason().equals("Annual Leave")) {
+            int countOfDays = (int)ChronoUnit.DAYS.between(requestDTO.getStartDate(), requestDTO.getFinishDate()) + 1;
+            if (countOfDays > user.getDaysForVacation()) {
+                return ResponseEntity.badRequest().body(Collections.singletonMap("errorDate", "You have only " + user.getDaysForVacation() + " days for vacation"));
+            }
+        }
+        if (requestDTO.getReason().equals("Sick Leave")) {
+            int countOfDays = (int)ChronoUnit.DAYS.between(requestDTO.getStartDate(), requestDTO.getFinishDate()) + 1;
+            if (countOfDays > user.getDaysToSkip()) {
+                return ResponseEntity.badRequest().body(Collections.singletonMap("errorDate", "You have only " + user.getDaysForVacation() + " days for sick leave"));
+            }
+        }
+        if (requestDTO.getReason().equals("Personal Leave")) {
+            int countOfDays = (int)ChronoUnit.DAYS.between(requestDTO.getStartDate(), requestDTO.getFinishDate()) + 1;
+            if (countOfDays > user.getDaysToSkip()) {
+                return ResponseEntity.badRequest().body(Collections.singletonMap("errorDate", "You have only " + user.getDaysForVacation() + " days for personal leave"));
             }
         }
 

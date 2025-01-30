@@ -127,7 +127,8 @@
 
 .request-edit-button.disable,
 .request-delete-button.disable {
-    text-decoration: line-through ;
+    text-decoration: 1.5px line-through ;
+    opacity: 0.6;
 }
 
 .request-delete-button {

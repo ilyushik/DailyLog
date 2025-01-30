@@ -72,7 +72,7 @@ export function MainScreen() {
             console.log(response.data)
             fetchRequestHandler()
         } catch (e) {
-            console.log(e.response.data)
+            console.log(e.response?.data)
         }
     }
 

@@ -175,8 +175,8 @@ export function Header() {
             {isLoadingPopup && <PopupLoading />}
             {logoutPopupIsOpen && <PopupLogout close={closeLogoutPopup}/>}
             {popupIsOpen && <Popup openSuccess={openPopupSuccess} close={closePopup} closeLoad={closeLoading} openLoad={openLoading}/>}
-            {popupSuccessIsOpen && <PopupSuccess close={closePopupSuccess} title="The request was
-                                    successfully sent!" message="Wait for a message
+            {popupSuccessIsOpen && <PopupSuccess close={closePopupSuccess} title="The request has been sent successfully!"
+                                                 message="Wait for a message
                                     confirming your request"/>}
             <div className={`blur-layer ${isMenuOpened ? "open" : ""}`} onClick={toggleMenu}>
 

@@ -1,37 +1,36 @@
-import ReactDOMServer from 'react-dom/server';
-import {Fragment, useState, useEffect, useCallback} from "react";
 import "./Popup.css"
+import {useCallback, useEffect, useState} from "react";
 import {useSelector} from "react-redux";
 import axios from "axios";
-import {Email} from "../emails/Email.tsx";
 
-export function Popup(props) {
+export default function PopupEditRequest(props) {
+    const request = props.request;
     const mode = useSelector(state => state.theme.theme);
-    const [reason, setReason] = useState("Annual Leave");
+
+    const [reasons, setReasons] = useState([]);
+
+    const [errors, setErrors] = useState({});
+
+    const [reason, setReason] = useState("");
     const [startDate, setStartDate] = useState("");
     const [finishDate, setFinishDate] = useState("");
     const [comment, setComment] = useState("");
-    const [reasons, setReasons] = useState([]);
-    const [errors, setErrors] = useState({});
-    const [isFormValid, setIsFormValid] = useState(true);
+
+    const formatDate = (dateArray) => {
+        if (!dateArray || dateArray.length !== 3) return "";
+        const [year, month, day] = dateArray;
+        return `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+    };
 
 
-    const handleSendEmail = async (email, message, link, buttonText) => {
-        const htmlContent = ReactDOMServer.renderToString(
-            <Email message={message} link={link} buttonText={buttonText} />
-        )
+    const initializeValuesHandler = () => {
 
-        try {
-            const response = await axios.post(`${process.env.REACT_APP_BACKEND_LINK}/api/send-email`,
-                {
-                    html: htmlContent,
-                    userEmail: email,
-                }
-            )
-            console.log(response.data)
-        } catch (error) {
-            console.log(error);
-        }
+        console.log("Request", request);
+
+        setReason(request.reason);
+        setStartDate(formatDate(request.startDate));
+        setFinishDate(formatDate(request.finishDate));
+        setComment(request.comment);
     }
 
     const fetchReasonsHandler = useCallback(async () => {
@@ -46,13 +45,18 @@ export function Popup(props) {
             console.log(response.data)
             setReasons(response.data)
         } catch (error) {
-            console.log(error.response.data)
+            console.log(error.response?.data)
         }
     }, [])
 
     useEffect(() => {
         fetchReasonsHandler();
-    }, [fetchReasonsHandler])
+    }, [])
+
+    useEffect(() => {
+        initializeValuesHandler();
+    }, [])
+
 
     const reasonHandler = (e) => {
         e.preventDefault();
@@ -74,69 +78,52 @@ export function Popup(props) {
         setComment(e.target.value);
     }
 
-    const submitHandler = async (e) => {
-        e.preventDefault();
+    const submitEditHandler = async (e) => {
+        e.preventDefault()
 
         if (startDate.trim().length === 0 || finishDate.trim().length === 0) {
-            setIsFormValid(false);
             setErrors({errorDate: "Date should not be empty"})
             return;
         }
+        if (reason.trim().length === 0) {
+            setErrors({reason: "Reason should not be empty"})
+            return;
+        }
+        if (comment.trim().length === 0) {
+            setErrors({comment: "Reason should not be empty"})
+            return;
+        }
 
-        const request = {reason: reason, startDate: startDate, finishDate: finishDate}
-        console.log(request)
+        const outputRequest = {
+            reason: reason,
+            startDate: startDate,
+            finishDate: finishDate,
+            comment: comment,
+        }
 
-        const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+        console.log(outputRequest);
 
         try {
-            const response = await axios.post(`${process.env.REACT_APP_BACKEND_LINK}/addRequest`,
-                {reason: reason, startDate: startDate, finishDate: finishDate, comment: comment},{
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                },
-            })
-
+            const response =
+                await axios.post(`${process.env.REACT_APP_BACKEND_LINK}/requests/update/${request.id}`, outputRequest,
+                    {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
+                })
             console.log(response.data)
 
-            if (response.status !== 400) {
-                props.close()
-                props.openLoad()
-
-                handleSendEmail(response.data.userEmail, "Your request has been received!",
-                    `${process.env.REACT_APP_FRONTEND_LINK}/my-info`, "Back to requests")
-
-
-                await delay(1500)
-
-                if (response.data.firstApproverEmail !== null) {
-                    handleSendEmail(response.data.firstApproverEmail, "You have new request",
-                        `${process.env.REACT_APP_FRONTEND_LINK}/inbox`, "Back to requests")
-                }
-                await delay(1500)
-                if (response.data.secondApproverEmail !== null) {
-                    handleSendEmail(response.data.secondApproverEmail, "You have new request",
-                        `${process.env.REACT_APP_FRONTEND_LINK}/inbox`, "Back to requests")
-                }
-                await delay(1500)
-                if (response.data.thirdApproverEmail !== null) {
-                    handleSendEmail(response.data.thirdApproverEmail, "You have new request",
-                        `${process.env.REACT_APP_FRONTEND_LINK}/inbox`, "Back to requests")
-                }
-
-                props.closeLoad()
-            }
-            props.openSuccess()
-
-        } catch (error) {
-            console.log(error.response.data)
-            setErrors(error.response.data)
+            props.close()
+            window.location.reload();
+        } catch (e) {
+            console.log(e.response.data);
+            setErrors(e.response.data)
         }
     }
 
-
-    return(
-        <Fragment>
+    return (
+        <>
             <div>
                 <div className="back" onClick={props.close}>
 
@@ -146,8 +133,8 @@ export function Popup(props) {
                     <div className={`modal-screen-add ${mode === "dark" ? "dark" : "light"}`}>
                         <button className={`close-button-add ${mode === "dark" ? "dark" : "light"}`} onClick={props.close}>
                             &times;</button>
-                        <p className="title-add">Create a request</p>
-                        <form onSubmit={submitHandler}>
+                        <p className="title-add">Edit a request</p>
+                        <form onSubmit={submitEditHandler}>
                             <div className="select-wrapper">
                                 <select className={`select ${mode === "dark" ? "dark" : "light"}`} name="reasons"
                                         id="reasons" value={reason} onChange={reasonHandler}>
@@ -187,7 +174,7 @@ export function Popup(props) {
 
                             <div className="buttons-block">
                                 <div className="create-block">
-                                    <button type={"submit"} className="create-button">Create</button>
+                                    <button type={"submit"} className="create-button">Update</button>
                                 </div>
 
                                 <div className="cancel-block">
@@ -198,6 +185,6 @@ export function Popup(props) {
                     </div>
                 </div>
             </div>
-        </Fragment>
+        </>
     )
 }

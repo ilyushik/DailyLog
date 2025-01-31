@@ -3,6 +3,7 @@ package org.example.springapp.Controller;
 import jakarta.validation.Valid;
 import org.example.springapp.DTO.PeriodReport;
 import org.example.springapp.DTO.ReportDTO;
+import org.example.springapp.Model.Report;
 import org.example.springapp.Model.User;
 import org.example.springapp.Repository.ReportRepository;
 import org.example.springapp.Repository.UserRepository;
@@ -127,5 +128,35 @@ public class ReportController {
         }
 
         return ResponseEntity.ok(reportService.getUsersWorkReport(userId, periodReport));
+    }
+
+    @PostMapping("/update/{id}")
+    public ResponseEntity<?> updateReport(@PathVariable int id, @RequestBody ReportDTO reportDTO) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        User user = userRepository.findByEmail(email).orElse(null);
+
+        List<Report> usersReports = reportRepository.findAll();
+        usersReports = usersReports.stream().filter(r-> r.getUser().equals(user)).toList();
+
+        for (Report r : usersReports) {
+            if (r.getDate().equals(reportDTO.getDate())) {
+                if (r.getId() != reportDTO.getId()) {
+                    return ResponseEntity.badRequest().body(Collections.singletonMap("date", "Report already exists"));
+                }
+            }
+        }
+
+        return ResponseEntity.ok(reportService.updateReport(reportDTO, id));
+    }
+
+    @PostMapping("/delete")
+    public ResponseEntity<?> deleteReport(@RequestBody int id) {
+        Report report = reportRepository.findById(id).orElse(null);
+        if (report == null) {
+            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Report not found"));
+        }
+
+        return ResponseEntity.ok(reportService.deleteReport(id));
     }
 }

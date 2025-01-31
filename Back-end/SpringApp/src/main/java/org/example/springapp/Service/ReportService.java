@@ -189,7 +189,7 @@ public class ReportService {
     }
 
     public Report updateReport(ReportDTO reportDto, int id) {
-        Report report = reportRepository.findById(reportDto.getId()).orElse(null);
+        Report report = reportRepository.findById(id).orElse(null);
         report.setDate(reportDto.getDate());
         report.setText(reportDto.getText());
         report.setCountOfHours(reportDto.getCountOfHours());

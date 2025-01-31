@@ -14,6 +14,28 @@ export function PopupReport(props) {
     const [errors, setErrors] = useState({});
     const [requests, setRequests] = useState({});
 
+    const [formValue, setFormValue] = useState('Add');
+
+    const [date, setDate] = useState('');
+    const [countOfHours, setCountOfHours] = useState(0);
+    const [comment, setComment] = useState('');
+
+    const formatDate = (dateArray) => {
+        if (!dateArray || dateArray.length !== 3) return "";
+        const [year, month, day] = dateArray;
+        return `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+    };
+
+    const initialiseData = () => {
+        setDate(formatDate(props.report?.date))
+        setCountOfHours(props.report?.countOfHours)
+        setComment(props.report?.text)
+    }
+
+    useEffect(() => {
+        initialiseData()
+    }, [])
+
     const fetchRequestHandler = useCallback(async () => {
         if (props.report?.request) { // Проверка на существование props.report и props.report.request
             try {
@@ -36,6 +58,21 @@ export function PopupReport(props) {
             fetchRequestHandler();
         }
     }, [fetchRequestHandler, props.report]);
+
+    const updateDateHandler = (e) => {
+        e.preventDefault();
+        setDate(e.target.value);
+    }
+
+    const updateCountOfHoursHandler = (e) => {
+        e.preventDefault();
+        setCountOfHours(e.target.value);
+    }
+
+    const updateCommentHandler = (e) => {
+        e.preventDefault();
+        setComment(e.target.value);
+    }
 
     const dateHandler = (event) => {
         setReportDate(event.target.value);
@@ -110,6 +147,78 @@ export function PopupReport(props) {
         }
     };
 
+    const updateHandler = async (e) => {
+        e.preventDefault();
+
+        if (date.trim().length < 1) {
+            setErrors({date: 'Date should not be empty'});
+            return;
+        }
+        if (countOfHours < 1) {
+            setErrors({countOfHours: 'Amount of hours should not be empty'});
+            return
+        }
+        if (countOfHours > 8) {
+            setErrors({countOfHours: 'Amount of hours should not be more than 8 hours'});
+            return
+        }
+        if (comment.trim().length < 1) {
+            setErrors({comment: 'Comment should not be empty'});
+            return
+        }
+
+        const updatedReport = {
+            id: props.report?.id,
+            date: date,
+            countOfHours: countOfHours,
+            text: comment,
+        }
+
+        console.log(updatedReport);
+
+        try {
+            const response = await axios.post(`${process.env.REACT_APP_BACKEND_LINK}/report/update/${props.report.id}`, updatedReport, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                },
+            });
+            console.log(response.data)
+
+            props.closeModal()
+            window.location.reload()
+        } catch (e) {
+            console.log(e.response?.data);
+            setErrors(e.response?.data);
+        }
+    }
+
+    const deleteReportHandler = async () => {
+        const updatedReport = {
+            id: props.report?.id,
+            date: date,
+            countOfHours: countOfHours,
+            comment: comment,
+        }
+
+        console.log(updatedReport);
+        try {
+            const response = await axios.post(`${process.env.REACT_APP_BACKEND_LINK}/report/delete`, props.report.id, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                },
+            })
+            console.log(response.data)
+
+            props.closeModal()
+            window.location.reload();
+        } catch (e) {
+            console.log(e.response?.data);
+            setErrors(e.response?.data)
+        }
+    }
+
 
     return (
         <Fragment>
@@ -158,43 +267,81 @@ export function PopupReport(props) {
                                                 </div>
                                             </div>
                                         </div>
-                                    ) : (
-                                        <div>
-                                            <p className={`title-report-block ${mode === "dark" ? "dark" : "light"}`}>Info
-                                                about report</p>
-                                            <div className={`report-info-block`}>
-                                                <div
-                                                    className={`report-info-block-date-block ${mode === "dark" ? "dark" : "light"}`}>
-                                                    <p>Date:</p>
-                                                    {props.report.date && props.report.date.length >= 3 && (
-                                                        <p>{props.report.date[0]}-{props.report.date[1]}-{props.report.date[2]}</p>
-                                                    )}
-                                                </div>
+                                    ) : (<>
+                                        {formValue === 'Update' ? (
+                                            <>
+                                                <p className={`title-report-block ${mode === "dark" ? "dark" : "light"}`}>Update a report</p>
+                                                <form onSubmit={updateHandler}>
+                                                    <div className={`report-date-block ${mode === "dark" ? "dark" : "light"}`}>
+                                                        <label htmlFor="update-date">Date</label>
+                                                        <input id="update-date" type="date" value={date}
+                                                               onChange={updateDateHandler}/>
+                                                    </div>
+                                                    {errors.date && <p className="error-message">{errors.date}</p>}
 
-                                                <div
-                                                    className={`report-info-block-hours-block ${mode === "dark" ? "dark" : "light"}`}>
-                                                    <p>Hours:</p>
-                                                    {props.report.countOfHours && (
-                                                        <p>{props.report.countOfHours}</p>
-                                                    )}
-                                                </div>
+                                                    <div className={`report-hours-block ${mode === "dark" ? "dark" : "light"}`}>
+                                                        <label htmlFor="update-hours">Amount of hours</label>
+                                                        <input id="update-hours" type="number" value={countOfHours}
+                                                               onChange={updateCountOfHoursHandler}/>
+                                                    </div>
+                                                    {errors.countOfHours && <p className="error-message">{errors.countOfHours}</p>}
 
-                                                <div
-                                                    className={`request-info-block-comment-block ${mode === "dark" ? "dark" : "light"}`}>
-                                                    <p className={`request-info-block-comment-block-title ${mode === "dark" ? "dark" : "light"}`}>Comment:</p>
-                                                    <div className={`request-title-block ${mode === "dark" ? "dark" : "light"}`}>
-                                                        <p className={`request-info-block-comment-block-data`}>{props.report.text}</p>
+                                                    <div className={`report-text-block ${mode === "dark" ? "dark" : "light"}`}>
+                                                        <label htmlFor="update-text">Comment</label>
+                                                        <textarea id="update-text" value={comment} onChange={updateCommentHandler}/>
+                                                    </div>
+                                                    {errors.comment && <p className="error-message">{errors.text}</p>}
+                                                    {errors.message && <p className="error-message">{errors.message}</p>}
+
+                                                    <div className={`report-buttons-block ${mode === "dark" ? "dark" : "light"}`}>
+                                                        <button className={`report-button-create ${mode === "dark" ? "dark" : "light"}`}>Update</button>
+                                                        <button
+                                                            type="button"
+                                                            className={`report-button-cancel ${mode === "dark" ? "dark" : "light"}`}
+                                                            onClick={props.closeModal}>Cancel</button>
+                                                    </div>
+                                                </form>
+                                            </>
+                                        ) : (
+                                            <div>
+                                                <p className={`title-report-block ${mode === "dark" ? "dark" : "light"}`}>Info about report</p>
+                                                <div className={`report-info-block`}>
+                                                    <div
+                                                        className={`report-info-block-date-block ${mode === "dark" ? "dark" : "light"}`}>
+                                                        <p>Date:</p>
+                                                        {props.report.date && props.report.date.length >= 3 && (
+                                                            <p>{props.report.date[0]}-{props.report.date[1]}-{props.report.date[2]}</p>
+                                                        )}
+                                                    </div>
+
+                                                    <div
+                                                        className={`report-info-block-hours-block ${mode === "dark" ? "dark" : "light"}`}>
+                                                        <p>Hours:</p>
+                                                        {props.report.countOfHours && (
+                                                            <p>{props.report.countOfHours}</p>
+                                                        )}
+                                                    </div>
+
+                                                    <div
+                                                        className={`request-info-block-comment-block ${mode === "dark" ? "dark" : "light"}`}>
+                                                        <p className={`request-info-block-comment-block-title ${mode === "dark" ? "dark" : "light"}`}>Comment:</p>
+                                                        <div className={`request-title-block ${mode === "dark" ? "dark" : "light"}`}>
+                                                            <p className={`request-info-block-comment-block-data`}>{props.report.text}</p>
+                                                        </div>
                                                     </div>
                                                 </div>
+                                                <div className="report-action-buttons">
+                                                    <button className="report-action-buttons-update" onClick={() => setFormValue('Update')}>Update</button>
+                                                    <button className="report-action-buttons-delete" onClick={deleteReportHandler}>Delete</button>
+                                                </div>
                                             </div>
-                                        </div>
-                                    )}
+                                        )}
+                                        </>)}
                                 </div>
                             )}
                             {!props.report && (
                                 <div>
-                                    <p className={`title-report-block ${mode === "dark" ? "dark" : "light"}`}>Add a
-                                        report</p>
+                                    <p className={`title-report-block ${mode === "dark" ? "dark" : "light"}`}>Add a report</p>
                                     <form onSubmit={submitHandler}>
                                         <div className={`report-date-block ${mode === "dark" ? "dark" : "light"}`}>
                                             <label htmlFor="report-date">Date</label>

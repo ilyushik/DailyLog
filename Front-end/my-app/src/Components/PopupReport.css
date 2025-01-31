@@ -218,6 +218,34 @@
     margin-left: 5px;
 }
 
+.report-action-buttons {
+    display: flex;
+    justify-content: space-between;
+    padding-left: 15%;
+    padding-right: 15%;
+    margin-top: 20px;
+}
+
+.report-action-buttons-update {
+    padding: 10px 20px;
+    color: white;
+    font-family: "Poppins", sans-serif;
+    font-weight: 500;
+    background: #617DA6;
+    border: none;
+    border-radius: 10px;
+}
+
+.report-action-buttons-delete {
+    padding: 10px 20px;
+    color: #617DA6;
+    font-family: "Poppins", sans-serif;
+    font-weight: 500;
+    border: 2px solid #617DA6;
+    background: transparent;
+    border-radius: 10px;
+}
+
 @media screen and (max-width: 650px) {
     .modal-justify-report {
         width: 300px;

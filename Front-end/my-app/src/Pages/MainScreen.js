@@ -105,7 +105,7 @@ export function MainScreen() {
                                     {error.message}</p>
                             )}
                             {requests.map((request) => (
-                                <RequestComponent deleteRequest={() => deleteRequest(request.id)}
+                                <RequestComponent param={params.id ? true : false} deleteRequest={() => deleteRequest(request.id)}
                                                   key={request.id} request={request}/>
                             ))}
                         </div>

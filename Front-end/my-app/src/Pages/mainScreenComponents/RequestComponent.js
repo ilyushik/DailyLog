@@ -70,15 +70,15 @@ export function RequestComponent(props) {
 
                 <div className="request-buttons-block">
                     <div className="request-edit-button-block">
-                        <button className={`request-edit-button ${request.status !== "Pending" ? "disable" : ""}`}
+                        <button className={`request-edit-button ${request.status !== "Pending" || props.param ? "disable" : ""}`}
                                 onClick={() => setIsEditModalOpened(true)}
-                                disabled={request.status !== 'Pending'}>Edit</button>
+                                disabled={request.status !== 'Pending' || props.param}>Edit</button>
                     </div>
 
                     <div className="request-delete-button-block">
-                        <button className={`request-delete-button ${request.status !== "Pending" ? "disable" : ""}`}
+                        <button className={`request-delete-button ${request.status !== "Pending" || props.param ? "disable" : ""}`}
                                 onClick={props.deleteRequest}
-                                disabled={request.status !== 'Pending'}>Delete</button>
+                                disabled={request.status !== 'Pending' || props.param}>Delete</button>
                     </div>
                 </div>
             </div>

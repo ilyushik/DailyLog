@@ -8,7 +8,7 @@ import axios from "axios";
 import {PopupSuccess} from "../../Components/PopupSuccess";
 import {useParams} from "react-router";
 
-export function CalendarComponent() {
+export function CalendarComponent(props) {
     const params = useParams();
     const [value, onChange] = useState(new Date());
     const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -87,7 +87,7 @@ export function CalendarComponent() {
                 }}
                 onClickDay={openModal}
             />
-            {modalIsOpen && <PopupReport closeModal={closeModal} report={report} openSuccess={openPopupSuccess}/>}
+            {modalIsOpen && <PopupReport param={props.param} closeModal={closeModal} report={report} openSuccess={openPopupSuccess}/>}
         </div>
     );
 }

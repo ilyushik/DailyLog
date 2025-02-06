@@ -112,7 +112,7 @@ export function MainScreen() {
                     </div>
 
                     <div className="calendar-block">
-                        <CalendarComponent />
+                        <CalendarComponent param={params.id ? true : false}/>
                     </div>
                 </div>
             </div>

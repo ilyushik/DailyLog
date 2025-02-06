@@ -330,10 +330,12 @@ export function PopupReport(props) {
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div className="report-action-buttons">
-                                                    <button className="report-action-buttons-update" onClick={() => setFormValue('Update')}>Update</button>
-                                                    <button className="report-action-buttons-delete" onClick={deleteReportHandler}>Delete</button>
-                                                </div>
+                                                {!props.param && (
+                                                    <div className="report-action-buttons">
+                                                        <button className="report-action-buttons-update" onClick={() => setFormValue('Update')}>Update</button>
+                                                        <button className="report-action-buttons-delete" onClick={deleteReportHandler}>Delete</button>
+                                                    </div>
+                                                )}
                                             </div>
                                         )}
                                         </>)}

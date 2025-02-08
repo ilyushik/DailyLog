@@ -92,6 +92,10 @@ public class ReportService {
         usersWorkReport.setCountOfHoursPerPeriod(countOfUsersHours);
         usersWorkReport.setSumHoursPricePerPeriod(user.getPricePerHour() * countOfUsersHours);
 
+        if (usersWorkReport.getCountOfHoursPerPeriod() == 0) {
+            return null;
+        }
+
         return usersWorkReport;
     }
 

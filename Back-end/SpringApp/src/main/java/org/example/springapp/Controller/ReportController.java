@@ -60,9 +60,13 @@ public class ReportController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
         User user = userRepository.findByEmail(email).orElse(null);
-        List<ReportDTO> usersReportsByDate = reportService.getReportsByUserId(user.getId()).stream().filter(s->s.getDate().equals(reportDTO.getDate())).collect(Collectors.toList());
+        List<ReportDTO> usersReportsByDate = reportService.getReportsByUserId(user.getId()).stream().filter(s->s.getDate().equals(reportDTO.getDate()) && s.getRequest() == null).toList();
+        List<ReportDTO> usersRequestsByDate = reportService.getReportsByUserId(user.getId()).stream().filter(s->s.getDate().equals(reportDTO.getDate()) && s.getRequest() != null).toList();
         if (!usersReportsByDate.isEmpty()) {
-            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Report already exists"));
+            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "You already have a report on this date"));
+        }
+        if (!usersRequestsByDate.isEmpty()) {
+            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "You already have a request on this date"));
         }
         if (reportDTO.getCountOfHours() > 8) {
             return ResponseEntity.badRequest().body(Collections.singletonMap("hours", "Work day can not be more than 8 hours"));
@@ -125,6 +129,9 @@ public class ReportController {
         }
         if (periodReport.getStartDate().isAfter(LocalDate.now()) || periodReport.getEndDate().isAfter(LocalDate.now())) {
             return ResponseEntity.badRequest().body(Collections.singletonMap("dateEr", "Date can not be after current date"));
+        }
+        if (reportService.getUsersWorkReport(userId, periodReport) == null) {
+            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "User has no reports"));
         }
 
         return ResponseEntity.ok(reportService.getUsersWorkReport(userId, periodReport));

@@ -9,7 +9,7 @@ export function PopupReport(props) {
     const mode = useSelector(state => state.theme.theme);
     const [reportDate, setReportDate] = useState("");
     const [reportText, setReportText] = useState("");
-    const [reportHours, setReportHours] = useState(0);
+    const [reportHours, setReportHours] = useState("");
     const [isFormValid, setIsFormValid] = useState(true);
     const [errors, setErrors] = useState({});
     const [requests, setRequests] = useState({});
@@ -26,8 +26,19 @@ export function PopupReport(props) {
         return `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
     };
 
+    const formatSelectedFromReportDate = (date) => {
+        const reportDateObj = new Date(date);
+
+        const year = reportDateObj.getFullYear();
+        const month = String(reportDateObj.getMonth() + 1).padStart(2, '0');
+        const day = String(reportDateObj.getDate()).padStart(2, '0');
+
+        return `${year}-${month}-${day}`
+    }
+
     const initialiseData = () => {
         setDate(formatDate(props.report?.date))
+        setReportDate(formatSelectedFromReportDate(props?.selectedDate))
         setCountOfHours(props.report?.countOfHours)
         setComment(props.report?.text)
     }

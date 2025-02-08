@@ -52,6 +52,7 @@ export default function PopupUserExcel(props) {
 
     const loadUserReport = async () => {
         try {
+            setUserReport(null)
             const response = await axios.post(`${process.env.REACT_APP_BACKEND_LINK}/report/usersReport-perPeriod/${props.userId}`,
                 {startDate: startDate, endDate: endDate}, {
                 headers: {
@@ -97,6 +98,7 @@ export default function PopupUserExcel(props) {
                                 </div>
 
                                 {errors.dateEr && (<p className={`userReport-erMessage`}>{errors.dateEr}</p>)}
+                                {errors.message && (<p className={`userReport-erMessage`}>{errors.message}</p>)}
 
                                 <div>
                                     <button className={`userReport-button`}>Check Info</button>

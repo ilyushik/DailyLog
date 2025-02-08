@@ -87,7 +87,8 @@ export function CalendarComponent(props) {
                 }}
                 onClickDay={openModal}
             />
-            {modalIsOpen && <PopupReport param={props.param} closeModal={closeModal} report={report} openSuccess={openPopupSuccess}/>}
+            {modalIsOpen && <PopupReport param={props.param} selectedDate={selectedDate} closeModal={closeModal}
+                                         report={report} openSuccess={openPopupSuccess}/>}
         </div>
     );
 }

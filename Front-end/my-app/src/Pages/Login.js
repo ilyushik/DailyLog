@@ -19,6 +19,7 @@ export function Login() {
 
     const hidePasswprdHandler = () => {
         setShowPassword(false);
+
     }
 
     const emailHandler = (event) => {
@@ -60,11 +61,18 @@ export function Login() {
 
     }
 
+    const handleKeyDown = (event) => {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            loginHandler(event);
+        }
+    };
+
     return (
         <div className="main-block">
             <div className={`form-container ${mode === "light" ? "light" : "dark"}`}>
                 <div className="log-in-text">Log In</div>
-                <form onSubmit={loginHandler}>
+                <form onSubmit={loginHandler} onKeyDown={handleKeyDown}>
                     <div className="center-block">
                         <div className="email-block">
                             <label className="label" htmlFor="email">Email</label>
@@ -89,7 +97,7 @@ export function Login() {
                     </div>
 
                     <div className="button-block">
-                        <button>Login to account</button>
+                        <button type="submit">Login to account</button>
                     </div>
                 </form>
             </div>

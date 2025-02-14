@@ -134,6 +134,18 @@ form {
     color: #484848;
 }
 
+.test_login_account_block {}
+
+.test_login_account {
+    color: #617DA6;
+    font-size: 12px;
+    text-align: center;
+    transition: ease-in 0.2s;
+}
+
+.test_login_account:hover {
+    transform: scale(1.1);
+}
 
 @media screen and (min-width: 1050px) {
     .center-block {

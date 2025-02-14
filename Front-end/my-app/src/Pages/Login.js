@@ -61,6 +61,18 @@ export function Login() {
 
     }
 
+    const testLogin = async (testEmail, testPassword) => {
+        try {
+            const response = await axios.post(`${process.env.REACT_APP_BACKEND_LINK}/login`, {email: testEmail, password: testPassword})
+            localStorage.setItem('token', response.data.token)
+            console.log(response.data)
+            navigate('/my-info')
+            window.location.reload()
+        } catch (error) {
+            setErrors(error.response.data)
+        }
+    }
+
     const handleKeyDown = (event) => {
         if (event.key === "Enter") {
             event.preventDefault();
@@ -100,7 +112,35 @@ export function Login() {
                         <button type="submit">Login to account</button>
                     </div>
                 </form>
+
+                {/*test login buttons*/}
+                <div>
+                    <div className="test_login_account_block" onClick={() => {
+                        testLogin('illia.kamarali.work@gmail.com', 'password007')
+                    }}>
+                        <p className="test_login_account">Test login with project manager's credentials</p>
+                    </div>
+
+                    <div className="test_login_account_block" onClick={() => {
+                        testLogin('kamarali2025mf12@student.karazin.ua', 'password005')
+                    }}>
+                        <p className="test_login_account">Test login with team lead's credentials</p>
+                    </div>
+
+                    <div className="test_login_account_block" onClick={() => {
+                        testLogin('fastandfoodycorp@gmail.com', 'password001')
+                    }}>
+                        <p className="test_login_account">Test login with tech lead's credentials</p>
+                    </div>
+
+                    <div className="test_login_account_block" onClick={() => {
+                        testLogin('kamaraliilya@gmail.com', 'password003')
+                    }}>
+                        <p className="test_login_account">Test login with user's credentials</p>
+                    </div>
+                </div>
             </div>
         </div>
+
     )
 }

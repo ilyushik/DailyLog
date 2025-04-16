@@ -37,7 +37,6 @@
     background: #617DA6;
 }
 
-
 .light-theme .react-calendar {
     background: white;
 }
@@ -55,49 +54,78 @@
     background: #617DA6;
 }
 
-
 .react-calendar {
+    border: none;
 }
 
-/* Стили для верхней панели календаря */
+/* Навигация календаря */
 .react-calendar__navigation {
-    background-color: #444; /* Цвет фона панели */
-    color: white; /* Цвет текста на панели */
-    padding: 10px;
-    /*border-radius: 10px 10px 0 0;*/
-}
-
-.react-calendar__navigation__label {
-    font-weight: bold; /* Жирный текст для отображения месяца и года */
-}
-
-.react-calendar__navigation__arrow {
-    color: white; /* Цвет стрелок навигации */
-}
-
-/* Темный режим */
-.dark-theme .react-calendar__navigation {
     background-color: #617DA6;
     color: white;
 }
 
-.dark-theme .react-calendar__navigation__arrow {
-    color: white;
+.react-calendar__navigation button {
+    background: none;
+    border: none;
+    color: inherit;
+    font-size: 1rem;
+    padding: 6px 10px;
+    border-radius: 5px;
+    font-family: 'Poppins', sans-serif !important;
 }
 
-/* Светлый режим */
-.light-theme .react-calendar__navigation {
-    background-color: #617DA6;
-    color: black;
+.dark-theme .react-calendar__navigation button:hover {
+    background-color: #4f6b8f; /* немного темнее */
+    cursor: pointer;
 }
 
-.light-theme .react-calendar__navigation__arrow {
-    color: black;
+.light-theme .react-calendar__navigation button:hover {
+    background-color: #4f6b8f; /* светло-серый на светлой теме */
+    cursor: pointer;
 }
 
+.dark-theme .react-calendar__tile:hover {
+    background-color: #989898;
+    cursor: pointer;
+}
+
+.dark-theme .has-report.leave {
+    background: #d56464;
+}
+
+.dark-theme .has-report.work {
+    background: #617DA6;
+}
+
+.dark-theme .has-report:hover {
+    filter: brightness(0.9);
+    cursor: pointer;
+}
+
+.light-theme .react-calendar__tile:hover {
+    background-color: #cdcdcd;
+    cursor: pointer;
+}
+
+.light-theme .has-report.leave {
+    background: #d56464;
+}
+
+.light-theme .has-report.work {
+    background: #617DA6;
+}
+
+.light-theme .has-report:hover {
+    filter: brightness(0.95);
+    cursor: pointer;
+}
+
+.react-calendar__tile {
+}
+
+/* Адаптивность */
 @media screen and (max-width: 1100px) {
     .react-calendar {
         width: auto;
     }
 }
-

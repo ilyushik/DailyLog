@@ -4,15 +4,18 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.example.springapp.DTO.AddReportReturnDTO;
-import org.example.springapp.DTO.PeriodReport;
-import org.example.springapp.DTO.ReportDTO;
-import org.example.springapp.DTO.UsersWorkReport;
+import org.example.springapp.DTO.*;
 import org.example.springapp.Model.Report;
 import org.example.springapp.Model.User;
 import org.example.springapp.Repository.ReportRepository;
 import org.example.springapp.Repository.UserRepository;
+import org.example.springapp.util.CustomObjectMappers;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
@@ -27,6 +30,14 @@ public class ReportService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
+
+
+    @Autowired
+    private CustomObjectMappers customObjectMappers;
+
+    @Cacheable(value = "userReports", key = "'userId=' + #userId")
     public List<ReportDTO> getReportsByUserId(int userId) {
         return reportRepository.findAll().stream().filter(s->s.getUser().getId() == userId)
                 .map(r-> new ReportDTO(r.getId(), r.getDate(), r.getText(), r.getCountOfHours(),
@@ -34,11 +45,20 @@ public class ReportService {
                         r.getStatus())).collect(Collectors.toList());
     }
 
+    @Cacheable(value = "userReports", key = "'userId=' + #id")
+    public ReportDTO reportById(int id) {
+        Report report = reportRepository.findById(id).orElse(null);
+        assert report != null;
+        return customObjectMappers.reportToDto(report);
+    }
+
+    @CacheEvict(value = "userReports", key = "'userId=' + #user.id")
     public AddReportReturnDTO addReport(ReportDTO reportDTO, User user) {
         AddReportReturnDTO addReportReturnDTO = new AddReportReturnDTO();
         Report report = new Report(reportDTO.getDate(), reportDTO.getText(), reportDTO.getCountOfHours(),
                 user, "work");
-        reportRepository.save(report);
+        Report savedReport = reportRepository.save(report);
+
         if (user.getDaysWorked() == null) {
             user.setDaysWorked(0);
             userRepository.save(user);
@@ -50,6 +70,10 @@ public class ReportService {
             user.setDaysForVacation(user.getDaysForVacation() + 1);
             userRepository.save(user);
         }
+
+        redisTemplate.opsForValue().set("report::reportId=" + savedReport.getId(),
+                customObjectMappers.reportToDto(savedReport));
+
         addReportReturnDTO.setUserEmail(user.getEmail());
         addReportReturnDTO.setDays(user.getDaysForVacation());
         return addReportReturnDTO;
@@ -192,7 +216,13 @@ public class ReportService {
         }
     }
 
-    public Report updateReport(ReportDTO reportDto, int id) {
+    @Caching(evict = {
+            @CacheEvict(value = "report", key = "'reportId=' + #id"),
+            @CacheEvict(value = "userReports", key = "'userId=' + #user.id")
+    }, put = {
+            @CachePut(value = "report", key = "'reportId' + id")
+    })
+    public Report updateReport(ReportDTO reportDto, int id, UserDTO user) {
         Report report = reportRepository.findById(id).orElse(null);
         report.setDate(reportDto.getDate());
         report.setText(reportDto.getText());
@@ -201,7 +231,11 @@ public class ReportService {
         return reportRepository.save(report);
     }
 
-    public String deleteReport(int id) {
+    @Caching(evict = {
+            @CacheEvict(value = "report", key = "'reportId=' + #id"),
+            @CacheEvict(value = "userReports", key = "'userId=' + #userId")
+    })
+    public String deleteReport(int id, int userId) {
         reportRepository.deleteById(id);
         return "Report deleted";
     }

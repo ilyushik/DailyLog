@@ -1,6 +1,5 @@
 package org.example.springapp.Configuration;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,14 +10,13 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
 @Configuration
 @EnableWebMvc
 public class WebConfig {
 
-//    private String frontendLinkCorsDisable = "http://localhost:3000";
-    private String frontendLinkCorsDisable="http://dailylogclient.s3-website.eu-central-1.amazonaws.com";
+    private String frontendLinkCorsDisable = "http://localhost:3000";
+    // private String frontendLinkCorsDisable="http://dailylogclient.s3-website.eu-central-1.amazonaws.com";
 
     private String mobileLinkCorsDisable = "http://192.168.0.137:8081";
 

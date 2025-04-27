@@ -3,11 +3,13 @@ package org.example.springapp.Controller;
 import jakarta.validation.Valid;
 import org.example.springapp.DTO.PeriodReport;
 import org.example.springapp.DTO.ReportDTO;
+import org.example.springapp.DTO.UserDTO;
 import org.example.springapp.Model.Report;
 import org.example.springapp.Model.User;
 import org.example.springapp.Repository.ReportRepository;
 import org.example.springapp.Repository.UserRepository;
 import org.example.springapp.Service.ReportService;
+import org.example.springapp.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -32,13 +34,14 @@ public class ReportController {
     private UserRepository userRepository;
     @Autowired
     private ReportRepository reportRepository;
+    @Autowired
+    private UserService userService;
 
     @GetMapping("/usersReports")
     public ResponseEntity<?> getReport() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
-        User user = userRepository.findByEmail(email).orElse(null);
-        assert user != null;
+        UserDTO user = userService.userByEmail(email);
         if (reportService.getReportsByUserId(user.getId()).isEmpty()) {
             return ResponseEntity.badRequest().body(Collections.singletonMap("message", "No reports"));
         }
@@ -60,6 +63,7 @@ public class ReportController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
         User user = userRepository.findByEmail(email).orElse(null);
+        assert user != null;
         List<ReportDTO> usersReportsByDate = reportService.getReportsByUserId(user.getId()).stream().filter(s->s.getDate().equals(reportDTO.getDate()) && s.getRequest() == null).toList();
         List<ReportDTO> usersRequestsByDate = reportService.getReportsByUserId(user.getId()).stream().filter(s->s.getDate().equals(reportDTO.getDate()) && s.getRequest() != null).toList();
         if (!usersReportsByDate.isEmpty()) {
@@ -85,7 +89,7 @@ public class ReportController {
             @RequestParam("endDate") String endDate) throws IOException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
-        User user = userRepository.findByEmail(email).orElse(null);
+        UserDTO user = userService.userByEmail(email);
 
         PeriodReport periodReport = new PeriodReport();
         periodReport.setStartDate(LocalDate.parse(startDate));
@@ -141,10 +145,11 @@ public class ReportController {
     public ResponseEntity<?> updateReport(@PathVariable int id, @RequestBody ReportDTO reportDTO) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
-        User user = userRepository.findByEmail(email).orElse(null);
+        UserDTO user = userService.userByEmail(email);
 
         List<Report> usersReports = reportRepository.findAll();
-        usersReports = usersReports.stream().filter(r-> r.getUser().equals(user)).toList();
+        usersReports = usersReports.stream().filter(r->
+                r.getUser().getId() == user.getId()).toList();
 
         for (Report r : usersReports) {
             if (r.getDate().equals(reportDTO.getDate())) {
@@ -154,16 +159,17 @@ public class ReportController {
             }
         }
 
-        return ResponseEntity.ok(reportService.updateReport(reportDTO, id));
+        return ResponseEntity.ok(reportService.updateReport(reportDTO, id, user));
     }
 
     @PostMapping("/delete")
     public ResponseEntity<?> deleteReport(@RequestBody int id) {
-        Report report = reportRepository.findById(id).orElse(null);
+        ReportDTO report = reportService.reportById(id);
         if (report == null) {
-            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Report not found"));
+            return ResponseEntity.badRequest().body(Collections.singletonMap("message",
+                    "Report not found"));
         }
 
-        return ResponseEntity.ok(reportService.deleteReport(id));
+        return ResponseEntity.ok(reportService.deleteReport(id, report.getUser()));
     }
 }

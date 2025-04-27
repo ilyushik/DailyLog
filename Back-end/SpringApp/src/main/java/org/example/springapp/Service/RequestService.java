@@ -5,7 +5,12 @@ import org.example.springapp.DTO.CheckRequestDTO;
 import org.example.springapp.DTO.RequestDTO;
 import org.example.springapp.Model.*;
 import org.example.springapp.Repository.*;
+import org.example.springapp.util.CustomObjectMappers;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
@@ -37,7 +42,22 @@ public class RequestService {
     private static final int LENGTH = 8;
     private static final SecureRandom RANDOM = new SecureRandom();
 
+    @Autowired
+    private CustomObjectMappers customObjectMappers;
+
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
+
+
+    @Cacheable(value = "allUserRequests", key = "'userId=' + #id")
     public List<RequestDTO> findByUser(int id) {
+
+//        return requestRepository
+//                .findAllByUserId(id)
+//                .stream()
+//                .map(s -> customObjectMappers.requestToDto(s))
+//                .toList();
+
         return requestRepository.findAllByUserId(id).stream().map(s -> new RequestDTO(
                 s.getId(),
                 s.getStartDate(),
@@ -56,49 +76,50 @@ public class RequestService {
     }
 
     public List<RequestDTO> findByApprover(int approverId) {
-        List<RequestDTO> list = requestRepository.findAll().stream().map(s -> new RequestDTO(
-                s.getId(),
-                s.getStartDate(),
-                s.getFinishDate(),
-                s.getCreatedAt(),
-                s.getUniqueCode(),
-                s.getDateOfResult() != null ? s.getDateOfResult() : null,
-                s.getApproverId().getId(),
-                s.getUser().getId(),
-                s.getUser().getFirstName() + " " + s.getUser().getSecondName(),
-                s.getStatus().getStatus(),
-                s.getReason().getReason(),
-                s.getAction().getAction(),
-                s.getComment()
-        )).filter(r->r.getApprover() == approverId && r.getStatus().equals("Pending") && r.getAction().equals("Unchecked")).collect(Collectors.toList());
+        List<RequestDTO> list = new ArrayList<>(requestRepository
+                .findAll()
+                .stream()
+                .map(s -> customObjectMappers.requestToDto(s))
+                .filter(r -> r.getApprover() == approverId &&
+                        r.getStatus().equals("Pending") && r.getAction().equals("Unchecked"))
+                .toList());
 
         Collections.reverse(list);
         return list;
     }
 
+    @Cacheable(value = "requestsByUniqueCode", key = "'uniqueCode=' + #uniqueCode")
+    public List<RequestDTO> requestsByUniqueCode(String uniqueCode) {
+        return requestRepository
+                .findAllByUniqueCode(uniqueCode)
+                .stream()
+                .map(r -> customObjectMappers.requestToDto(r))
+                .toList();
+    }
 
-    public RequestDTO determineOverallStatus(String uniqueCode) {
-        List<Request> requests = requestRepository.findAllByUniqueCode(uniqueCode);
+
+    private RequestDTO determineOverallStatus(String uniqueCode) {
+        List<RequestDTO> requests = requestsByUniqueCode(uniqueCode);
 
         // Выбираем первый запрос как представителя для заполнения данных
-        Request representativeRequest = requests.get(0);
+        RequestDTO representativeRequest = requests.get(0);
         int id = representativeRequest.getId();
         LocalDate startDate = representativeRequest.getStartDate();
         LocalDate finishDate = representativeRequest.getFinishDate();
         Timestamp createdAt = representativeRequest.getCreatedAt();
         String unique_Code = representativeRequest.getUniqueCode();
-        int user = representativeRequest.getUser().getId();
-        String userFullName = representativeRequest.getUser().getFirstName() + " " + representativeRequest.getUser().getSecondName();
-        String reason = representativeRequest.getReason().getReason();
-        int approverId = representativeRequest.getApproverId().getId();
+        int user = representativeRequest.getUser();
+        String userFullName = representativeRequest.getFullUserName();
+        String reason = representativeRequest.getReason();
+        int approverId = representativeRequest.getApprover();
         String comment = representativeRequest.getComment();
 
         // Определяем общий статус для запросов с этим uniqueCode
         boolean allApproved = requests.stream()
-                .allMatch(request -> request.getAction().getAction().equals("Approve"));
+                .allMatch(request -> request.getAction().equals("Approve"));
 
         boolean anyRejected = requests.stream()
-                .anyMatch(request -> request.getAction().getAction().equals("Decline"));
+                .anyMatch(request -> request.getAction().equals("Decline"));
 
         String overallStatus;
         if (allApproved) {
@@ -109,9 +130,11 @@ public class RequestService {
             overallStatus = "Pending";
         }
 
-        return new RequestDTO(id, startDate, finishDate, createdAt, unique_Code, null, approverId, user, userFullName, overallStatus, reason, null, comment);
+        return new RequestDTO(id, startDate, finishDate, createdAt, unique_Code, null, approverId, user, userFullName,
+                overallStatus, reason, null, comment);
     }
 
+    @Cacheable(value = "combinedUserRequests", key = "'userId=' + #userId")
     public List<RequestDTO> combinedList(int userId) {
         List<RequestDTO> requests = findByUser(userId);
         List<RequestDTO> sortedList = new ArrayList<>();
@@ -175,13 +198,16 @@ public class RequestService {
 
         if (request.getStatus().getStatus().equals("Approved")) {
             if (request.getReason().getReason().equals("Annual Leave")) {
-                user.setDaysForVacation(user.getDaysForVacation() - (int)ChronoUnit.DAYS.between(request.getStartDate(), request.getFinishDate()) - 1);
+                user.setDaysForVacation(user.getDaysForVacation() - (int)ChronoUnit.DAYS.between(request.getStartDate(),
+                        request.getFinishDate()) - 1);
             }
             if (request.getReason().getReason().equals("Personal Leave")) {
-                user.setDaysToSkip(user.getDaysToSkip() - (int)ChronoUnit.DAYS.between(request.getStartDate(), request.getFinishDate()) - 1);
+                user.setDaysToSkip(user.getDaysToSkip() - (int)ChronoUnit.DAYS.between(request.getStartDate(),
+                        request.getFinishDate()) - 1);
             }
             if (request.getReason().getReason().equals("Sick Leave")) {
-                user.setDaysToSkip(user.getDaysToSkip() - (int)ChronoUnit.DAYS.between(request.getStartDate(), request.getFinishDate()) - 1);
+                user.setDaysToSkip(user.getDaysToSkip() - (int)ChronoUnit.DAYS.between(request.getStartDate(),
+                        request.getFinishDate()) - 1);
             }
 
             userRepository.save(user);
@@ -202,7 +228,8 @@ public class RequestService {
             for (LocalDate l : dates) {
                 Report report = new Report(l, request.getComment(), user, request);
                 report.setStatus("leave");
-                reportRepository.save(report);
+                Report report1 = reportRepository.save(report);
+                redisTemplate.opsForValue().set("report::reportId" + report1.getId(), customObjectMappers.reportToDto(report1));
             }
 
             return checkRequestDTO;
@@ -267,6 +294,10 @@ public class RequestService {
         requestRepository.save(request);
     }
 
+    @Caching(evict = {
+            @CacheEvict(value = "allUserRequests", key = "'userId=' + #userId"),
+            @CacheEvict(value = "combinedUserRequests", key = "'userId=' + #userId")
+    })
     public AddRequestReturnDTO addRequest(int userId, RequestDTO requesT) {
         AddRequestReturnDTO addRequestReturnDTO = new AddRequestReturnDTO();
         String uniqueCode = generateRandomString();
@@ -289,15 +320,18 @@ public class RequestService {
                     new Timestamp(System.currentTimeMillis()), uniqueCode, new Timestamp(System.currentTimeMillis()),
                     user, user, statusCEO, reason, actionCEO, requesT.getComment());
             if (request.getReason().getReason().equals("Annual Leave")) {
-                user.setDaysForVacation(user.getDaysForVacation() - (int)ChronoUnit.DAYS.between(request.getStartDate(), request.getFinishDate()) - 1);
+                user.setDaysForVacation(user.getDaysForVacation() - (int)ChronoUnit.DAYS.between(request.getStartDate(),
+                        request.getFinishDate()) - 1);
                 userRepository.save(user);
             }
             if (request.getReason().getReason().equals("Personal Leave")) {
-                user.setDaysToSkip(user.getDaysToSkip() - (int)ChronoUnit.DAYS.between(request.getStartDate(), request.getFinishDate()) - 1);
+                user.setDaysToSkip(user.getDaysToSkip() - (int)ChronoUnit.DAYS.between(request.getStartDate(),
+                        request.getFinishDate()) - 1);
                 userRepository.save(user);
             }
             if (request.getReason().getReason().equals("Sick Leave")) {
-                user.setDaysToSkip(user.getDaysToSkip() - (int)ChronoUnit.DAYS.between(request.getStartDate(), request.getFinishDate()) - 1);
+                user.setDaysToSkip(user.getDaysToSkip() - (int)ChronoUnit.DAYS.between(request.getStartDate(),
+                        request.getFinishDate()) - 1);
                 userRepository.save(user);
             }
 
@@ -317,7 +351,8 @@ public class RequestService {
                 } else {
                     report.setStatus("leave");
                 }
-                reportRepository.save(report);
+                Report report1 = reportRepository.save(report);
+                redisTemplate.opsForValue().set("report::reportId=" + report1.getId(), customObjectMappers.reportToDto(report1));
             }
 
             return addRequestReturnDTO;
@@ -340,6 +375,7 @@ public class RequestService {
         return addRequestReturnDTO;
     }
 
+    @Cacheable(value = "request", key = "'requestId=' + #id")
     public RequestDTO getRequestById(int id) {
         Request request = requestRepository.findById(id).orElse(null);
         RequestDTO requestDTO = new RequestDTO(request.getId(), request.getStartDate(), request.getFinishDate(),
@@ -349,6 +385,11 @@ public class RequestService {
         return requestDTO;
     }
 
+    @Caching(evict = {
+            @CacheEvict(value = "allUserRequests", key = "'userId=' + #userId"),
+            @CacheEvict(value = "request", key = "'requestId=' + #id"),
+            @CacheEvict(value = "combinedUserRequests", key = "'userId=' + #result.getId()")
+    })
     public Request updateRequest(int id, RequestDTO requestDto) {
         Request request = requestRepository.findById(id).orElse(null);
         RequestReason reason = requestReasonRepository.findByReason(requestDto.getReason());
@@ -371,7 +412,12 @@ public class RequestService {
         return request;
     }
 
-    public String deleteRequest(int id) {
+    @Caching(evict = {
+            @CacheEvict(value = "allUserRequests", key = "'userId=' + #userId"),
+            @CacheEvict(value = "combinedUserRequests", key = "'userId=' + #userId"),
+            @CacheEvict(value = "request", key = "'requestId=' + #id")
+    })
+    public String deleteRequest(int id, int userId) {
         List<Report> reports = reportRepository.findAll();
         Request request = requestRepository.findById(id).orElse(null);
         List<Request> requests = requestRepository.findAll();

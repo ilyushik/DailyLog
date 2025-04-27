@@ -1,6 +1,7 @@
 package org.example.springapp.Controller;
 
 import org.example.springapp.DTO.RequestDTO;
+import org.example.springapp.DTO.UserDTO;
 import org.example.springapp.Model.Report;
 import org.example.springapp.Model.Request;
 import org.example.springapp.Model.User;
@@ -8,6 +9,7 @@ import org.example.springapp.Repository.ReportRepository;
 import org.example.springapp.Repository.RequestRepository;
 import org.example.springapp.Repository.UserRepository;
 import org.example.springapp.Service.RequestService;
+import org.example.springapp.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -33,21 +35,23 @@ public class RequestController {
     private RequestRepository requestRepository;
     @Autowired
     private ReportRepository reportRepository;
+    @Autowired
+    private UserService userService;
 
     @GetMapping("")
     public ResponseEntity<?> requestByUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
-        User user = userRepository.findByEmail(email).orElse(null);
-        if (user == null) {
+        UserDTO userDTO = userService.userByEmail(email);
+        if (userDTO == null) {
             return ResponseEntity.badRequest().body(Collections.singletonMap("message", "User not found"));
         }
 
-        if (requestService.combinedList(user.getId()).isEmpty()) {
+        if (requestService.combinedList(userDTO.getId()).isEmpty()) {
             return ResponseEntity.badRequest().body(Collections.singletonMap("message", "No request found"));
         }
 
-        return ResponseEntity.ok(requestService.combinedList(user.getId()));
+        return ResponseEntity.ok(requestService.combinedList(userDTO.getId()));
     }
 
     @GetMapping("/userRequests/{id}")
@@ -64,7 +68,7 @@ public class RequestController {
     public ResponseEntity<?> requestsByApprover() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
-        User user = userRepository.findByEmail(email).orElse(null);
+        UserDTO user = userService.userByEmail(email);
         if (user == null) {
             return ResponseEntity.badRequest().body(Collections.singletonMap("message", "User not found"));
         }
@@ -97,7 +101,10 @@ public class RequestController {
 
     @GetMapping("/delete/{id}")
     public ResponseEntity<?> deleteRequest(@PathVariable int id) {
-        return ResponseEntity.ok(requestService.deleteRequest(id));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        UserDTO userDTO = userService.userByEmail(email);
+        return ResponseEntity.ok(requestService.deleteRequest(id, userDTO.getId()));
     }
 
     @PostMapping("/update/{id}")

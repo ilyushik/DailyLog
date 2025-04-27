@@ -3,7 +3,9 @@ package org.example.springapp.Service;
 import org.example.springapp.DTO.UserDTO;
 import org.example.springapp.Model.User;
 import org.example.springapp.Repository.UserRepository;
+import org.example.springapp.util.CustomObjectMappers;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -15,33 +17,25 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private CustomObjectMappers customObjectMappers;
+
+    @Cacheable(value = "user", key = "'email-' + #email")
     public UserDTO userByEmail(String email) {
         User user = userRepository.findByEmail(email).orElse(null);
-        UserDTO userDTO = new UserDTO();
         if (user == null) {
             return null;
         }
 
-        userDTO.setId(user.getId());
-        userDTO.setFirstName(user.getFirstName());
-        userDTO.setSecondName(user.getSecondName());
-        userDTO.setEmail(user.getEmail());
-        userDTO.setPassword(user.getPassword());
-        userDTO.setImage(user.getImage());
-        userDTO.setRole(user.getRole().getRole());
-        userDTO.setPosition(user.getJobPosition());
-
-        return userDTO;
-
+        return customObjectMappers.userToDto(user);
     }
 
     public List<UserDTO> users() {
-        return userRepository.findAll().stream().map(s -> new UserDTO(
-                s.getId(), s.getFirstName(), s.getSecondName(), s.getEmail(), s.getPassword(),
-                s.getImage(), s.getJobPosition(), s.getRole().getRole()
-        )).collect(Collectors.toList());
+        return userRepository.findAll().stream().map(u ->
+                customObjectMappers.userToDto(u)).collect(Collectors.toList());
     }
 
+    @Cacheable(value = "user", key = "'userId=' + #id")
     public UserDTO userById(int id) {
         User user = userRepository.findById(id).orElse(null);
         if (user == null) {
@@ -54,6 +48,7 @@ public class UserService {
         return userDto;
     }
 
+    @Cacheable(value = "usersByLead", key = "'leadId=' + #id")
     public List<UserDTO> usersByLead(int id) {
         User lead = userRepository.findById(id).orElse(null);
         List<User> usersByL = new ArrayList<>();
@@ -90,7 +85,5 @@ public class UserService {
                 u.getJobPosition(), u.getRole().getRole()
         )).collect(Collectors.toList());
     }
-
-
 
 }

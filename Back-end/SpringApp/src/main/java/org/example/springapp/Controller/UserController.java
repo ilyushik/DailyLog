@@ -4,7 +4,6 @@ import jakarta.validation.Valid;
 import org.example.springapp.DTO.ReportDTO;
 import org.example.springapp.DTO.RequestDTO;
 import org.example.springapp.Model.User;
-import org.example.springapp.Repository.RequestStatusRepository;
 import org.example.springapp.Repository.UserRepository;
 import org.example.springapp.Service.ReportService;
 import org.example.springapp.Service.RequestService;
@@ -33,8 +32,6 @@ public class UserController {
     private RequestService requestService;
     @Autowired
     private ReportService reportService;
-    @Autowired
-    private RequestStatusRepository requestStatusRepository;
 
     @GetMapping("/getMyInfo")
     public ResponseEntity<?> getMyInfo() {

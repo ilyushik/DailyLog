@@ -8,6 +8,7 @@ import org.example.springapp.Repository.*;
 import org.example.springapp.util.CustomObjectMappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -51,28 +52,11 @@ public class RequestService {
 
     @Cacheable(value = "allUserRequests", key = "'userId=' + #id")
     public List<RequestDTO> findByUser(int id) {
-
-//        return requestRepository
-//                .findAllByUserId(id)
-//                .stream()
-//                .map(s -> customObjectMappers.requestToDto(s))
-//                .toList();
-
-        return requestRepository.findAllByUserId(id).stream().map(s -> new RequestDTO(
-                s.getId(),
-                s.getStartDate(),
-                s.getFinishDate(),
-                s.getCreatedAt(),
-                s.getUniqueCode(),
-                s.getDateOfResult() != null ? s.getDateOfResult() : null,
-                s.getApproverId().getId(),
-                s.getUser().getId(),
-                s.getUser().getFirstName() + " " + s.getUser().getSecondName(),
-                s.getStatus().getStatus(),
-                s.getReason().getReason(),
-                s.getAction().getAction(),
-                s.getComment()
-        )).collect(Collectors.toList());
+        return requestRepository
+                .findAllByUserId(id)
+                .stream()
+                .map(s -> customObjectMappers.requestToDto(s))
+                .toList();
     }
 
     public List<RequestDTO> findByApprover(int approverId) {
@@ -240,6 +224,7 @@ public class RequestService {
         return checkRequestDTO;
     }
 
+
     public CheckRequestDTO declineRequest(int id) {
         CheckRequestDTO checkRequestDTO = new CheckRequestDTO();
         Request request = requestRepository.findById(id).orElse(null);
@@ -386,9 +371,9 @@ public class RequestService {
     }
 
     @Caching(evict = {
-            @CacheEvict(value = "allUserRequests", key = "'userId=' + #userId"),
+            @CacheEvict(value = "allUserRequests", key = "'userId=' + #result.getUser().getId()"),
             @CacheEvict(value = "request", key = "'requestId=' + #id"),
-            @CacheEvict(value = "combinedUserRequests", key = "'userId=' + #result.getId()")
+            @CacheEvict(value = "combinedUserRequests", key = "'userId=' + #result.getUser().getId()")
     })
     public Request updateRequest(int id, RequestDTO requestDto) {
         Request request = requestRepository.findById(id).orElse(null);

@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   mysql_db:
-    image: mysql
+    image: mysql:8.0
     container_name: mysqldb
     restart: always
     environment:
@@ -13,11 +13,25 @@ services:
     ports:
       - "3307:3306"
     volumes:
-      - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/schema.sql
     networks:
       - dailylog_docker_app
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "root", "-p30042005"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+
+  redis:
+    image: redis:latest
+    container_name: redis_server
+    restart: always
+    ports:
+      - "6379:6379"
+    networks:
+      - dailylog_docker_app
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
       interval: 10s
       timeout: 5s
       retries: 3
@@ -29,10 +43,14 @@ services:
     depends_on:
       mysql_db:
         condition: service_healthy
+      redis:
+        condition: service_healthy
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql_db:3306/DailyLogDB
       SPRING_DATASOURCE_USERNAME: user
       SPRING_DATASOURCE_PASSWORD: 30042005
+      SPRING_REDIS_HOST: redis_server
+      SPRING_REDIS_PORT: 6379
     ports:
       - "8080:8080"
     networks:

@@ -87,7 +87,8 @@ public class RequestController {
 
     @PostMapping("/decline/{id}")
     public ResponseEntity<?> declineRequest(@PathVariable int id) {
-        return ResponseEntity.ok(requestService.declineRequest(id));
+        RequestDTO requestDTO = requestService.getRequestById(id);
+        return ResponseEntity.ok(requestService.declineRequest(requestDTO));
     }
 
     @GetMapping("/request/{id}")

@@ -114,8 +114,8 @@ public class RequestService {
             overallStatus = "Pending";
         }
 
-        return new RequestDTO(id, startDate, finishDate, createdAt, unique_Code, null, approverId, user, userFullName,
-                overallStatus, reason, null, comment);
+        return new RequestDTO(id, startDate, finishDate, createdAt, unique_Code, null, approverId, user,
+                userFullName, overallStatus, reason, null, comment);
     }
 
     @Cacheable(value = "combinedUserRequests", key = "'userId=' + #userId")
@@ -213,21 +213,37 @@ public class RequestService {
                 Report report = new Report(l, request.getComment(), user, request);
                 report.setStatus("leave");
                 Report report1 = reportRepository.save(report);
-                redisTemplate.opsForValue().set("report::reportId" + report1.getId(), customObjectMappers.reportToDto(report1));
+                redisTemplate.opsForValue().set("report::reportId" + report1.getId(), customObjectMappers
+                        .reportToDto(report1));
             }
+
+            redisTemplate.delete("allUserRequests::userId=" + request.getUser().getId());
+            redisTemplate.delete("combinedUserRequests::userId=" + request.getUser().getId());
+            redisTemplate.delete("requestsByUniqueCode::uniqueCode=" + request.getUniqueCode());
+            redisTemplate.delete("userReports::userId=" + request.getUser().getId());
 
             return checkRequestDTO;
         }
 
-        requestRepository.save(request);
+        Request request1 = requestRepository.save(request);
+        redisTemplate.opsForValue().set("request::requestId" + request1.getId(), customObjectMappers
+                .requestToDto(request1));
+
         checkRequestDTO.setRequestStatus("Pending");
         return checkRequestDTO;
     }
 
 
-    public CheckRequestDTO declineRequest(int id) {
+    @Caching(evict = {
+            @CacheEvict(value = "allUserRequests", key = "'userId=' + #requestDTO.user"),
+            @CacheEvict(value = "combinedUserRequests", key = "'userId=' + #requestDTO.user"),
+            @CacheEvict(value = "request", key = "'requestId=' + #requestDTO.id")
+    }, put = {
+            @CachePut(value = "request", key = "'requestId=' + #requestDTO.id")
+    })
+    public CheckRequestDTO declineRequest(RequestDTO requestDTO) {
         CheckRequestDTO checkRequestDTO = new CheckRequestDTO();
-        Request request = requestRepository.findById(id).orElse(null);
+        Request request = requestRepository.findById(requestDTO.getId()).orElse(null);
         String uniqueCode = request.getUniqueCode();
         ApproverAction action = approverActionRepository.findApproverActionByAction("Decline");
         RequestStatus status = requestStatusRepository.findByStatus("Declined");
@@ -337,7 +353,8 @@ public class RequestService {
                     report.setStatus("leave");
                 }
                 Report report1 = reportRepository.save(report);
-                redisTemplate.opsForValue().set("report::reportId=" + report1.getId(), customObjectMappers.reportToDto(report1));
+                redisTemplate.opsForValue().set("report::reportId=" + report1.getId(), customObjectMappers
+                        .reportToDto(report1));
             }
 
             return addRequestReturnDTO;
@@ -364,8 +381,8 @@ public class RequestService {
     public RequestDTO getRequestById(int id) {
         Request request = requestRepository.findById(id).orElse(null);
         RequestDTO requestDTO = new RequestDTO(request.getId(), request.getStartDate(), request.getFinishDate(),
-                request.getCreatedAt(), request.getUniqueCode(), request.getDateOfResult(), request.getStatus().getStatus(),
-                request.getReason().getReason(), request.getComment());
+                request.getCreatedAt(), request.getUniqueCode(), request.getDateOfResult(), request.getStatus()
+                .getStatus(), request.getReason().getReason(), request.getComment());
 
         return requestDTO;
     }

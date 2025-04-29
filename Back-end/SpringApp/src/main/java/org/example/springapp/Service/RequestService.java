@@ -292,7 +292,9 @@ public class RequestService {
         request.setAction(action);
         request.setApproverId(approver);
         request.setComment(requesT.getComment());
-        requestRepository.save(request);
+        Request savedRequest = requestRepository.save(request);
+        redisTemplate.opsForValue().set("request::requestId" + savedRequest.getId(),
+                customObjectMappers.requestToDto(savedRequest));
     }
 
     @Caching(evict = {
@@ -353,8 +355,8 @@ public class RequestService {
                     report.setStatus("leave");
                 }
                 Report report1 = reportRepository.save(report);
-                redisTemplate.opsForValue().set("report::reportId=" + report1.getId(), customObjectMappers
-                        .reportToDto(report1));
+                redisTemplate.opsForValue().set("report::reportId=" + report1.getId(),
+                        customObjectMappers.reportToDto(report1));
             }
 
             return addRequestReturnDTO;

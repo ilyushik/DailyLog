@@ -50,7 +50,7 @@ public class RequestService {
     private RedisTemplate<String, Object> redisTemplate;
 
 
-    @Cacheable(value = "allUserRequests", key = "'userId=' + #id")
+    // @Cacheable(value = "allUserRequests", key = "'userId=' + #id")
     public List<RequestDTO> findByUser(int id) {
         return requestRepository
                 .findAllByUserId(id)

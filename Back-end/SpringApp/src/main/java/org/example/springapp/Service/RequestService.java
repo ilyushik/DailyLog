@@ -217,7 +217,6 @@ public class RequestService {
                         .reportToDto(report1));
             }
 
-            redisTemplate.delete("allUserRequests::userId=" + request.getUser().getId());
             redisTemplate.delete("combinedUserRequests::userId=" + request.getUser().getId());
             redisTemplate.delete("requestsByUniqueCode::uniqueCode=" + request.getUniqueCode());
             redisTemplate.delete("userReports::userId=" + request.getUser().getId());
@@ -235,7 +234,6 @@ public class RequestService {
 
 
     @Caching(evict = {
-            @CacheEvict(value = "allUserRequests", key = "'userId=' + #requestDTO.user"),
             @CacheEvict(value = "combinedUserRequests", key = "'userId=' + #requestDTO.user"),
             @CacheEvict(value = "request", key = "'requestId=' + #requestDTO.id")
     }, put = {
@@ -293,12 +291,11 @@ public class RequestService {
         request.setApproverId(approver);
         request.setComment(requesT.getComment());
         Request savedRequest = requestRepository.save(request);
-        redisTemplate.opsForValue().set("request::requestId" + savedRequest.getId(),
+        redisTemplate.opsForValue().set("request::requestId=" + savedRequest.getId(),
                 customObjectMappers.requestToDto(savedRequest));
     }
 
     @Caching(evict = {
-            @CacheEvict(value = "allUserRequests", key = "'userId=' + #userId"),
             @CacheEvict(value = "combinedUserRequests", key = "'userId=' + #userId")
     })
     public AddRequestReturnDTO addRequest(int userId, RequestDTO requesT) {
@@ -390,8 +387,6 @@ public class RequestService {
     }
 
     @Caching(evict = {
-            @CacheEvict(value = "allUserRequests", key = "'userId=' + #result.getUser().getId()"),
-            @CacheEvict(value = "request", key = "'requestId=' + #id"),
             @CacheEvict(value = "combinedUserRequests", key = "'userId=' + #result.getUser().getId()")
     })
     public Request updateRequest(int id, RequestDTO requestDto) {
@@ -405,12 +400,15 @@ public class RequestService {
         }).toList();
 
         sameRequests.forEach(r->{
+            redisTemplate.delete("request::requestId=" + r.getId());
             r.setReason(reason);
             r.setStartDate(requestDto.getStartDate());
             r.setFinishDate(requestDto.getFinishDate());
             r.setComment(requestDto.getComment());
             r.setAction(action);
-            requestRepository.save(r);
+            Request updatedRequest = requestRepository.save(r);
+            redisTemplate.opsForValue().set("request::requestId=" + updatedRequest.getId(),
+                    customObjectMappers.requestToDto(updatedRequest));
         });
 
         return request;
@@ -418,8 +416,7 @@ public class RequestService {
 
     @Caching(evict = {
             @CacheEvict(value = "allUserRequests", key = "'userId=' + #userId"),
-            @CacheEvict(value = "combinedUserRequests", key = "'userId=' + #userId"),
-            @CacheEvict(value = "request", key = "'requestId=' + #id")
+            @CacheEvict(value = "combinedUserRequests", key = "'userId=' + #userId")
     })
     public String deleteRequest(int id, int userId) {
         List<Report> reports = reportRepository.findAll();
@@ -434,6 +431,7 @@ public class RequestService {
         });
         requests.forEach(r -> {
             if (r.getUniqueCode().equals(request.getUniqueCode())) {
+                redisTemplate.delete("request::requestId=" + r.getId());
                 requestRepository.deleteById(r.getId());
             }
         });

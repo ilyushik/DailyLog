@@ -114,26 +114,25 @@ export function PopupReport(props) {
     const submitHandler = async (event) => {
         event.preventDefault();
 
-        // Валидация данных
-        const newErrors = {};
         if (reportDate.trim().length <= 1) {
-            newErrors.date = "Date should not be empty";
+            setErrors({date: "Date should not be empty"})
+            return
         }
         if (reportText.trim().length <= 1) {
-            newErrors.text = "Text should not be empty";
+            setErrors({text: "Text should not be empty"})
+            return
         }
         if (reportHours < 1) {
-            newErrors.hours = "Hours should be more than 0";
+            setErrors({hours: "Hours should be more than 0"})
+            return
         }
 
-        setErrors(newErrors);
-        setIsFormValid(Object.keys(newErrors).length === 0);
+        setIsFormValid(Object.keys(errors).length === 0);
 
         if (!isFormValid) {
             return;
         }
 
-        // Если форма валидна, отправляем данные
         try {
             const response = await axios.post(`${process.env.REACT_APP_BACKEND_LINK}/report/add-report`, {
                 date: reportDate,
@@ -150,7 +149,7 @@ export function PopupReport(props) {
                 handleSendEmail(response.data.userEmail, "You have already 20 days for vacation. Take a break for 🏝️",
                     `${process.env.REACT_APP_FRONTEND_LINK}/my-info`, "Back to main page")
             }
-            props.closeModal && props.closeModal();  // Проверка на существование функции
+            props.closeModal && props.closeModal();
             props.openSuccess && props.openSuccess();
         } catch (error) {
             setErrors(error.response?.data || { message: "Error submitting report" });

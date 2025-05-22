@@ -11,13 +11,14 @@ export function Inbox() {
     const [requests, setRequests] = useState([])
     const [errors, setErrors] = useState({})
 
-    const handleSendEmail = async (email, message, link, buttonText) => {
+    const handleSendEmail = async (email, message, link, buttonText, emailTitle) => {
         const htmlContent = ReactDOMServer.renderToString(<Email message={message} link={link} buttonText={buttonText} />)
 
         try {
             const response = await axios.post(`${process.env.REACT_APP_BACKEND_LINK}/api/send-email`, {
                 html: htmlContent,
                 userEmail: email,
+                emailTitle: emailTitle,
             })
             console.log(response.data)
         } catch (error) {
@@ -61,7 +62,8 @@ export function Inbox() {
 
             if (response.data.requestStatus === "Approved") {
                 handleSendEmail(response.data.userEmail, "Your request has been approved!",
-                    `${process.env.REACT_APP_FRONTEND_LINK}/my-info`, "Back to requests")
+                    `${process.env.REACT_APP_FRONTEND_LINK}/my-info`, "Back to requests",
+                    "Request's status")
             }
             setRequests([]);
             fetchRequestsHandler()
@@ -74,6 +76,8 @@ export function Inbox() {
         event.preventDefault();
         console.log(`Decline request: ${requestId}`)
 
+        const decliner = localStorage.getItem('username');
+
         try {
             const response = await axios.post(`${process.env.REACT_APP_BACKEND_LINK}/requests/decline/${requestId}`, {requestId: requestId},{
                 headers: {
@@ -84,8 +88,9 @@ export function Inbox() {
             console.log(response.data);
 
             if (response.data.requestStatus === "Declined") {
-                handleSendEmail(response.data.userEmail, "Your request has been declined!",
-                    `${process.env.REACT_APP_FRONTEND_LINK}/my-info`, "Back to requests")
+                handleSendEmail(response.data.userEmail, `${decliner} declined your request!`,
+                    `${process.env.REACT_APP_FRONTEND_LINK}/my-info`, "Back to requests",
+                    "Request's status")
             }
 
             setRequests([]);

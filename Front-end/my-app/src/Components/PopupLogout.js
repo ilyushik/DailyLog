@@ -8,6 +8,7 @@ export function PopupLogout(props) {
 
     const logout = () => {
         localStorage.removeItem("token");
+        localStorage.removeItem("username");
         props.close()
         window.location.reload();
     }

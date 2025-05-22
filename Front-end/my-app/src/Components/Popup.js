@@ -16,7 +16,7 @@ export function Popup(props) {
     const [isFormValid, setIsFormValid] = useState(true);
 
 
-    const handleSendEmail = async (email, message, link, buttonText) => {
+    const handleSendEmail = async (email, message, link, buttonText, emailTitle) => {
         const htmlContent = ReactDOMServer.renderToString(
             <Email message={message} link={link} buttonText={buttonText} />
         )
@@ -26,6 +26,7 @@ export function Popup(props) {
                 {
                     html: htmlContent,
                     userEmail: email,
+                    emailTitle: emailTitle,
                 }
             )
             console.log(response.data)
@@ -104,24 +105,28 @@ export function Popup(props) {
                 props.openLoad()
 
                 handleSendEmail(response.data.userEmail, "Your request has been received!",
-                    `${process.env.REACT_APP_FRONTEND_LINK}/my-info`, "Back to requests")
+                    `${process.env.REACT_APP_FRONTEND_LINK}/my-info`, "Back to requests",
+                    "New Request")
 
 
                 await delay(1500)
 
                 if (response.data.firstApproverEmail !== null) {
                     handleSendEmail(response.data.firstApproverEmail, "You have new request",
-                        `${process.env.REACT_APP_FRONTEND_LINK}/inbox`, "Back to requests")
+                        `${process.env.REACT_APP_FRONTEND_LINK}/inbox`, "Back to requests",
+                        "New Request")
                 }
                 await delay(1500)
                 if (response.data.secondApproverEmail !== null) {
                     handleSendEmail(response.data.secondApproverEmail, "You have new request",
-                        `${process.env.REACT_APP_FRONTEND_LINK}/inbox`, "Back to requests")
+                        `${process.env.REACT_APP_FRONTEND_LINK}/inbox`, "Back to requests",
+                        "New Request")
                 }
                 await delay(1500)
                 if (response.data.thirdApproverEmail !== null) {
                     handleSendEmail(response.data.thirdApproverEmail, "You have new request",
-                        `${process.env.REACT_APP_FRONTEND_LINK}/inbox`, "Back to requests")
+                        `${process.env.REACT_APP_FRONTEND_LINK}/inbox`, "Back to requests",
+                        "New Request")
                 }
 
                 props.closeLoad()

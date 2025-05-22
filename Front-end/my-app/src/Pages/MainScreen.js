@@ -1,5 +1,5 @@
 import {Fragment, useState, useEffect, useCallback} from "react";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import "./styles/MainScreen.css";
 import positionIconLight from "../images/position-icon.svg";
 import positionIconDark from "../images/position-icon-dark.svg";
@@ -7,6 +7,7 @@ import {RequestComponent} from "./mainScreenComponents/RequestComponent";
 import axios from "axios";
 import {CalendarComponent} from "./mainScreenComponents/CalendarComponent";
 import {useParams} from "react-router";
+import {setUsername} from "../store";
 
 export function MainScreen() {
     const params = useParams();
@@ -16,9 +17,9 @@ export function MainScreen() {
     const [error, setError] = useState({});
     const token = localStorage.getItem("token");
 
+    const dispatch = useDispatch();
 
-    // Utility function for fetching data with error handling
-    const fetchData = async (url, setData) => {
+    const fetchData = async (url, setData, obj) => {
         try {
             setData([])
             const response = await axios.get(url, {
@@ -28,6 +29,12 @@ export function MainScreen() {
                 }
             });
             setData(response.data);
+            if (obj === 'u') {
+                if (!params.id) {
+                    dispatch(setUsername(`${response.data.firstName} ${response.data.secondName}`))
+                    console.log(`${response.data.firstName} ${response.data.secondName}`)
+                }
+            }
         } catch (error) {
             setError(error.response.data);
             setData([]);
@@ -38,18 +45,18 @@ export function MainScreen() {
         const url = params.id
             ? `${process.env.REACT_APP_BACKEND_LINK}/users/${params.id}`
             : `${process.env.REACT_APP_BACKEND_LINK}/getMyInfo`;
-        fetchData(url, setUser);
+        fetchData(url, setUser, 'u');
     }, [params.id]);
 
     const fetchRequestHandler = useCallback(() => {
         const url = params.id
             ? `${process.env.REACT_APP_BACKEND_LINK}/requests/userRequests/${params.id}`
             : `${process.env.REACT_APP_BACKEND_LINK}/requests`;
-        fetchData(url, setRequests);
+        fetchData(url, setRequests, 'r');
     }, [params.id]);
 
     useEffect(() => {
-        fetchUserHandler();
+        fetchUserHandler()
     }, [fetchUserHandler]);
 
     useEffect(() => {

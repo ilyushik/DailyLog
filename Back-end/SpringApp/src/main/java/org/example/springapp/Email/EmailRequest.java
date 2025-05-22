@@ -10,4 +10,5 @@ import lombok.NoArgsConstructor;
 public class EmailRequest {
     private String html;
     private String userEmail;
+    private String emailTitle;
 }

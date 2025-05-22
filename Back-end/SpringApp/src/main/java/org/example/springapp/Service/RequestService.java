@@ -225,7 +225,7 @@ public class RequestService {
         }
 
         Request request1 = requestRepository.save(request);
-        redisTemplate.opsForValue().set("request::requestId" + request1.getId(), customObjectMappers
+        redisTemplate.opsForValue().set("request::requestId=" + request1.getId(), customObjectMappers
                 .requestToDto(request1));
 
         checkRequestDTO.setRequestStatus("Pending");
@@ -236,8 +236,6 @@ public class RequestService {
     @Caching(evict = {
             @CacheEvict(value = "combinedUserRequests", key = "'userId=' + #requestDTO.user"),
             @CacheEvict(value = "request", key = "'requestId=' + #requestDTO.id")
-    }, put = {
-            @CachePut(value = "request", key = "'requestId=' + #requestDTO.id")
     })
     public CheckRequestDTO declineRequest(RequestDTO requestDTO) {
         CheckRequestDTO checkRequestDTO = new CheckRequestDTO();

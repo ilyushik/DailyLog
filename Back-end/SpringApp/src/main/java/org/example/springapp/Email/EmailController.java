@@ -19,7 +19,7 @@ public class EmailController {
         CreateEmailOptions params = CreateEmailOptions.builder()
                 .from("DailyLog <illia.kamarali.admin@dailylogapp.com>")
                 .to(emailRequest.getUserEmail())
-                .subject("")
+                .subject(emailRequest.getEmailTitle())
                 .html(emailRequest.getHtml())
                 .build();
 

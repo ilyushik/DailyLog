@@ -45,7 +45,7 @@ public class ReportService {
                         r.getStatus())).collect(Collectors.toList());
     }
 
-    @Cacheable(value = "userReports", key = "'userId=' + #id")
+    @Cacheable(value = "userReports", key = "'reportId=' + #id")
     public ReportDTO reportById(int id) {
         Report report = reportRepository.findById(id).orElse(null);
         assert report != null;
@@ -220,10 +220,11 @@ public class ReportService {
             @CacheEvict(value = "report", key = "'reportId=' + #id"),
             @CacheEvict(value = "userReports", key = "'userId=' + #user.id")
     }, put = {
-            @CachePut(value = "report", key = "'reportId' + id")
+            @CachePut(value = "report", key = "'reportId=' + #id")
     })
     public Report updateReport(ReportDTO reportDto, int id, UserDTO user) {
         Report report = reportRepository.findById(id).orElse(null);
+        assert report != null;
         report.setDate(reportDto.getDate());
         report.setText(reportDto.getText());
         report.setCountOfHours(reportDto.getCountOfHours());

@@ -1,5 +1,6 @@
 package org.example.springapp.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
@@ -68,10 +69,12 @@ public class User implements UserDetails {
     @JoinColumn(name = "pm", referencedColumnName = "id")
     private User pm;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user")
     @Column( name = "reports")
     private List<Report> reports;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user")
     @Column(name = "requests")
     private List<Request> requests;

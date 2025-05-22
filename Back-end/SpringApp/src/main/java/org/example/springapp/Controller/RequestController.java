@@ -182,13 +182,13 @@ public class RequestController {
         if (requestDTO.getReason().equals("Sick Leave")) {
             int countOfDays = (int)ChronoUnit.DAYS.between(requestDTO.getStartDate(), requestDTO.getFinishDate()) + 1;
             if (countOfDays > user.getDaysToSkip()) {
-                return ResponseEntity.badRequest().body(Collections.singletonMap("errorDate", "You have only " + user.getDaysForVacation() + " days for sick leave"));
+                return ResponseEntity.badRequest().body(Collections.singletonMap("errorDate", "You have only " + user.getDaysToSkip() + " days for sick leave"));
             }
         }
         if (requestDTO.getReason().equals("Personal Leave")) {
             int countOfDays = (int)ChronoUnit.DAYS.between(requestDTO.getStartDate(), requestDTO.getFinishDate()) + 1;
             if (countOfDays > user.getDaysToSkip()) {
-                return ResponseEntity.badRequest().body(Collections.singletonMap("errorDate", "You have only " + user.getDaysForVacation() + " days for personal leave"));
+                return ResponseEntity.badRequest().body(Collections.singletonMap("errorDate", "You have only " + user.getDaysToSkip() + " days for personal leave"));
             }
         }
 

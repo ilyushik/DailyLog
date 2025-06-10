@@ -4,6 +4,9 @@ import "./styles/PeopleList.css"
 import axios from "axios";
 import {PeopleListComponent} from "./PeopleListComponents/PeopleListComponent";
 import PopupAllUsersExcel from "../Components/PopupAllUsersExcel";
+import { GiPodiumWinner } from "react-icons/gi";
+import { BiSolidReport } from "react-icons/bi";
+import {PopupMonthWinner} from "../Components/PopupMonthWinner";
 
 export function PeopleList() {
     const mode = useSelector(state => state.theme.theme);
@@ -11,6 +14,7 @@ export function PeopleList() {
     const [errors, setErrors] = useState({});
     const [popupAllUsers, setPopupAllUsers] = useState(false);
     const [user, setUser] = useState({});
+    const [showWinner, setShowWinner] = useState(false);
 
 
     const fetchUsersHandler = useCallback(async () => {
@@ -55,7 +59,21 @@ export function PeopleList() {
         if (user?.position === "Project Manager") {
             return (
                 <div>
-                    <button onClick={() => setPopupAllUsers(true)}>All reports</button>
+                    <button onClick={() => setPopupAllUsers(true)}>
+                        <BiSolidReport className="svg"/>
+                    </button>
+                </div>
+            )
+        }
+    }
+
+    const EmployeeOfTheMonth = () => {
+        if (user?.position === "Project Manager") {
+            return (
+                <div>
+                    <button onClick={() => setShowWinner(true)}>
+                        <GiPodiumWinner className="svg"/>
+                    </button>
                 </div>
             )
         }
@@ -63,12 +81,16 @@ export function PeopleList() {
 
     return (
         <Fragment>
+            {showWinner && (<PopupMonthWinner close = {() => setShowWinner(false)} />)}
             {popupAllUsers && (<PopupAllUsersExcel close={() => setPopupAllUsers(false)} />)}
             <div className={`people ${mode === "light" ? "light" : "dark"}`}>
                 <div className={`people-title ${mode === "light" ? "light" : "dark"}`}>
                     <p>Team</p>
 
-                    {getReports()}
+                    <div className="pm-buttons">
+                        {EmployeeOfTheMonth()}
+                        {getReports()}
+                    </div>
                 </div>
                 <div className={`peoples-block ${mode === "light" ? "light" : "dark"}`}>
                     {users.length < 1 &&

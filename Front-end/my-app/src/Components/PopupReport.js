@@ -4,6 +4,7 @@ import "./PopupReport.css"
 import axios from "axios";
 import ReactDOMServer from "react-dom/server";
 import {Email} from "../emails/Email.tsx";
+import { LuBrainCircuit } from "react-icons/lu";
 
 export function PopupReport(props) {
     const mode = useSelector(state => state.theme.theme);
@@ -13,6 +14,8 @@ export function PopupReport(props) {
     const [isFormValid, setIsFormValid] = useState(true);
     const [errors, setErrors] = useState({});
     const [requests, setRequests] = useState({});
+
+    const [isAiGenerating, setIsAiGenerating] = useState(false);
 
     const [formValue, setFormValue] = useState('Add');
 
@@ -229,6 +232,24 @@ export function PopupReport(props) {
         }
     }
 
+    const generateReport = async () => {
+        try {
+            setIsAiGenerating(true);
+            const response = await
+                axios.get(`${process.env.REACT_APP_BACKEND_LINK}/deepseek/generate-report?tasks=${reportText}`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
+                })
+            console.log(response.data)
+            setReportText(response.data)
+            setIsAiGenerating(false);
+        } catch (e) {
+            console.log(e.response?.data);
+        }
+    }
+
 
     return (
         <Fragment>
@@ -375,12 +396,22 @@ export function PopupReport(props) {
                                         </div>
                                         {errors.text && <p className="error-message">{errors.text}</p>}
                                         {errors.message && <p className="error-message">{errors.message}</p>}
+                                        {isAiGenerating && <p className="error-message">loading...</p>}
+
+                                        <div className="ai-button-block">
+                                            <button className={`ai-button ${isAiGenerating ? "disable" : ""}`}
+                                                    onClick={generateReport} disabled={isAiGenerating}>
+                                                Generate report with AI<LuBrainCircuit className="ai-icon"/></button>
+                                        </div>
 
                                         <div className={`report-buttons-block ${mode === "dark" ? "dark" : "light"}`}>
-                                            <button className={`report-button-create ${mode === "dark" ? "dark" : "light"}`}>Create</button>
+                                            <button
+                                                className={`report-button-create ${mode === "dark" ? "dark" : "light"} 
+                                            ${isAiGenerating ? "disable" : ""}`}>Create</button>
                                             <button
                                                 type="button"
-                                                className={`report-button-cancel ${mode === "dark" ? "dark" : "light"}`}
+                                                className={`report-button-cancel ${mode === "dark" ? "dark" : "light"} 
+                                                ${isAiGenerating ? "disable" : ""}`}
                                                 onClick={props.closeModal}>Cancel</button>
                                         </div>
                                     </form>

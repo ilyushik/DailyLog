@@ -246,6 +246,47 @@
     border-radius: 10px;
 }
 
+.ai-button-block {
+    display: flex;
+    width: 300px;
+    justify-content: left;
+    padding-top: 15px;
+}
+
+.ai-button {
+    border: 1px solid #617DA6;
+    background: #617DA6;
+    color: #eee;
+    border-radius: 10px;
+    padding: 10px 20px;
+    text-align: center;
+    align-items: center;
+    font-family: "Poppins", sans-serif;
+    font-weight: 500;
+}
+
+.ai-button.disable {
+    background: #7588a1;
+    cursor: not-allowed;
+}
+
+.ai-icon {
+    position: relative;
+    top: 2px;
+    left: 3px;
+}
+
+.report-button-create.disable {
+    background: #7588a1;
+    cursor: not-allowed;
+}
+
+.report-button-cancel.disable {
+    border: 2px solid #7588a1;
+    color: #7588a1;
+    cursor: not-allowed;
+}
+
 @media screen and (max-width: 650px) {
     .modal-justify-report {
         width: 300px;

@@ -49,6 +49,11 @@ public class UserController {
         return ResponseEntity.ok(userService.users());
     }
 
+    @GetMapping("/users/username")
+    public ResponseEntity<?> getUserByName(@RequestParam("username") String username) {
+        return ResponseEntity.ok(userService.userByUsername(username));
+    }
+
     @GetMapping("/users/{id}")
     public ResponseEntity<?> userById(@PathVariable int id) {
         if (userService.userById(id) == null) {

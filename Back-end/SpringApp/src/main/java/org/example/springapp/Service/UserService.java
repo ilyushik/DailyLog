@@ -6,7 +6,9 @@ import org.example.springapp.Repository.UserRepository;
 import org.example.springapp.util.CustomObjectMappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +50,13 @@ public class UserService {
         return userDto;
     }
 
+    @Cacheable(value = "user", key = "'username=' + #username")
+    public UserDTO userByUsername(String username) {
+        String[] name = username.split(" ");
+        User user = userRepository.findUserByFirstNameAndSecondName(name[0], name[1]);
+        return customObjectMappers.userToDto(user);
+    }
+
     @Cacheable(value = "usersByLead", key = "'leadId=' + #id")
     public List<UserDTO> usersByLead(int id) {
         User lead = userRepository.findById(id).orElse(null);
@@ -84,6 +93,15 @@ public class UserService {
                 u.getId(), u.getFirstName(), u.getSecondName(), u.getEmail(), u.getPassword(), u.getImage(),
                 u.getJobPosition(), u.getRole().getRole()
         )).collect(Collectors.toList());
+    }
+
+    // set 2 days to skip for every month
+    @Transactional
+    @Scheduled(cron = "0 0 0 1 * *")
+    public void setDaysToSkip() {
+        List<User> users = userRepository.findAll();
+        users.forEach(u -> u.setDaysToSkip(2));
+        userRepository.saveAll(users);
     }
 
 }

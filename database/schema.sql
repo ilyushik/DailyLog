@@ -70,6 +70,17 @@ CREATE TABLE request (
                          FOREIGN KEY (user) REFERENCES user(id)
 );
 
+create table ai_analysis(
+    id int primary key auto_increment,
+    pm_id int,
+    winner_fullname varchar(50),
+    reason text,
+    summary text,
+    month int,
+    year int
+);
+
+
 ALTER TABLE report ADD COLUMN request int references request(id);
 
 -- Вставка ролей пользователей

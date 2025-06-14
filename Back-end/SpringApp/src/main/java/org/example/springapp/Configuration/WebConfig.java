@@ -15,8 +15,8 @@ import java.util.Collections;
 @EnableWebMvc
 public class WebConfig {
 
-    private String frontendLinkCorsDisable = "http://localhost:3000";
-    // private String frontendLinkCorsDisable="http://dailylogclient.s3-website.eu-central-1.amazonaws.com";
+     private String frontendLinkCorsDisable = "http://localhost:3000";
+    // private String frontendLinkCorsDisable="https://dailylogfrontend-production.up.railway.app";
 
     private String mobileLinkCorsDisable = "http://192.168.0.137:8081";
 

@@ -50,14 +50,14 @@ public class UserService {
         return userDto;
     }
 
-    @Cacheable(value = "user", key = "'username=' + #username")
+    @Cacheable(value = "user", unless = "#result == null", key = "'username=' + #username")
     public UserDTO userByUsername(String username) {
         String[] name = username.split(" ");
         User user = userRepository.findUserByFirstNameAndSecondName(name[0], name[1]);
         return customObjectMappers.userToDto(user);
     }
 
-    @Cacheable(value = "usersByLead", key = "'leadId=' + #id")
+    @Cacheable(value = "usersByLead", unless = "#result == null", key = "'leadId=' + #id")
     public List<UserDTO> usersByLead(int id) {
         User lead = userRepository.findById(id).orElse(null);
         List<User> usersByL = new ArrayList<>();

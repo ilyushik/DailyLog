@@ -265,7 +265,7 @@
     font-weight: 500;
 }
 
-.ai-button.disable {
+.ai-button.disabled {
     background: #7588a1;
     cursor: not-allowed;
 }
@@ -285,6 +285,78 @@
     border: 2px solid #7588a1;
     color: #7588a1;
     cursor: not-allowed;
+}
+
+
+.voice-button {
+    border: 1px solid #617DA6;
+    background: #617DA6;
+    color: #eee;
+    border-radius: 10px;
+    padding: 10px 20px;
+    text-align: center;
+    align-items: center;
+    font-family: "Poppins", sans-serif;
+    font-weight: 500;
+}
+
+.voice-button.recording {
+    background: #ffebee;
+    border-color: #f44336;
+    color: #f44336;
+}
+
+.voice-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.voice-icon {
+    position: relative;
+    font-size: 16px;
+    top: 2px;
+}
+
+.processing-label {
+    font-size: 12px;
+    color: #666;
+    margin-left: 8px;
+}
+
+.action-buttons {
+    display: block;
+    align-items: center;
+    margin: 16px 17% 0 0;
+}
+
+.voice-button-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+
+.dark .voice-button {
+    background: #424242;
+    border-color: #616161;
+    color: #f5f5f5;
+}
+
+.dark .voice-button.recording {
+    background: #5d1f24;
+    border-color: #f44336;
+    color: #ffcdd2;
+}
+
+/* Error Messages */
+.error-message {
+    color: #f44336;
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+.dark .error-message {
+    color: #ff8a80;
 }
 
 @media screen and (max-width: 650px) {

@@ -531,14 +531,15 @@ export function PopupReport(props) {
                                                 {isAudioProcessing && <span className="processing-label">Processing...</span>}
                                             </div>
 
-                                            <button
-                                                type="button"
-                                                className={`ai-button ${isAiGenerating ? 'disabled' : ''}`}
-                                                onClick={generateReport}
-                                                disabled={isAiGenerating}
-                                            >
-                                                Generate report with AI <LuBrainCircuit />
-                                            </button>
+                                            <div className="ai-button-block">
+                                                <button
+                                                    type="button"
+                                                    className={`ai-button ${isAiGenerating ? 'disabled' : ''}`}
+                                                    onClick={generateReport}
+                                                    disabled={isAiGenerating}>
+                                                    Generate report with AI <LuBrainCircuit />
+                                                </button>
+                                            </div>
                                         </div>
 
                                         <div className={`report-buttons-block ${mode === "dark" ? "dark" : "light"}`}>

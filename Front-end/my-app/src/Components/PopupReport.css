@@ -248,9 +248,8 @@
 
 .ai-button-block {
     display: flex;
-    width: 300px;
-    justify-content: left;
-    padding-top: 15px;
+    width: 100%;
+    align-items: start;
 }
 
 .ai-button {
@@ -260,7 +259,6 @@
     border-radius: 10px;
     padding: 10px 20px;
     text-align: center;
-    align-items: center;
     font-family: "Poppins", sans-serif;
     font-weight: 500;
 }
@@ -325,8 +323,9 @@
 
 .action-buttons {
     display: block;
-    align-items: center;
-    margin: 16px 17% 0 0;
+    width: 300px;
+    justify-content: space-between;
+    margin-top: 30px;
 }
 
 .voice-button-container {
@@ -375,7 +374,8 @@
 
     .report-date-block input,
     .report-hours-block input,
-    .report-buttons-block {
+    .report-buttons-block,
+    .action-buttons{
         width: 250px;
     }
 
@@ -385,5 +385,9 @@
 
     .report-buttons-block button {
         width: 110px;
+    }
+
+    .ai-button, .voice-button {
+
     }
 }

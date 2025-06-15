@@ -1,49 +1,69 @@
-# DailyLog 
+# DailyLog
 
-<img src="https://github.com/ilyushik/DailyLog/blob/main/Documentation/logo_git.png"/>
+![DailyLog Logo](https://github.com/ilyushik/DailyLog/blob/main/Documentation/logo_git.png)
 
-university diploma project
+**University diploma project**
 
-DailyLog is an internal web application for companies that helps employees efficiently manage their daily work reports and notifications to their bosses.
+**DailyLog** is an internal web application for companies that helps employees efficiently manage their daily work reports and notifications to their bosses.
 
-# Main features:
-  ## Daily reports: 
-  Every employee can record their tasks and achievements at the end of the day. This helps supervisors track the progress of the team and maintain transparency of      work performance.
+---
 
-  ## Absence Notifications: 
-  Employees can send notifications of planned absences, including requests for leave or unforeseen circumstances such as illness. The notification is sent      directly to the manager or approver in charge.
+## 🚀 Main Features
 
-  ## Leave Requests: 
-  The app simplifies the leave request process with start and end dates and the ability to track the status of the request (pending, approved, denied).
+### 📝 Daily Reports  
+Employees can record their tasks and achievements at the end of the day. This helps supervisors track team progress and ensures work transparency.
 
-  ## Approval of Requests: 
-  Managers or designees (upruvers) are notified of absence or leave requests and can quickly approve or deny them through the app, speeding up workflow and      eliminating unnecessary bureaucracy.
+### 📣 Absence Notifications  
+Employees can notify their manager of planned or emergency absences, including sick leave or vacations.
 
-# Benefits:
-  ## Transparency: 
-  The app provides a clear picture of employees' working hours and the status of requests in real time.
-  ## Automation: 
-  Simplifies the process of submitting leave requests or absence notifications, reducing the burden on managers.
-  ## Ease of Use: 
-  Intuitive interface makes the application easy to use for both employees and management.
-  ## History of reports and requests: 
-  All data is stored and users can view the history of their reports or queries at any time.
-  
-  DailyLog is a handy tool to keep employees and managers productive and engaged, ensuring transparency and efficiency within the company.
+### 📅 Leave Requests  
+Request time off with start and end dates and track the status: `pending`, `approved`, or `denied`.
 
-  # License
+### ✅ Request Approvals  
+Managers (approvers) receive real-time notifications and can quickly approve or deny employee requests through the app.
 
-  [MIT](https://choosealicense.com/licenses/mit/)
+### 📊 Excel Report Generation  
+Generate downloadable Excel reports with employee activity summaries, helping streamline reporting and documentation.
 
+### 🏆 AI-Powered "Employee of the Month"  
+An AI system automatically determines the most productive employee each month based on report data.
 
-# Technology stack
+### 🪄 AI Text Enhancement *(optional)*  
+Employees can enhance their report text using AI — it improves clarity, grammar, and overall presentation.
+
+### 🎙️ Speech-to-Text Report Creation  
+Quickly create reports by speaking — the app will transcribe your voice into a structured report.
+
+---
+
+## ✅ Benefits
+
+- **🔍 Transparency** — Clear visibility into work activities and request statuses in real time.  
+- **⚙️ Automation** — Reduces manual approval processes and streamlines HR communication.  
+- **🧭 Ease of Use** — Designed for intuitive use by both employees and managers.  
+- **🗂️ Report & Request History** — Securely stores all past reports and requests for reference.
+
+**DailyLog** is a productivity and transparency tool that empowers employees and management to work smarter and stay aligned.
+
+---
+
+## 📄 License
+
+This project is licensed under the [MIT License](https://choosealicense.com/licenses/mit/)
+
+---
+
+## 💻 Technology Stack
+
 <div>
-  <img height="64" width="64" src="https://cdn.simpleicons.org/Spring/94d31b"/>
-  <img height="64" width="64" src="https://cdn.simpleicons.org/HTML5/E34F26"/>
-  <img height="64" width="64" src="https://cdn.simpleicons.org/CSS3/1572B6"/>
-  <img height="64" width="64" src="https://cdn.simpleicons.org/javascript/F7DF1E" alt="JavaScript" />
-  <img height="64" width="64" src="https://cdn.simpleicons.org/mysql/4479A1" alt="MySQL" />
-  <img height="64" width="64" src="https://cdn.simpleicons.org/react/61DAFB" alt="React" />
-  <img height="64" width="64" src="https://cdn.simpleicons.org/redux/764ABC" alt="Redux" />
-  <img height="64" width="64" src="https://cdn.simpleicons.org/amazonwebservices/232F3E" alt="Amazon Web Services" />
+  <img height="64" src="https://cdn.simpleicons.org/Spring/94d31b" alt="Spring Boot"/>
+  <img height="64" src="https://cdn.simpleicons.org/HTML5/E34F26" alt="HTML5"/>
+  <img height="64" src="https://cdn.simpleicons.org/CSS3/1572B6" alt="CSS3"/>
+  <img height="64" src="https://cdn.simpleicons.org/javascript/F7DF1E" alt="JavaScript"/>
+  <img height="64" src="https://cdn.simpleicons.org/mysql/4479A1" alt="MySQL"/>
+  <img height="64" src="https://cdn.simpleicons.org/react/61DAFB" alt="React"/>
+  <img height="64" src="https://cdn.simpleicons.org/redux/764ABC" alt="Redux"/>
+  <img height="64" src="https://cdn.simpleicons.org/redis/FF4438" alt="Redis"/>
+  <img height="64" src="https://cdn.simpleicons.org/openai/412991" alt="OpenAI"/>
 </div>
+

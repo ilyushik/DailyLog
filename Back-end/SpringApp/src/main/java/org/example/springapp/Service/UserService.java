@@ -43,11 +43,8 @@ public class UserService {
         if (user == null) {
             return null;
         }
-        UserDTO userDto = new UserDTO(user.getId(), user.getFirstName(), user.getSecondName(),
-                user.getEmail(), user.getPassword(), user.getImage(), user.getJobPosition(),
-                user.getRole().getRole());
 
-        return userDto;
+        return customObjectMappers.userToDto(user);
     }
 
     @Cacheable(value = "user", unless = "#result == null", key = "'username=' + #username")
@@ -89,10 +86,7 @@ public class UserService {
         }
 
         // Convert the list of Users to UserDTOs and return
-        return usersByL.stream().map(u -> new UserDTO(
-                u.getId(), u.getFirstName(), u.getSecondName(), u.getEmail(), u.getPassword(), u.getImage(),
-                u.getJobPosition(), u.getRole().getRole()
-        )).collect(Collectors.toList());
+        return usersByL.stream().map(u -> customObjectMappers.userToDto(u)).collect(Collectors.toList());
     }
 
     // set 2 days to skip for every month

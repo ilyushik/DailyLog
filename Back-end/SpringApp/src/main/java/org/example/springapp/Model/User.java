@@ -89,7 +89,8 @@ public class User implements UserDetails {
     @Column(name = "price_per_hour")
     private int pricePerHour;
 
-    public User(String firstName, String secondName, String password, String email, String image, int daysForVacation, int daysToSkip, String jobPosition) {
+    public User(String firstName, String secondName, String password, String email, String image,
+                int daysForVacation, int daysToSkip, String jobPosition) {
         this.firstName = firstName;
         this.secondName = secondName;
         this.password = password;
@@ -97,6 +98,20 @@ public class User implements UserDetails {
         this.image = image;
         this.daysForVacation = daysForVacation;
         this.daysToSkip = daysToSkip;
+        this.jobPosition = jobPosition;
+    }
+
+    public User(int id, String firstName, String secondName, String password, String email, String image,
+                int daysForVacation, int daysToSkip, UserRole role, String jobPosition) {
+        this.id = id;
+        this.firstName = firstName;
+        this.secondName = secondName;
+        this.password = password;
+        this.email = email;
+        this.image = image;
+        this.daysForVacation = daysForVacation;
+        this.daysToSkip = daysToSkip;
+        this.role = role;
         this.jobPosition = jobPosition;
     }
 

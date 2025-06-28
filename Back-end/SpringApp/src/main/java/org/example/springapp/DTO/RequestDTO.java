@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Getter
 @Service
@@ -34,7 +35,8 @@ public class RequestDTO {
     @Size(min = 2, max = 1000, message = "Text should be between 2 and 1000")
     private String comment;
 
-    public RequestDTO(int id, LocalDate startDate, LocalDate finishDate, Timestamp createdAt, String uniqueCode, Timestamp dateOfResult, String status, String reason, String comment) {
+    public RequestDTO(int id, LocalDate startDate, LocalDate finishDate, Timestamp createdAt, String uniqueCode,
+                      Timestamp dateOfResult, String status, String reason, String comment) {
         this.id = id;
         this.startDate = startDate;
         this.finishDate = finishDate;
@@ -44,5 +46,43 @@ public class RequestDTO {
         this.status = status;
         this.reason = reason;
         this.comment = comment;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        RequestDTO that = (RequestDTO) o;
+        return id == that.id && approver == that.approver && user == that.user && Objects.equals(startDate, that.startDate)
+                && Objects.equals(finishDate, that.finishDate) && Objects.equals(createdAt, that.createdAt) &&
+                Objects.equals(uniqueCode, that.uniqueCode) && Objects.equals(dateOfResult, that.dateOfResult) &&
+                Objects.equals(fullUserName, that.fullUserName) && Objects.equals(status, that.status) &&
+                Objects.equals(reason, that.reason) && Objects.equals(action, that.action) &&
+                Objects.equals(comment, that.comment);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, startDate, finishDate, createdAt, uniqueCode, dateOfResult,
+                approver, user, fullUserName, status, reason, action, comment);
+    }
+
+    @Override
+    public String toString() {
+        return "RequestDTO{" +
+                "id=" + id +
+                ", startDate=" + startDate +
+                ", finishDate=" + finishDate +
+                ", createdAt=" + createdAt +
+                ", uniqueCode='" + uniqueCode + '\'' +
+                ", dateOfResult=" + dateOfResult +
+                ", approver=" + approver +
+                ", user=" + user +
+                ", fullUserName='" + fullUserName + '\'' +
+                ", status='" + status + '\'' +
+                ", reason='" + reason + '\'' +
+                ", action='" + action + '\'' +
+                ", comment='" + comment + '\'' +
+                '}';
     }
 }

@@ -2,9 +2,7 @@ package org.example.springapp.Service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.springapp.DTO.AddRequestReturnDTO;
-import org.example.springapp.DTO.RequestDTO;
-import org.example.springapp.DTO.UserDTO;
+import org.example.springapp.DTO.*;
 import org.example.springapp.Model.*;
 import org.example.springapp.Repository.*;
 import org.example.springapp.util.CustomObjectMappers;
@@ -16,6 +14,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
@@ -32,6 +32,12 @@ class RequestServiceTest {
 
     @Mock
     private RequestRepository requestRepository;
+
+    @Mock
+    private ReportRepository reportRepository;
+
+    @Mock
+    private RedisTemplate<String, Object> redisTemplate;
 
     @Mock
     private RequestStatusRepository requestStatusRepository;
@@ -55,6 +61,9 @@ class RequestServiceTest {
     @InjectMocks
     private RequestService requestServiceSpy;
 
+    @Spy
+    private CustomObjectMappers objectMappers;
+
     @Test
     void findByUser() {
         UserRole leadRole = new UserRole("ROLE_LEAD");
@@ -71,14 +80,14 @@ class RequestServiceTest {
                 20, 2, leadRole, "Tech Lead");
         Request request1 = new Request(LocalDate.of(2025, 4, 28), LocalDate.of(2025, 4, 28),
                 Timestamp.valueOf("2025-04-27 18:15:50"), "UAjXIr1k",
-                null, user4, user1, status, reason, approverAction, "pls...");
+                null, user1, user4, status, reason, approverAction, "pls...");
         RequestDTO requestDTO1 = new RequestDTO(27, LocalDate.of(2025, 4, 28),
                 LocalDate.of(2025, 4, 28), Timestamp.valueOf("2025-04-27 18:15:50"),
                 "UAjXIr1k", null, 1, 4, "Illia Kamarali",
                 "Pending", "Sick Leave", "Unchecked", "pls...");
         Request request2 = new Request(LocalDate.of(2025, 4, 28), LocalDate.of(2025, 4, 28),
                 Timestamp.valueOf("2025-04-27 18:15:50"), "UAjXIr1k",
-                null, user4, user2, status, reason, approverAction, "pls...");
+                null, user2, user4, status, reason, approverAction, "pls...");
         RequestDTO requestDTO2 = new RequestDTO(28, LocalDate.of(2025, 4, 28),
                 LocalDate.of(2025, 4, 28), Timestamp.valueOf("2025-04-27 18:15:50"),
                 "UAjXIr1k", null, 2, 4, "Illia Kamarali",
@@ -121,11 +130,11 @@ class RequestServiceTest {
 
         Request request21 = new Request(LocalDate.of(2025, 4, 28), LocalDate.of(2025, 4, 28),
                 Timestamp.valueOf("2025-04-27 18:15:50"), "UAjXIr1k",
-                null, expectedUser4, expectedUser1, pending, sickLeave, unchecked, "pls...");
+                null, expectedUser1, expectedUser4, pending, sickLeave, unchecked, "pls...");
         request21.setId(27);
         Request request22 = new Request(LocalDate.of(2025, 4, 28), LocalDate.of(2025, 4, 28),
                 Timestamp.valueOf("2025-04-27 18:15:50"), "UAjXIr1k",
-                null, expectedUser4, expectedUser1, pending, sickLeave, unchecked, "pls...");
+                null, expectedUser1, expectedUser4, pending, sickLeave, unchecked, "pls...");
         request22.setId(28);
 
         RequestDTO requestDTO21 = new RequestDTO(27, LocalDate.of(2025, 4, 28),
@@ -158,10 +167,7 @@ class RequestServiceTest {
 
     @Test
     void addRequest() {
-        // return this element
-        AddRequestReturnDTO addRequestReturnDTO = new AddRequestReturnDTO();
         UserRole leadRole = new UserRole("ROLE_LEAD");
-        UserRole ceoRole = new UserRole("ROLE_CEO");
         int userId = 4;
         User pm = new User(2, "Grace", "Anderson", "password007", "illia.kamarali.work@gmail.com", "https://firebasestorage.googleapis.com/v0/b/dailylog-44de4.appspot.com/o/face2.png?alt=media&token=00b3ff76-f272-4fde-a6ad-07f83088d115",
                 20, 2, leadRole, "Project Manager");
@@ -214,13 +220,13 @@ class RequestServiceTest {
 
         Request request1 = new Request(LocalDate.of(2025, 4, 28), LocalDate.of(2025, 4, 28),
                 Timestamp.valueOf("2025-04-27 18:15:50"), "UAjXIr1k",
-                null, user4, user1, status, reason, approverAction, "pls...");
+                null, user1, user4, status, reason, approverAction, "pls...");
         RequestDTO requestDTO1 = new RequestDTO(27, LocalDate.of(2025, 4, 28),
                 LocalDate.of(2025, 4, 28), Timestamp.valueOf("2025-04-27 18:15:50"),
                 "UAjXIr1k", null, 1, 4, "Illia Kamarali",
                 "Pending", "Sick Leave", "Unchecked", "pls...");
-        request1.setId(1);
-        requestDTO1.setId(1);
+        request1.setId(requestId);
+        requestDTO1.setId(requestId);
 
         Mockito.when(requestRepository.findById(requestId)).thenReturn(Optional.of(request1));
         Mockito.when(customObjectMappers.requestToDto(request1)).thenReturn(requestDTO1);
@@ -228,21 +234,159 @@ class RequestServiceTest {
         Assertions.assertEquals(requestService.getRequestById(requestId), requestDTO1);
         Mockito.verify(requestRepository, Mockito.times(1)).findById(requestId);
     }
-//
-//    @Test
-//    void approveRequest() {
-//    }
-//
-//    @Test
-//    void declineRequest() {
-//    }
-//
-//
-//    @Test
-//    void updateRequest() {
-//    }
-//
-//    @Test
-//    void deleteRequest() {
-//    }
+
+    @Test
+    void approveRequest() {
+        int requestId = 1;
+
+        UserRole leadRole = new UserRole("ROLE_LEAD");
+        UserRole ceoRole = new UserRole("ROLE_CEO");
+        RequestStatus status = new RequestStatus("Pending");
+        RequestStatus statusApproved = new RequestStatus("Approved");
+        RequestReason reason = new RequestReason("Sick Leave");
+        ApproverAction approverAction = new ApproverAction("Unchecked");
+        ApproverAction approverActionApproved = new ApproverAction("Approve");
+        User user4 = new User(4, "Eve", "Davis", "password005", "kamarali2025mf12@student.karazin.ua", "https://firebasestorage.googleapis.com/v0/b/dailylog-44de4.appspot.com/o/face4.png?alt=media&token=b7fe6dde-d9ae-49ba-8fb5-d5fa0aeade12",
+                20, 2, leadRole, "Tech Lead");
+        User user1 = new User(1, "Hannah", "Thomas", "password008", "hannah.thomas@example.com", "https://firebasestorage.googleapis.com/v0/b/dailylog-44de4.appspot.com/o/face1.png?alt=media&token=16531758-4933-487c-bf2a-8a027acf307a",
+                20, 2, ceoRole, "CEO");
+        Request request1 = new Request(LocalDate.of(2025, 4, 28), LocalDate.of(2025, 4, 28),
+                Timestamp.valueOf("2025-04-27 18:15:50"), "UAjXIr1k",
+                null, user1, user4, status, reason, approverAction, "pls...");
+        RequestDTO requestDTO1 = new RequestDTO(27, LocalDate.of(2025, 4, 28),
+                LocalDate.of(2025, 4, 28), Timestamp.valueOf("2025-04-27 18:15:50"),
+                "UAjXIr1k", null, 1, 4, "Illia Kamarali",
+                "Pending", "Sick Leave", "Unchecked", "pls...");
+        request1.setId(requestId);
+        requestDTO1.setId(requestId);
+
+        Report report = new Report(LocalDate.of(2025, 4, 28), "pls...", user4, request1);
+        report.setStatus("leave");
+        ReportDTO reportDTO = objectMappers.reportToDto(report);
+
+        Mockito.when(approverActionRepository.findApproverActionByAction("Approve")).thenReturn(approverActionApproved);
+        Mockito.when(requestStatusRepository.findByStatus("Approved")).thenReturn(statusApproved);
+        Mockito.when(requestRepository.findAll()).thenReturn(List.of(request1));
+        Mockito.when(requestRepository.findById(requestId)).thenReturn(Optional.of(request1));
+        Mockito.when(customObjectMappers.reportToDto(report)).thenReturn(reportDTO);
+        Mockito.when(reportRepository.save(Mockito.any(Report.class))).thenReturn(report);
+        ValueOperations<String, Object> valueOperations = Mockito.mock(ValueOperations.class);
+        Mockito.when(redisTemplate.opsForValue()).thenReturn(valueOperations);
+
+        CheckRequestDTO result = requestServiceSpy.approveRequest(requestId);
+        Assertions.assertEquals(result.getUserEmail(), user4.getEmail());
+        Assertions.assertEquals(result.getRequestStatus(), statusApproved.getStatus());
+    }
+
+    @Test
+    void declineRequest() {
+        int requestId = 1;
+
+        UserRole leadRole = new UserRole("ROLE_LEAD");
+        UserRole ceoRole = new UserRole("ROLE_CEO");
+        RequestStatus status = new RequestStatus("Pending");
+        RequestStatus statusDeclined = new RequestStatus("Declined");
+        RequestReason reason = new RequestReason("Sick Leave");
+        ApproverAction approverAction = new ApproverAction("Unchecked");
+        ApproverAction approverActionDecline = new ApproverAction("Decline");
+        User user4 = new User(4, "Eve", "Davis", "password005", "kamarali2025mf12@student.karazin.ua", "https://firebasestorage.googleapis.com/v0/b/dailylog-44de4.appspot.com/o/face4.png?alt=media&token=b7fe6dde-d9ae-49ba-8fb5-d5fa0aeade12",
+                20, 2, leadRole, "Tech Lead");
+        User user1 = new User(1, "Hannah", "Thomas", "password008", "hannah.thomas@example.com", "https://firebasestorage.googleapis.com/v0/b/dailylog-44de4.appspot.com/o/face1.png?alt=media&token=16531758-4933-487c-bf2a-8a027acf307a",
+                20, 2, ceoRole, "CEO");
+        Request request1 = new Request(LocalDate.of(2025, 4, 28), LocalDate.of(2025, 4, 28),
+                Timestamp.valueOf("2025-04-27 18:15:50"), "UAjXIr1k",
+                null, user1, user4, status, reason, approverAction, "pls...");
+        RequestDTO requestDTO1 = new RequestDTO(27, LocalDate.of(2025, 4, 28),
+                LocalDate.of(2025, 4, 28), Timestamp.valueOf("2025-04-27 18:15:50"),
+                "UAjXIr1k", null, 1, 4, "Illia Kamarali",
+                "Pending", "Sick Leave", "Unchecked", "pls...");
+        request1.setId(requestId);
+        requestDTO1.setId(requestId);
+
+        Mockito.when(approverActionRepository.findApproverActionByAction("Decline")).thenReturn(approverActionDecline);
+        Mockito.when(requestStatusRepository.findByStatus("Declined")).thenReturn(statusDeclined);
+        Mockito.when(requestRepository.findAll()).thenReturn(List.of(request1));
+        Mockito.when(requestRepository.findById(requestId)).thenReturn(Optional.of(request1));
+
+        CheckRequestDTO result = requestServiceSpy.declineRequest(requestDTO1);
+        Assertions.assertEquals(result.getUserEmail(), user4.getEmail());
+        Assertions.assertEquals(result.getRequestStatus(), statusDeclined.getStatus());
+    }
+
+    @Test
+    void updateRequest() {
+        int requestId = 1;
+        UserRole leadRole = new UserRole("ROLE_LEAD");
+        UserRole ceoRole = new UserRole("ROLE_CEO");
+        RequestStatus status = new RequestStatus("Pending");
+        RequestReason reason = new RequestReason("Sick Leave");
+        RequestReason reasonP = new RequestReason("Personal Leave");
+        ApproverAction approverAction = new ApproverAction("Unchecked");
+        User user4 = new User(4, "Eve", "Davis", "password005", "kamarali2025mf12@student.karazin.ua", "https://firebasestorage.googleapis.com/v0/b/dailylog-44de4.appspot.com/o/face4.png?alt=media&token=b7fe6dde-d9ae-49ba-8fb5-d5fa0aeade12",
+                20, 2, leadRole, "Tech Lead");
+        User user1 = new User(1, "Hannah", "Thomas", "password008", "hannah.thomas@example.com", "https://firebasestorage.googleapis.com/v0/b/dailylog-44de4.appspot.com/o/face1.png?alt=media&token=16531758-4933-487c-bf2a-8a027acf307a",
+                20, 2, ceoRole, "CEO");
+
+        Request request1 = new Request(LocalDate.of(2025, 4, 28), LocalDate.of(2025, 4, 28),
+                Timestamp.valueOf("2025-04-27 18:15:50"), "UAjXIr1k",
+                null, user1, user4, status, reason, approverAction, "pls...");
+        Request requestUpdated = new Request(LocalDate.of(2025, 4, 28), LocalDate.of(2025, 4, 28),
+                Timestamp.valueOf("2025-04-27 18:15:50"), "UAjXIr1k",
+                null, user1, user4, status, reasonP, approverAction, "pls...");
+        RequestDTO requestDTO1 = new RequestDTO(27, LocalDate.of(2025, 4, 28),
+                LocalDate.of(2025, 4, 28), Timestamp.valueOf("2025-04-27 18:15:50"),
+                "UAjXIr1k", null, 1, 4, "Illia Kamarali",
+                "Pending", "Sick Leave", "Unchecked", "pls...");
+        request1.setId(requestId);
+        requestDTO1.setId(requestId);
+
+        Mockito.when(requestRepository.findById(requestId)).thenReturn(Optional.of(request1));
+        Mockito.when(requestRepository.findAll()).thenReturn(List.of(request1));
+        Mockito.when(requestRepository.save(Mockito.any(Request.class))).thenReturn(requestUpdated);
+        Mockito.when(redisTemplate.delete(Mockito.anyString())).thenReturn(true);
+        ValueOperations<String, Object> valueOperations = Mockito.mock(ValueOperations.class);
+        Mockito.when(redisTemplate.opsForValue()).thenReturn(valueOperations);
+
+        request1.setReason(reasonP);
+
+        Request gotten = requestServiceSpy.updateRequest(requestId, requestDTO1);
+        Assertions.assertEquals(gotten, request1);
+
+    }
+
+    @Test
+    void deleteRequest() {
+        int requestId = 1;
+        UserRole leadRole = new UserRole("ROLE_LEAD");
+        UserRole ceoRole = new UserRole("ROLE_CEO");
+        RequestStatus status = new RequestStatus("Pending");
+        RequestReason reason = new RequestReason("Sick Leave");
+        RequestReason reasonP = new RequestReason("Personal Leave");
+        ApproverAction approverAction = new ApproverAction("Unchecked");
+        User user4 = new User(4, "Eve", "Davis", "password005", "kamarali2025mf12@student.karazin.ua", "https://firebasestorage.googleapis.com/v0/b/dailylog-44de4.appspot.com/o/face4.png?alt=media&token=b7fe6dde-d9ae-49ba-8fb5-d5fa0aeade12",
+                20, 2, leadRole, "Tech Lead");
+        User user1 = new User(1, "Hannah", "Thomas", "password008", "hannah.thomas@example.com", "https://firebasestorage.googleapis.com/v0/b/dailylog-44de4.appspot.com/o/face1.png?alt=media&token=16531758-4933-487c-bf2a-8a027acf307a",
+                20, 2, ceoRole, "CEO");
+
+        Request request1 = new Request(LocalDate.of(2025, 4, 28), LocalDate.of(2025, 4, 28),
+                Timestamp.valueOf("2025-04-27 18:15:50"), "UAjXIr1k",
+                null, user1, user4, status, reason, approverAction, "pls...");
+        RequestDTO requestDTO1 = new RequestDTO(27, LocalDate.of(2025, 4, 28),
+                LocalDate.of(2025, 4, 28), Timestamp.valueOf("2025-04-27 18:15:50"),
+                "UAjXIr1k", null, 1, 4, "Illia Kamarali",
+                "Pending", "Sick Leave", "Unchecked", "pls...");
+        request1.setId(requestId);
+        requestDTO1.setId(requestId);
+
+        Report report = new Report(LocalDate.of(2025, 4, 28), "pls...", user4, request1);
+        report.setStatus("leave");
+        ReportDTO reportDTO = objectMappers.reportToDto(report);
+
+        Mockito.when(requestRepository.findById(requestId)).thenReturn(Optional.of(request1));
+        Mockito.when(reportRepository.findAll()).thenReturn(List.of(report));
+
+        String gotten = requestServiceSpy.deleteRequest(requestId, 4);
+
+        Assertions.assertEquals(gotten, "Request deleted");
+    }
 }

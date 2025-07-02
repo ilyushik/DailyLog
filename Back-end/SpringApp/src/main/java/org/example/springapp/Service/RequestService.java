@@ -272,7 +272,7 @@ public class RequestService {
         return sb.toString();
     }
 
-    private void createRequestAndAddApprover(User user, User approver, String uniqueCode,
+    public void createRequestAndAddApprover(User user, User approver, String uniqueCode,
                                              RequestStatus status, RequestReason reason, ApproverAction action,
                                              RequestDTO requesT) {
         Request request = new Request();
@@ -375,11 +375,9 @@ public class RequestService {
     @Cacheable(value = "request", key = "'requestId=' + #id")
     public RequestDTO getRequestById(int id) {
         Request request = requestRepository.findById(id).orElse(null);
-        RequestDTO requestDTO = new RequestDTO(request.getId(), request.getStartDate(), request.getFinishDate(),
-                request.getCreatedAt(), request.getUniqueCode(), request.getDateOfResult(), request.getStatus()
-                .getStatus(), request.getReason().getReason(), request.getComment());
 
-        return requestDTO;
+        assert request != null;
+        return customObjectMappers.requestToDto(request);
     }
 
     @Caching(evict = {

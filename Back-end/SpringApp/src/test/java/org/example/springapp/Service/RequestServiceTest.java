@@ -2,10 +2,11 @@ package org.example.springapp.Service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.springapp.DTO.AddRequestReturnDTO;
 import org.example.springapp.DTO.RequestDTO;
 import org.example.springapp.DTO.UserDTO;
 import org.example.springapp.Model.*;
-import org.example.springapp.Repository.RequestRepository;
+import org.example.springapp.Repository.*;
 import org.example.springapp.util.CustomObjectMappers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -13,11 +14,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 
 @Slf4j
 @ExtendWith(MockitoExtension.class)
@@ -28,10 +34,26 @@ class RequestServiceTest {
     private RequestRepository requestRepository;
 
     @Mock
+    private RequestStatusRepository requestStatusRepository;
+
+    @Mock
+    private RequestReasonRepository requestReasonRepository;
+
+    @Mock
+    private ApproverActionRepository approverActionRepository;
+
+    @Mock
+    private UserRepository userRepository;
+
+    @Mock
     private CustomObjectMappers customObjectMappers;
 
     @InjectMocks
     private RequestService requestService;
+
+    @Spy
+    @InjectMocks
+    private RequestService requestServiceSpy;
 
     @Test
     void findByUser() {
@@ -134,10 +156,78 @@ class RequestServiceTest {
 
     }
 
-//    @Test
-//    void addRequest() {
-//
-//    }
+    @Test
+    void addRequest() {
+        // return this element
+        AddRequestReturnDTO addRequestReturnDTO = new AddRequestReturnDTO();
+        UserRole leadRole = new UserRole("ROLE_LEAD");
+        UserRole ceoRole = new UserRole("ROLE_CEO");
+        int userId = 4;
+        User pm = new User(2, "Grace", "Anderson", "password007", "illia.kamarali.work@gmail.com", "https://firebasestorage.googleapis.com/v0/b/dailylog-44de4.appspot.com/o/face2.png?alt=media&token=00b3ff76-f272-4fde-a6ad-07f83088d115",
+                20, 2, leadRole, "Project Manager");
+
+        User teamLead = new User(3, "Alice", "Johnson", "password001", "fastandfoodycorp@gmail.com", "https://firebasestorage.googleapis.com/v0/b/dailylog-44de4.appspot.com/o/face3.png?alt=media&token=68f1684a-d5cd-4698-9b86-fffbd734ea77",
+                20, 2, leadRole, "Team Lead");
+        User user = new User(4, "Eve", "Davis", "password005", "kamarali2025mf12@student.karazin.ua", "https://firebasestorage.googleapis.com/v0/b/dailylog-44de4.appspot.com/o/face4.png?alt=media&token=b7fe6dde-d9ae-49ba-8fb5-d5fa0aeade12",
+                20, 2, leadRole, "Tech Lead");
+        RequestStatus status = new RequestStatus("Pending");
+        RequestReason reason = new RequestReason("Sick Leave");
+        ApproverAction action = new ApproverAction("Unchecked");
+
+        RequestDTO requestDTO = new RequestDTO();
+        requestDTO.setStartDate(LocalDate.of(2025, 7, 5));
+        requestDTO.setFinishDate(LocalDate.of(2025, 7, 7));
+        requestDTO.setReason("Sick Leave");
+        requestDTO.setComment("Family issue");
+
+        user.setPm(pm);
+        user.setTeamLead(teamLead);
+
+        Mockito.when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        Mockito.when(requestStatusRepository.findByStatus("Pending")).thenReturn(status);
+        Mockito.when(requestReasonRepository.findByReason("Sick Leave")).thenReturn(reason);
+        Mockito.when(approverActionRepository.findApproverActionByAction("Unchecked")).thenReturn(action);
+
+        Mockito.doNothing().when(requestServiceSpy).createRequestAndAddApprover(any(User.class), any(User.class),
+                anyString(), any(), any(), any(), any(RequestDTO.class));
+
+        AddRequestReturnDTO result = requestServiceSpy.addRequest(userId, requestDTO);
+
+        Assertions.assertEquals("kamarali2025mf12@student.karazin.ua", result.getUserEmail());
+        Assertions.assertEquals("fastandfoodycorp@gmail.com", result.getFirstApproverEmail());
+        Assertions.assertEquals("illia.kamarali.work@gmail.com", result.getThirdApproverEmail());
+    }
+
+    @Test
+    void getRequestById() {
+        int requestId = 1;
+
+        UserRole leadRole = new UserRole("ROLE_LEAD");
+        UserRole ceoRole = new UserRole("ROLE_CEO");
+        RequestStatus status = new RequestStatus("Pending");
+        RequestReason reason = new RequestReason("Sick Leave");
+        ApproverAction approverAction = new ApproverAction("Unchecked");
+        User user4 = new User(4, "Eve", "Davis", "password005", "kamarali2025mf12@student.karazin.ua", "https://firebasestorage.googleapis.com/v0/b/dailylog-44de4.appspot.com/o/face4.png?alt=media&token=b7fe6dde-d9ae-49ba-8fb5-d5fa0aeade12",
+                20, 2, leadRole, "Tech Lead");
+        User user1 = new User(1, "Hannah", "Thomas", "password008", "hannah.thomas@example.com", "https://firebasestorage.googleapis.com/v0/b/dailylog-44de4.appspot.com/o/face1.png?alt=media&token=16531758-4933-487c-bf2a-8a027acf307a",
+                20, 2, ceoRole, "CEO");
+
+        Request request1 = new Request(LocalDate.of(2025, 4, 28), LocalDate.of(2025, 4, 28),
+                Timestamp.valueOf("2025-04-27 18:15:50"), "UAjXIr1k",
+                null, user4, user1, status, reason, approverAction, "pls...");
+        RequestDTO requestDTO1 = new RequestDTO(27, LocalDate.of(2025, 4, 28),
+                LocalDate.of(2025, 4, 28), Timestamp.valueOf("2025-04-27 18:15:50"),
+                "UAjXIr1k", null, 1, 4, "Illia Kamarali",
+                "Pending", "Sick Leave", "Unchecked", "pls...");
+        request1.setId(1);
+        requestDTO1.setId(1);
+
+        Mockito.when(requestRepository.findById(requestId)).thenReturn(Optional.of(request1));
+        Mockito.when(customObjectMappers.requestToDto(request1)).thenReturn(requestDTO1);
+
+        Assertions.assertEquals(requestService.getRequestById(requestId), requestDTO1);
+        Mockito.verify(requestRepository, Mockito.times(1)).findById(requestId);
+    }
 //
 //    @Test
 //    void approveRequest() {
@@ -147,13 +237,6 @@ class RequestServiceTest {
 //    void declineRequest() {
 //    }
 //
-//    @Test
-//    void generateRandomString() {
-//    }
-//
-//    @Test
-//    void getRequestById() {
-//    }
 //
 //    @Test
 //    void updateRequest() {

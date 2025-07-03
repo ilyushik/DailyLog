@@ -1,0 +1,48 @@
+pipeline {
+    agent any
+    tools {
+        nodejs 'NodeJS'
+    }
+    environment {
+        CI = 'false'
+    }
+
+    stages {
+        stage('Git checkout') {
+            steps {
+                git url: 'https://github.com/ilyushik/DailyLog/', branch: 'main'
+            }
+        }
+        stage('NPM install') {
+            steps {
+                dir('Front-end/my-app') {
+                    sh 'npm install'
+                }
+            }
+        }
+        stage('Node Build') {
+            steps {
+                dir('Front-end/my-app') {
+                    sh 'npm run build'
+                }
+            }
+        }
+        stage('Build Docker image') {
+            steps {
+                dir('Front-end/my-app') {
+                    sh 'docker build -t kamaraliilya/dailylog_frontend:latest .'
+                }
+            }
+        }
+        stage('Push docker image to docker hub') {
+            steps {
+                dir('Front-end/my-app') {
+                    withCredentials([string(credentialsId: 'docker_pwd', variable: 'dockerhubpwd')]) {
+                        sh 'docker login -u kamaraliilya -p ${dockerhubpwd}'
+                        sh 'docker push kamaraliilya/dailylog_frontend:latest'
+                    }
+                }
+            }
+        }
+    }
+}

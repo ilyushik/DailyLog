@@ -40,9 +40,7 @@ public class ReportService {
     @Cacheable(value = "userReports", key = "'userId=' + #userId")
     public List<ReportDTO> getReportsByUserId(int userId) {
         return reportRepository.findAll().stream().filter(s->s.getUser().getId() == userId)
-                .map(r-> new ReportDTO(r.getId(), r.getDate(), r.getText(), r.getCountOfHours(),
-                        r.getUser().getId(), r.getRequest() != null ? r.getRequest().getId() : null,
-                        r.getStatus())).collect(Collectors.toList());
+                .map(r-> customObjectMappers.reportToDto(r)).collect(Collectors.toList());
     }
 
     @Cacheable(value = "userReports", key = "'reportId=' + #id")
@@ -81,18 +79,7 @@ public class ReportService {
 
     public List<ReportDTO> getAllReportsByUserPerPeriod(int userId, PeriodReport periodReport) {
         List<ReportDTO> reports = reportRepository.findAll().stream().filter(r-> r.getUser().getId() == userId)
-                .map(s-> {
-                    ReportDTO reportDTO = new ReportDTO();
-                    reportDTO.setId(s.getId());
-                    reportDTO.setDate(s.getDate());
-                    reportDTO.setText(s.getText());
-                    reportDTO.setCountOfHours(s.getCountOfHours());
-                    reportDTO.setUser(s.getUser().getId());
-                    reportDTO.setRequest(s.getRequest() != null ? s.getRequest().getId() : null);
-                    reportDTO.setStatus(s.getStatus());
-
-                    return reportDTO;
-                }).collect(Collectors.toList());
+                .map(s-> customObjectMappers.reportToDto(s)).collect(Collectors.toList());
 
         reports.removeIf(r->r.getDate().isBefore(periodReport.getStartDate()) ||
                 r.getDate().isAfter(periodReport.getEndDate()));

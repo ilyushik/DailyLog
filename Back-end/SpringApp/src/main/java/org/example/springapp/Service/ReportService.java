@@ -46,7 +46,9 @@ public class ReportService {
     @Cacheable(value = "userReports", key = "'reportId=' + #id")
     public ReportDTO reportById(int id) {
         Report report = reportRepository.findById(id).orElse(null);
-        assert report != null;
+        if (report == null) {
+            return null;
+        }
         return customObjectMappers.reportToDto(report);
     }
 

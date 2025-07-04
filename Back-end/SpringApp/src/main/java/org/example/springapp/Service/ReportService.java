@@ -213,7 +213,9 @@ public class ReportService {
     })
     public Report updateReport(ReportDTO reportDto, int id, UserDTO user) {
         Report report = reportRepository.findById(id).orElse(null);
-        assert report != null;
+        if (report == null) {
+            return null;
+        }
         report.setDate(reportDto.getDate());
         report.setText(reportDto.getText());
         report.setCountOfHours(reportDto.getCountOfHours());

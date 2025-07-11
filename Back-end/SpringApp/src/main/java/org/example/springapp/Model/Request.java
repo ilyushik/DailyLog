@@ -46,7 +46,7 @@ public class Request {
 
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "user", referencedColumnName = "id")
+    @JoinColumn(name = "\"user\"", referencedColumnName = "id")
     private User user;
 
     @JsonIgnore

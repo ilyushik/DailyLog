@@ -35,7 +35,7 @@ public class Report {
     private int countOfHours;
 
     @ManyToOne
-    @JoinColumn(name = "user", referencedColumnName = "id")
+    @JoinColumn(name = "\"user\"", referencedColumnName = "id")
     private User user;
 
     @ManyToOne

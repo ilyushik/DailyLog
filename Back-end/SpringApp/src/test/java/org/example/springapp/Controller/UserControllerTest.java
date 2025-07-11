@@ -177,8 +177,8 @@ class UserControllerTest {
         requestDTO3.setFinishDate(LocalDate.of(2025, 6, 7));
 
         RequestDTO requestDTO = new RequestDTO();
-        requestDTO.setStartDate(LocalDate.of(2025, 7, 7));
-        requestDTO.setFinishDate(LocalDate.of(2025, 7, 9));
+        requestDTO.setStartDate(LocalDate.now());
+        requestDTO.setFinishDate(LocalDate.now());
         requestDTO.setReason("Sick Leave");
         requestDTO.setComment("Family issue");
 

@@ -63,7 +63,9 @@ public class ReportController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
         User user = userRepository.findByEmail(email).orElse(null);
-        assert user != null;
+        if (user == null) {
+            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "User not found"));
+        }
         List<ReportDTO> usersReportsByDate = reportService.getReportsByUserId(user.getId()).stream().filter(s->s.getDate().equals(reportDTO.getDate()) && s.getRequest() == null).toList();
         List<ReportDTO> usersRequestsByDate = reportService.getReportsByUserId(user.getId()).stream().filter(s->s.getDate().equals(reportDTO.getDate()) && s.getRequest() != null).toList();
         if (!usersReportsByDate.isEmpty()) {

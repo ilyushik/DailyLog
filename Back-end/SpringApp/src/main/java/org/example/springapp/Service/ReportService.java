@@ -33,7 +33,6 @@ public class ReportService {
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
 
-
     @Autowired
     private CustomObjectMappers customObjectMappers;
 

@@ -28,10 +28,16 @@ public class AIAnalysis {
     @Column(name = "summary")
     private String summary;
 
-    @Column(name = "month")
+    //for prod
+    //@Column(name = "month")
+    //for test
+    @Column(name = "month_ai")
     private int month;
 
-    @Column(name = "year")
+    //for prod
+    //@Column(name = "year")
+    //for test
+    @Column(name = "year_ai")
     private int year;
 
     public AIAnalysis(int pmId, String winnerFullname, String reason, String summary, int month, int year) {

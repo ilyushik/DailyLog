@@ -29,15 +29,15 @@ public class AIAnalysis {
     private String summary;
 
     //for prod
-    //@Column(name = "month")
+    @Column(name = "month")
     //for test
-    @Column(name = "month_ai")
+    //@Column(name = "month_ai")
     private int month;
 
     //for prod
-    //@Column(name = "year")
+    @Column(name = "year")
     //for test
-    @Column(name = "year_ai")
+    //@Column(name = "year_ai")
     private int year;
 
     public AIAnalysis(int pmId, String winnerFullname, String reason, String summary, int month, int year) {

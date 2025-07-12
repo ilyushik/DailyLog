@@ -35,8 +35,6 @@ public class UserControllerIntegrationTest {
 //    @Autowired
 //    private UserRepository userRepository;
 //    @Autowired
-//    private ReportRepository reportRepository;
-//    @Autowired
 //    private RequestRepository requestRepository;
 //    @Autowired
 //    private UserRoleRepository userRoleRepository;
@@ -100,6 +98,22 @@ public class UserControllerIntegrationTest {
 //    }
 //
 //    @Test
+//    @WithMockUser("test@example.com")
+//    public void getUserByUsername() throws Exception {
+//        mockMvc.perform(get("/users/username?username=Illia Kamarali"))
+//                .andDo(print())
+//                .andExpect(status().isOk());
+//    }
+//
+//    @Test
+//    @WithMockUser("test@example.com")
+//    public void getUserById() throws Exception {
+//        mockMvc.perform(get("/users/2"))
+//                .andDo(print())
+//                .andExpect(status().isOk());
+//    }
+//
+//    @Test
 //    @WithMockUser(username = "test@example.com")
 //    public void addRequest() throws Exception {
 //        RequestDTO requestDTO = new RequestDTO();
@@ -113,10 +127,19 @@ public class UserControllerIntegrationTest {
 //        mockMvc.perform(post("/addRequest")
 //                .contentType(MediaType.APPLICATION_JSON)
 //                .content(json))
+//                .andDo(print())
 //                .andExpect(status().isOk());
 //
 //        log.info("\n\n\nAmount of requests: " + requestRepository.findAll().size() + "\n\n\n");
 //
 //        Assertions.assertEquals(1, requestRepository.findAll().size());
+//    }
+//
+//    @Test
+//    @WithMockUser("test@example.com")
+//    public void peopleList() throws Exception {
+//        mockMvc.perform(get("/peopleList"))
+//                .andDo(print())
+//                .andExpect(status().isBadRequest());
 //    }
 }

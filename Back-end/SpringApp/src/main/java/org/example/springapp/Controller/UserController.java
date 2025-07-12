@@ -10,6 +10,7 @@ import org.example.springapp.Service.RequestService;
 import org.example.springapp.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -40,6 +41,7 @@ public class UserController {
         return ResponseEntity.ok(userService.userByEmail(email));
     }
 
+    @PreAuthorize("hasRole('LEAD') or hasRole('CEO')")
     @GetMapping("/users")
     public ResponseEntity<?> users() {
         if (userService.users().isEmpty()) {
@@ -54,6 +56,7 @@ public class UserController {
         return ResponseEntity.ok(userService.userByUsername(username));
     }
 
+    @PreAuthorize("hasRole('LEAD') or hasRole('CEO')")
     @GetMapping("/users/{id}")
     public ResponseEntity<?> userById(@PathVariable int id) {
         if (userService.userById(id) == null) {
@@ -150,6 +153,7 @@ public class UserController {
         return ResponseEntity.ok(requestService.addRequest(user.getId(), requestDTO));
     }
 
+    @PreAuthorize("hasRole('LEAD') or hasRole('CEO')")
     @GetMapping("/peopleList")
     public ResponseEntity<?> peopleList() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

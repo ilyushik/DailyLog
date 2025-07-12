@@ -12,6 +12,7 @@ import org.example.springapp.Service.RequestService;
 import org.example.springapp.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -54,6 +55,7 @@ public class RequestController {
         return ResponseEntity.ok(requestService.combinedList(userDTO.getId()));
     }
 
+    @PreAuthorize("hasRole('LEAD') or hasRole('CEO')")
     @GetMapping("/userRequests/{id}")
     public ResponseEntity<?> requestByUserId(@PathVariable int id) {
 
@@ -64,6 +66,7 @@ public class RequestController {
         return ResponseEntity.ok(requestService.combinedList(id));
     }
 
+    @PreAuthorize("hasRole('LEAD') or hasRole('CEO')")
     @GetMapping("/approver")
     public ResponseEntity<?> requestsByApprover() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -80,11 +83,13 @@ public class RequestController {
         return ResponseEntity.ok(requestService.findByApprover(user.getId()));
     }
 
+    @PreAuthorize("hasRole('LEAD') or hasRole('CEO')")
     @PostMapping("/approve/{id}")
     public ResponseEntity<?> approveRequest(@PathVariable int id) {
         return ResponseEntity.ok(requestService.approveRequest(id));
     }
 
+    @PreAuthorize("hasRole('LEAD') or hasRole('CEO')")
     @PostMapping("/decline/{id}")
     public ResponseEntity<?> declineRequest(@PathVariable int id) {
         RequestDTO requestDTO = requestService.getRequestById(id);

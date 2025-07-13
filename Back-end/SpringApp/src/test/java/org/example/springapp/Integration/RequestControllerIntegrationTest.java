@@ -2,16 +2,16 @@ package org.example.springapp.Integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.example.springapp.DTO.RequestDTO;
 import org.example.springapp.Model.*;
 import org.example.springapp.Repository.*;
-import org.example.springapp.Service.RequestService;
-import org.example.springapp.Service.UserService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -31,17 +31,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class RequestControllerIntegrationTest {
 
 //    @Autowired
-//    private RequestService requestService;
-//    @Autowired
 //    private UserRepository userRepository;
 //    @Autowired
 //    private UserRoleRepository userRoleRepository;
 //    @Autowired
 //    private RequestRepository requestRepository;
-//    @Autowired
-//    private ReportRepository reportRepository;
-//    @Autowired
-//    private UserService userService;
 //    @Autowired
 //    private RequestStatusRepository requestStatusRepository;
 //    @Autowired
@@ -69,6 +63,8 @@ public class RequestControllerIntegrationTest {
 //        requestReasonRepository.save(sickLeave);
 //        RequestReason annualLeave = new RequestReason("Annual Leave");
 //        requestReasonRepository.save(annualLeave);
+//        RequestReason personalLeave = new RequestReason("Personal Leave");
+//        requestReasonRepository.save(personalLeave);
 //        ApproverAction unchecked = new ApproverAction("Unchecked");
 //        ApproverAction approve = new ApproverAction("Approve");
 //        ApproverAction decline = new ApproverAction("Decline");
@@ -192,6 +188,36 @@ public class RequestControllerIntegrationTest {
 //    @WithMockUser(value = "testlead@example.com", roles = {"LEAD"})
 //    public void declineRequest() throws Exception {
 //        mockMvc.perform(post("/requests/decline/1"))
+//                .andDo(print())
+//                .andExpect(status().isOk());
+//
+//        log.info("\n\nRequests: " + requestRepository.findAll() + "\n\n");
+//    }
+//
+//    @Test
+//    @WithMockUser("testuser2@example.com")
+//    public void deleteRequest() throws Exception {
+//        mockMvc.perform(get("/requests/delete/1"))
+//                .andDo(print())
+//                .andExpect(status().isOk());
+//
+//        log.info("\n\nRequests: " + requestRepository.findAll() + "\n\n");
+//    }
+//
+//    @Test
+//    @WithMockUser("testuser2@example.com")
+//    public void updateRequest() throws Exception {
+//        RequestDTO requestDTO = new RequestDTO();
+//        requestDTO.setStartDate(LocalDate.now());
+//        requestDTO.setFinishDate(LocalDate.now().plusDays(1));
+//        requestDTO.setReason("Personal Leave");
+//        requestDTO.setComment("integration test...");
+//
+//        String json = objectMapper.writeValueAsString(requestDTO);
+//
+//        mockMvc.perform(post("/requests/update/1")
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .content(json))
 //                .andDo(print())
 //                .andExpect(status().isOk());
 //

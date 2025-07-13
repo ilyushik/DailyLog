@@ -110,6 +110,9 @@ public class RequestController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
         UserDTO userDTO = userService.userByEmail(email);
+        if (userDTO == null) {
+            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "User not found"));
+        }
         return ResponseEntity.ok(requestService.deleteRequest(id, userDTO.getId()));
     }
 
@@ -118,6 +121,9 @@ public class RequestController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
         User user = userRepository.findByEmail(email).orElse(null);
+        if (user == null) {
+            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "User not found"));
+        }
 
         List<Request> allRequest = requestRepository.findAll();
         allRequest = allRequest.stream().filter(r-> r.getUser().equals(user)).toList();

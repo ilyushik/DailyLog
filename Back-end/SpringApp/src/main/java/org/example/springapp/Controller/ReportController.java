@@ -12,8 +12,10 @@ import org.example.springapp.Service.ReportService;
 import org.example.springapp.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -42,6 +44,9 @@ public class ReportController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
         UserDTO user = userService.userByEmail(email);
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         if (reportService.getReportsByUserId(user.getId()).isEmpty()) {
             return ResponseEntity.badRequest().body(Collections.singletonMap("message", "No reports"));
         }
@@ -49,6 +54,7 @@ public class ReportController {
         return ResponseEntity.ok(reportService.getReportsByUserId(user.getId()));
     }
 
+    @PreAuthorize("hasRole('LEAD') or hasRole('CEO')")
     @GetMapping("/usersReports/{id}")
     public ResponseEntity<?> getReportByUser(@PathVariable int id) {
         if (reportService.getReportsByUserId(id).isEmpty()) {
@@ -85,6 +91,7 @@ public class ReportController {
     }
 
     // download all users
+    @PreAuthorize("hasRole('LEAD')")
     @GetMapping("/download/excel")
     public ResponseEntity<?> downloadReportExcel(
             @RequestParam("startDate") String startDate,
@@ -128,6 +135,7 @@ public class ReportController {
     }
 
     //test
+    @PreAuthorize("hasRole('LEAD') or hasRole('CEO')")
     @PostMapping("usersReport-perPeriod/{id}")
     public ResponseEntity<?> usersReportsPerPeriod(@PathVariable("id") int userId, @RequestBody PeriodReport periodReport) {
         if (periodReport.getStartDate().isAfter(periodReport.getEndDate())) {

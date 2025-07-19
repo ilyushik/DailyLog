@@ -110,7 +110,7 @@ export default function Main() {
             content: (
                 <View style={{
                     width: screenWidth * 0.9,
-                    maxHeight: screenHeight * 0.35,
+                    // maxHeight: screenHeight * 0.35,
                 }}>
                     <View style={{
                         width: screenWidth * 0.9,
@@ -131,6 +131,7 @@ export default function Main() {
                         backgroundColor: '#fff',
                         borderBottomLeftRadius: 10,
                         borderBottomRightRadius: 10,
+                        maxHeight: screenHeight * 0.3
                     }}>
                         {requests.length === 0 && (
                             <Text style={{
@@ -143,7 +144,7 @@ export default function Main() {
                         <FlatList data={requests} renderItem={({item}) =>
                             (<RequestComponent requestId={item.id} email={user.email} />
                             )}  keyExtractor={item => item.id}
-                                  ItemSeparatorComponent={renderSeparator}/>
+                                  ItemSeparatorComponent={renderSeparator} refreshing={true}/>
                     </View>
                 </View>
             )

@@ -1,4 +1,4 @@
-import {Dimensions, Image, StyleSheet, View} from "react-native";
+import {Dimensions, Image, Platform, StyleSheet, View} from "react-native";
 import Header from "./Header";
 
 export default function Layout(props) {
@@ -23,6 +23,7 @@ const styles = StyleSheet.create({
     layoutContainer: {
         backgroundColor: '#e3e3e3',
         flex: 1,
+        marginTop: Platform.OS === "android" ? 50 : 0,
     },
     banner: {
         height: screenHeight * 0.15,
